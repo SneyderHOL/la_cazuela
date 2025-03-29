@@ -18,7 +18,8 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
+  username: <%= ENV["LA_CAZUELA_DATABASE_USERNAME"] %>
+  password: <%= ENV["LA_CAZUELA_DATABASE_PASSWORD"] %>
 
 development:
   <<: *default
@@ -82,8 +83,6 @@ production:
   primary: &primary_production
     <<: *default
     database: la_cazuela_production
-    username: la_cazuela
-    password: <%= ENV["LA_CAZUELA_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: la_cazuela_production_cache
