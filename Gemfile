@@ -37,7 +37,7 @@ gem "kamal", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
-gem 'aasm'
+gem "aasm"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -50,7 +50,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "factory_bot_rails"
   gem "faker"
-  gem 'shoulda-matchers', '~> 6.0'
+  gem "shoulda-matchers", "~> 6.0"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
