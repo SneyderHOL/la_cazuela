@@ -16,6 +16,11 @@ RSpec.describe Recipe, type: :model do
     it { is_expected.to validate_presence_of(:status) }
   end
 
+  describe 'associations' do
+    it { is_expected.to have_many(:ingredients).through(:ingredient_recipes) }
+    it { is_expected.to have_many(:ingredient_recipes) }
+  end
+
   describe "status transitions" do
     describe 'approve' do
       before { recipe.status = 'declined' }

@@ -13,6 +13,11 @@ RSpec.describe Ingredient, type: :model do
     end
   end
 
+  describe 'associations' do
+    it { is_expected.to have_many(:recipes).through(:ingredient_recipes) }
+    it { is_expected.to have_many(:ingredient_recipes) }
+  end
+
   describe "validations" do
     it do
       is_expected.to define_enum_for(:unit).with_values({

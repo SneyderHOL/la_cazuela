@@ -1,18 +1,8 @@
 class Recipe < ApplicationRecord
-  include AASM
+  include RecipeAasm
 
-  aasm column: "status" do
-    state :declined, initial: true
-    state :approved
-
-    event :approve do
-      transitions from: :declined, to: :approved
-    end
-
-    event :decline do
-      transitions from: :approved, to: :declined
-    end
-  end
+  has_many :ingredient_recipes
+  has_many :ingredients, through: :ingredient_recipes
 
   validates :name, :status, presence: true
 end

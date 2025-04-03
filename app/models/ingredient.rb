@@ -1,18 +1,8 @@
 class Ingredient < ApplicationRecord
-  include AASM
+  include IngredientAasm
 
-  aasm column: "status" do
-    state :available, initial: true
-    state :unavailable
-
-    event :able do
-      transitions from: :unavailable, to: :available
-    end
-
-    event :disable do
-      transitions from: :available, to: :unavailable
-    end
-  end
+  has_many :ingredient_recipes
+  has_many :recipes, through: :ingredient_recipes
 
   enum :unit, { ml: 0, mg: 1 }
 
