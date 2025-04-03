@@ -2,18 +2,28 @@ require 'rails_helper'
 
 RSpec.describe Recipe, type: :model do
   subject(:recipe) { build(:recipe) }
+  let(:recipe_with_product) { build(:recipe, :with_product) }
 
   describe "factory object" do
     it 'is valid' do
       expect(recipe).to be_valid
       expect(recipe.name).not_to be_nil
       expect(recipe.status).not_to be_nil
+      expect(recipe_with_product).to be_valid
     end
   end
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:status) }
+
+    describe "with foreign key as unique" do
+      before do
+        subject.product = create(:product)
+        subject.save
+      end
+      it { is_expected.to validate_uniqueness_of(:product_id).allow_nil }
+    end
   end
 
   describe 'associations' do

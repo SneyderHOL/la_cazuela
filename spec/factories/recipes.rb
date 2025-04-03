@@ -9,5 +9,9 @@ FactoryBot.define do
     trait :decline do
       status { 'declined' }
     end
+
+    trait :with_product do
+      association :product
+    end
   end
 end
