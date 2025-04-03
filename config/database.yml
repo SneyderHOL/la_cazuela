@@ -24,8 +24,13 @@ default: &default
   port: <%= ENV["LA_CAZUELA_DATABASE_PORT"] %>
 
 development:
-  <<: *default
-  database: la_cazuela_development
+  primary:
+    <<: *default
+    database: la_cazuela_development
+  queue:
+    <<: *default
+    database: la_cazuela_development_queue
+    migrations_paths: db/queue_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.

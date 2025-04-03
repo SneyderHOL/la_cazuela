@@ -27,6 +27,7 @@ RSpec.describe Recipe, type: :model do
   end
 
   describe 'associations' do
+    it { is_expected.to belong_to(:product).optional }
     it { is_expected.to have_many(:ingredients).through(:ingredient_recipes) }
     it { is_expected.to have_many(:ingredient_recipes) }
   end

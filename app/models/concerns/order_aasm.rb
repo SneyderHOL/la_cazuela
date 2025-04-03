@@ -16,7 +16,10 @@ module OrderAasm
       end
 
       event :close do
-        transitions from: :completed, to: :closed
+        after do
+          close_suborders
+        end
+        transitions to: :closed
       end
     end
   end
