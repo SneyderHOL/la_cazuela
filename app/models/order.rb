@@ -1,8 +1,10 @@
 class Order < ApplicationRecord
   include OrderAasm
 
-  has_many :suborders, class_name: "Order", foreign_key: "parent_id"
   belongs_to :parent, class_name: "Order", optional: true
+  has_many :suborders, class_name: "Order", foreign_key: "parent_id"
+  has_many :order_products
+  has_many :products, through: :order_products
 
   validates :status, presence: true
   validate :parent_status_cannot_be_closed, on: :create
@@ -10,12 +12,25 @@ class Order < ApplicationRecord
 
   private
 
+  def prepare_order_products
+    return unless persisted?
+
+    Rails.logger.info "Calling PrepareOrderProductsJob for order_id #{id}"
+    PrepareOrderProductsJob.perform_later(self)
+  end
+
+  def complete_order_products
+    return unless persisted?
+
+    Rails.logger.info "Calling CompleteOrderProductsJob for order_id #{id}"
+    CompleteOrderProductsJob.perform_later(self)
+  end
+
   def close_suborders
     return unless persisted? && parent_id.nil?
 
     Rails.logger.info "Calling CloseSubordersJob for order_id #{id}"
     CloseSubordersJob.perform_later(self)
-    Rails.logger.info "CloseSubordersJob called"
   end
 
   def parent_status_cannot_be_closed
