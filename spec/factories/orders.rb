@@ -18,10 +18,19 @@ FactoryBot.define do
 
     trait :with_suborders do
       transient do
-        amount { 5 }
+        trait_amount { 5 }
       end
       after :create do |order, evaluator|
-        create_list :order, evaluator.amount, parent: order
+        create_list :order, evaluator.trait_amount, parent: order
+      end
+    end
+
+    trait :with_products do
+      transient do
+        trait_amount { 5 }
+      end
+      after :create do |order, evaluator|
+        create_list :order_product, evaluator.trait_amount, :with_product_and_recipe, order: order
       end
     end
   end

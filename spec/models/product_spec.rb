@@ -13,6 +13,8 @@ RSpec.describe Product, type: :model do
 
   describe 'associations' do
     it { is_expected.to have_one(:recipe) }
+    it { is_expected.to have_many(:orders).through(:order_products) }
+    it { is_expected.to have_many(:order_products) }
   end
 
   describe "validations" do
