@@ -42,6 +42,6 @@ class Order < ApplicationRecord
   def parent_assignation
     return unless parent&.parent_id
 
-    errors.add(:parent, "is cannot be a suborder")
+    errors.add(:parent, "cannot be a suborder")
   end
 end

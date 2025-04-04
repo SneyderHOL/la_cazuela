@@ -28,7 +28,7 @@ RSpec.describe Ingredient, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:unit) }
     it { is_expected.to validate_presence_of(:status) }
-    it { is_expected.to validate_numericality_of(:stored_quantity).only_integer }
+    it { is_expected.to validate_numericality_of(:stored_quantity).is_greater_than_or_equal_to(0) }
   end
 
   describe "status transitions" do

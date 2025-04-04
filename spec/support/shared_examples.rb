@@ -1,5 +1,5 @@
-RSpec.shared_examples "job enqueued for order" do
-  subject { described_class.perform_later(order) }
+RSpec.shared_examples "job enqueued for resource" do
+  subject { described_class.perform_later(resource) }
 
   before { ActiveJob::Base.queue_adapter = :test }
 

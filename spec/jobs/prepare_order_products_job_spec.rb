@@ -5,7 +5,8 @@ RSpec.describe PrepareOrderProductsJob, type: :job do
 
   describe '#perform' do
     describe "enqueing a new job" do
-      it_behaves_like "job enqueued for order"
+      let(:resource) { order }
+      it_behaves_like "job enqueued for resource"
     end
 
     describe "inline job execution" do

@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :ingredient do
     name { Faker::Food.ingredient }
     unit  { Faker::Number.between(from: 0, to: 1) }
-    stored_quantity { Faker::Number.between(from: 1, to: 1000) }
+    stored_quantity { 10_0000 }
 
     trait :with_ml_unit do
       unit { :ml }

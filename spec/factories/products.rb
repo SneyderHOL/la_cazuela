@@ -22,11 +22,11 @@ FactoryBot.define do
 
     trait :with_recipe do
       transient do
-        trait_amount { 5 }
+        trait_ingredient_recipe_amount { 5 }
       end
       after :create do |product, evaluator|
         recipe = create(:recipe, product: product)
-        create_list :ingredient_recipe, evaluator.trait_amount, :with_ingredient, recipe: recipe
+        create_list :ingredient_recipe, evaluator.trait_ingredient_recipe_amount, :with_ingredient, recipe: recipe
       end
     end
   end

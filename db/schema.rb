@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_04_153326) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_04_225611) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,6 +32,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_153326) do
     t.string "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "inventory_transactions", force: :cascade do |t|
+    t.bigint "ingredient_id", null: false
+    t.integer "quantity", null: false
+    t.integer "kind", null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_id"], name: "index_inventory_transactions_on_ingredient_id"
   end
 
   create_table "order_products", force: :cascade do |t|
@@ -75,6 +85,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_153326) do
 
   add_foreign_key "ingredient_recipes", "ingredients"
   add_foreign_key "ingredient_recipes", "recipes"
+  add_foreign_key "inventory_transactions", "ingredients"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "orders", "orders", column: "parent_id"
