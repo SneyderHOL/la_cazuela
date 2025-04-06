@@ -4,11 +4,21 @@ RSpec.describe Ingredient, type: :model do
   subject(:ingredient) { build(:ingredient) }
 
   describe "factory object" do
-    it 'is valid' do
-      expect(ingredient).to be_valid
+    it { is_expected.to be_valid }
+
+    it 'name is not nil' do
       expect(ingredient.name).not_to be_nil
+    end
+
+    it "unit is not nil" do
       expect(ingredient.unit).not_to be_nil
+    end
+
+    it "stored_quantity is not nil" do
       expect(ingredient.stored_quantity).not_to be_nil
+    end
+
+    it "status is not nil" do
       expect(ingredient.status).not_to be_nil
     end
   end
@@ -20,7 +30,7 @@ RSpec.describe Ingredient, type: :model do
 
   describe "validations" do
     it do
-      is_expected.to define_enum_for(:unit).with_values({
+      expect(ingredient).to define_enum_for(:unit).with_values({
         mg: 1, ml: 0
       }).backed_by_column_of_type(:integer)
     end
@@ -32,16 +42,18 @@ RSpec.describe Ingredient, type: :model do
   end
 
   describe "status transitions" do
-    describe 'able' do
+    describe "when able is executed with unavailable" do
       before { ingredient.status = 'unavailable' }
+
       it do
         expect { ingredient.able }.to change(
           ingredient, :status).from("unavailable").to("available")
       end
     end
 
-    describe 'disable' do
+    describe "when disable is executed with available" do
       before { ingredient.status = 'available' }
+
       it do
         expect { ingredient.disable }.to change(
           ingredient, :status).from("available").to("unavailable")

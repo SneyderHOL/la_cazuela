@@ -6,11 +6,21 @@ RSpec.describe InventoryTransaction, type: :model do
   end
 
   describe "factory object" do
-    it 'is valid' do
-      expect(inventory_transaction).to be_valid
+    it { is_expected.to be_valid }
+
+    it 'kind is not nil' do
       expect(inventory_transaction.kind).not_to be_nil
+    end
+
+    it 'quantity is not nil' do
       expect(inventory_transaction.quantity).not_to be_nil
+    end
+
+    it 'status is not nil' do
       expect(inventory_transaction.status).not_to be_nil
+    end
+
+    it 'ingredient is not nil' do
       expect(inventory_transaction.ingredient).not_to be_nil
     end
   end
@@ -21,7 +31,8 @@ RSpec.describe InventoryTransaction, type: :model do
     it { is_expected.to validate_numericality_of(:quantity).is_greater_than(0) }
 
     context "when status is set with a different value" do
-      before { subject.status = "bad" }
+      before { inventory_transaction.status = "bad" }
+
       it { is_expected.not_to be_valid }
     end
   end
@@ -33,6 +44,7 @@ RSpec.describe InventoryTransaction, type: :model do
   describe "status transitions" do
     describe 'complete' do
       before { inventory_transaction.status = 'pending' }
+
       it do
         expect { inventory_transaction.complete }.to change(
           inventory_transaction, :status).from("pending").to("completed")
@@ -57,23 +69,27 @@ RSpec.describe InventoryTransaction, type: :model do
         transaction.apply!
         ingredient.reload
       end
-      it { expect(ingredient.stored_quantity).to eql(110) }
+
+      it { expect(ingredient.stored_quantity).to be(110) }
       it { expect(transaction).to be_completed }
     end
 
     context "when inventory_transaction is of type substraction" do
       let(:kind) { :substraction }
+
       before do
         transaction.apply!
         ingredient.reload
       end
-      it { expect(ingredient.stored_quantity).to eql(90) }
+
+      it { expect(ingredient.stored_quantity).to be(90) }
       it { expect(transaction).to be_completed }
     end
 
     context "when inventory_transaction has status completed" do
       before { transaction.complete! }
-      it "should raise an error" do
+
+      it "raises an error" do
         expect { transaction.apply! }.to raise_error(
           InventoryTransaction::InvalidTransactionStatusError, "the transaction was already completed"
         )

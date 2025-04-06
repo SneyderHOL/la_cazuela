@@ -26,7 +26,7 @@ module OrderAasm
           close_suborders
           complete_order_products
         end
-        transitions to: :closed
+        transitions from: [ :processing, :completed ], to: :closed
       end
     end
   end

@@ -34,7 +34,16 @@ FactoryBot.define do
           trait_amount { 5 }
         end
         after :create do |order, evaluator|
-          create_list :order, evaluator.trait_amount, parent: order, allocation: order.allocation
+          create_list :suborder, evaluator.trait_amount, parent: order, allocation: order.allocation
+        end
+      end
+
+      trait :with_completed_suborders do
+        transient do
+          trait_amount { 5 }
+        end
+        after :create do |order, evaluator|
+          create_list :suborder, evaluator.trait_amount, :as_completed, parent: order, allocation: order.allocation
         end
       end
     end

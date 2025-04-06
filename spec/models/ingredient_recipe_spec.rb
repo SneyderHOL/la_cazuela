@@ -4,10 +4,17 @@ RSpec.describe IngredientRecipe, type: :model do
   subject(:ingredient_recipe) { build(:ingredient_recipe, :with_associations) }
 
   describe "factory object" do
-    it 'is valid' do
-      expect(ingredient_recipe).to be_valid
+    it { is_expected.to be_valid }
+
+    it "ingredient is not nil" do
       expect(ingredient_recipe.ingredient).not_to be_nil
+    end
+
+    it "recipe is not nil" do
       expect(ingredient_recipe.recipe).not_to be_nil
+    end
+
+    it "required_quantity is not nil" do
       expect(ingredient_recipe.required_quantity).not_to be_nil
     end
   end

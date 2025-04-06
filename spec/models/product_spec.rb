@@ -4,9 +4,13 @@ RSpec.describe Product, type: :model do
   subject(:product) { build(:product) }
 
   describe "factory object" do
-    it 'is valid' do
-      expect(product).to be_valid
+    it { is_expected.to be_valid }
+
+    it 'name is not nil' do
       expect(product.name).not_to be_nil
+    end
+
+    it 'kind is not nil' do
       expect(product.kind).not_to be_nil
     end
   end
@@ -19,7 +23,7 @@ RSpec.describe Product, type: :model do
 
   describe "validations" do
     it do
-      is_expected.to define_enum_for(:kind).with_values({
+      expect(product).to define_enum_for(:kind).with_values({
         dish: 0, beverage: 1, packing: 2
       }).backed_by_column_of_type(:integer)
     end

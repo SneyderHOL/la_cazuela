@@ -7,23 +7,38 @@ RSpec.describe CreateInventoryTransactionsJob, type: :job do
   end
   let(:resource) { [ transaction_param ] }
 
-  describe '#perform' do
+  describe '#perform_later' do
     describe "enqueing a new job" do
       it_behaves_like "job enqueued for resource"
     end
+  end
 
-    describe "inline job execution" do
-      subject { described_class.perform_now(resource) }
-      context "when creates the inventory transactions" do
-        let(:inventory_transaction) { InventoryTransaction.first }
-        it { expect { subject }.to change(InventoryTransaction, :count) }
-        it do
-          subject
-          expect(inventory_transaction.ingredient).to eql(ingredient)
-          expect(inventory_transaction.kind).to eql(transaction_param[:kind].to_s)
-          expect(inventory_transaction.status).to eql(transaction_param[:status])
-          expect(inventory_transaction.quantity).to eql(transaction_param[:quantity])
-        end
+  describe "#perform_now" do
+    subject(:create_inventory_transaction_job) { described_class.perform_now(resource) }
+
+    context "when creates the inventory transactions" do
+      let(:inventory_transaction) { InventoryTransaction.first }
+
+      it { expect { create_inventory_transaction_job }.to change(InventoryTransaction, :count) }
+
+      it "create the record" do
+        create_inventory_transaction_job
+        expect(inventory_transaction.ingredient).to eql(ingredient)
+      end
+
+      it "match the kind param" do
+        create_inventory_transaction_job
+        expect(inventory_transaction.kind).to eql(transaction_param[:kind].to_s)
+      end
+
+      it "match the status param" do
+        create_inventory_transaction_job
+        expect(inventory_transaction.status).to eql(transaction_param[:status])
+      end
+
+      it "match the quantity param" do
+        create_inventory_transaction_job
+        expect(inventory_transaction.quantity).to eql(transaction_param[:quantity])
       end
     end
   end
