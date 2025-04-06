@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CompleteOrderProductsJob, type: :job do
-  let(:order) { create(:order, :as_processing, :with_products, trait_amount: 2) }
+  let(:order) { create(:order, :as_processing, :with_allocation, :with_products, trait_amount: 2) }
 
   describe '#perform' do
     describe "enqueing a new job" do

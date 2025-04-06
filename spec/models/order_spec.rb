@@ -30,8 +30,8 @@ RSpec.shared_examples "not call the PrepareOrderProductsJob" do
 end
 
 RSpec.describe Order, type: :model do
-  subject(:order) { build(:order) }
-  let(:suborder) { create(:order, :with_parent_order) }
+  subject(:order) { build(:order, :with_allocation) }
+  let(:suborder) { create(:suborder, :with_associations) }
 
   describe "factory object" do
     it 'is valid' do
@@ -44,11 +44,13 @@ RSpec.describe Order, type: :model do
         expect(suborder).to be_valid
         expect(suborder.status).not_to be_nil
         expect(suborder.parent_id).not_to be_nil
+        expect(suborder.allocation_id).not_to be_nil
       end
     end
   end
 
   describe 'associations' do
+    it { is_expected.to belong_to(:allocation) }
     it { is_expected.to belong_to(:parent).optional }
     it { is_expected.to have_many(:suborders) }
     it { is_expected.to have_many(:products).through(:order_products) }
@@ -59,8 +61,8 @@ RSpec.describe Order, type: :model do
     it { is_expected.to validate_presence_of(:status) }
 
     describe "parent_assignation" do
-      let(:parent_order) { create(:order) }
-      let(:aux_suborder) { build(:order) }
+      let(:parent_order) { create(:order, :with_allocation) }
+      let(:aux_suborder) { build(:order, :with_allocation) }
 
       context "when is valid" do
         context "when parent_order is opened" do
@@ -68,12 +70,12 @@ RSpec.describe Order, type: :model do
         end
 
         context "when parent_order is processing" do
-          let(:parent_order) { create(:order, :as_processing) }
+          let(:parent_order) { create(:order, :as_processing, :with_allocation) }
           it_behaves_like "when suborder is assigned a valid parent"
         end
 
         context "when parent_order is completed" do
-          let(:parent_order) { create(:order, :as_completed) }
+          let(:parent_order) { create(:order, :as_completed, :with_allocation) }
           it_behaves_like "when suborder is assigned a valid parent"
         end
       end
@@ -97,7 +99,7 @@ RSpec.describe Order, type: :model do
         end
 
         context "when parent_order is closed" do
-          let(:parent_order) { create(:order, :as_closed) }
+          let(:parent_order) { create(:order, :as_closed, :with_allocation) }
           before { aux_suborder.parent = parent_order }
           it { expect(aux_suborder).not_to be_valid }
         end

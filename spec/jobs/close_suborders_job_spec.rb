@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CloseSubordersJob, type: :job do
-  let(:order) { create(:order, :as_completed, :with_suborders) }
+  let(:order) { create(:order, :as_completed, :with_allocation, :with_suborders) }
 
   describe '#perform' do
     describe "enqueing a new job" do

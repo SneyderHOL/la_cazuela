@@ -14,12 +14,12 @@ FactoryBot.define do
     end
 
     trait :with_associations do
-      association :order
+      order { build(:order, :with_allocation) }
       association :product
     end
 
     trait :with_order do
-      association :order
+      order { build(:order, :with_allocation) }
     end
 
     trait :with_product do

@@ -1,6 +1,7 @@
 class Order < ApplicationRecord
   include OrderAasm
 
+  belongs_to :allocation
   belongs_to :parent, class_name: "Order", optional: true
   has_many :suborders, class_name: "Order", foreign_key: "parent_id"
   has_many :order_products

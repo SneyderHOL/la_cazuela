@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_04_225611) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_06_003512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "allocations", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "kind", null: false
+    t.string "status", null: false
+    t.boolean "active", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "ingredient_recipes", force: :cascade do |t|
     t.bigint "ingredient_id", null: false
@@ -63,6 +72,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_225611) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "parent_id"
+    t.bigint "allocation_id", null: false
+    t.index ["allocation_id"], name: "index_orders_on_allocation_id"
     t.index ["parent_id"], name: "index_orders_on_parent_id"
   end
 
@@ -88,6 +99,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_225611) do
   add_foreign_key "inventory_transactions", "ingredients"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
+  add_foreign_key "orders", "allocations"
   add_foreign_key "orders", "orders", column: "parent_id"
   add_foreign_key "recipes", "products"
 end
