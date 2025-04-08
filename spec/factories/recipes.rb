@@ -3,11 +3,11 @@ FactoryBot.define do
     sequence(:name) { |n| "Recipe ##{n} #{Faker::Food.dish}" }
     product { nil }
 
-    trait :approve do
+    trait :as_approved do
       status { 'approved' }
     end
 
-    trait :decline do
+    trait :as_declined do
       status { 'declined' }
     end
 

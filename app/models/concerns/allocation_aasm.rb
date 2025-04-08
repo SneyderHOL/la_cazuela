@@ -8,7 +8,7 @@ module AllocationAasm
       state :busy, :on_hold
 
       event :take do
-        transitions from: [ :available, :on_hold ], to: :busy
+        transitions from: %i[ available on_hold ], to: :busy
       end
 
       event :free do

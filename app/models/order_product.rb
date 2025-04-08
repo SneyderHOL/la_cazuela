@@ -1,6 +1,4 @@
 class OrderProduct < ApplicationRecord
-  class TransactionCompletedError < StandardError; end
-
   include OrderProductAasm
 
   belongs_to :order
@@ -26,9 +24,9 @@ class OrderProduct < ApplicationRecord
       remaining_quantity = ingredient_recipe.ingredient.stored_quantity -
         ingredient_recipe.required_quantity
 
-      if remaining_quantity.negative?
-        error_msg = "is insufficient in #{ingredient_recipe.ingredient.name}"
-      end
+      next if remaining_quantity.zero? || remaining_quantity.positive?
+
+      error_msg = "is insufficient in #{ingredient_recipe.ingredient.name}"
     end
 
     return unless error_msg

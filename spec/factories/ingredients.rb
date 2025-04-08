@@ -12,11 +12,11 @@ FactoryBot.define do
       unit { :mg }
     end
 
-    trait :available do
+    trait :as_available do
       status { 'available' }
     end
 
-    trait :unavailable do
+    trait :as_unavailable do
       status { 'unavailable' }
     end
   end

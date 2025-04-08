@@ -1,7 +1,7 @@
 class InventoryTransaction < ApplicationRecord
-  class InvalidTransactionStatusError < StandardError; end
-
   include InventoryTransactionAasm
+
+  class InvalidTransactionStatusError < StandardError; end
 
   belongs_to :ingredient
 
@@ -15,7 +15,7 @@ class InventoryTransaction < ApplicationRecord
       raise InvalidTransactionStatusError, "the transaction was already completed"
     end
 
-    stored_quantity = if self.addition?
+    stored_quantity = if addition?
       ingredient.stored_quantity + quantity
     else
       ingredient.stored_quantity - quantity
