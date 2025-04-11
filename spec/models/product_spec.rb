@@ -24,7 +24,7 @@ RSpec.describe Product, type: :model do
   describe "validations" do
     it do
       expect(product).to define_enum_for(:kind).with_values({
-        dish: 0, beverage: 1, packing: 2
+        dish: 0, beverage: 1, entry: 2, dessert: 3, aside: 4, packing: 5
       }).backed_by_column_of_type(:integer)
     end
 

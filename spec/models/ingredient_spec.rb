@@ -31,7 +31,7 @@ RSpec.describe Ingredient, type: :model do
   describe "validations" do
     it do
       expect(ingredient).to define_enum_for(:unit).with_values({
-        mg: 1, ml: 0
+        mg: 1, ml: 0, one: 2
       }).backed_by_column_of_type(:integer)
     end
 
@@ -51,12 +51,39 @@ RSpec.describe Ingredient, type: :model do
       end
     end
 
+    describe "when able is executed with scarce" do
+      before { ingredient.status = 'scarce' }
+
+      it do
+        expect { ingredient.able }.to change(
+          ingredient, :status).from("scarce").to("available")
+      end
+    end
+
     describe "when disable is executed with available" do
       before { ingredient.status = 'available' }
 
       it do
         expect { ingredient.disable }.to change(
           ingredient, :status).from("available").to("unavailable")
+      end
+    end
+
+    describe "when disable is executed with scarce" do
+      before { ingredient.status = 'scarce' }
+
+      it do
+        expect { ingredient.disable }.to change(
+          ingredient, :status).from("scarce").to("unavailable")
+      end
+    end
+
+    describe "when running_out is executed with available" do
+      before { ingredient.status = 'available' }
+
+      it do
+        expect { ingredient.running_out }.to change(
+          ingredient, :status).from("available").to("scarce")
       end
     end
   end

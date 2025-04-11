@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :product do
     name { Faker::Food.dish }
-    kind { Faker::Number.between(from: 0, to: 2) }
+    kind { Faker::Number.between(from: 0, to: 5) }
     active { false }
 
     trait :is_active do
@@ -16,8 +16,20 @@ FactoryBot.define do
       kind { 1 }
     end
 
-    trait :packing do
+    trait :entry do
       kind { 2 }
+    end
+
+    trait :dessert do
+      kind { 3 }
+    end
+
+    trait :aside do
+      kind { 4 }
+    end
+
+    trait :packing do
+      kind { 5 }
     end
 
     trait :with_recipe do
