@@ -9,7 +9,7 @@ module OrderProducts
     def call
       return unless @order_product.product.recipe && @order_product.new_record?
 
-      update_inventory
+      update_inventory!
       create_inventory_transactions
     rescue ActiveRecord::RecordInvalid
       Rails.logger.error("Failed update Inventory for order_product id #{@order_product.id}")
@@ -21,7 +21,7 @@ module OrderProducts
 
     private
 
-    def update_inventory
+    def update_inventory!
       Rails.logger.info("Updating Inventory for order_product id #{@order_product.id}")
       ActiveRecord::Base.transaction do
         @order_product.save
@@ -29,7 +29,7 @@ module OrderProducts
         @order_product.product.recipe.ingredient_recipes.each do |ingredient_recipe|
           ingredient_recipe.ingredient.update!(
             stored_quantity: ingredient_recipe.ingredient.stored_quantity -
-              ingredient_recipe.required_quantity
+                             ingredient_recipe.required_quantity
           )
           @inventory_transactions_params << {
             ingredient_id: ingredient_recipe.ingredient_id,

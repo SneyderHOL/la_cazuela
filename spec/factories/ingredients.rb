@@ -3,6 +3,7 @@ FactoryBot.define do
     name { Faker::Food.ingredient }
     unit  { Faker::Number.between(from: 0, to: 2) }
     stored_quantity { 10_0000 }
+    ingredient_type { 'regular' }
 
     trait :with_ml_unit do
       unit { :ml }
@@ -26,6 +27,25 @@ FactoryBot.define do
 
     trait :scarce do
       status { 'scarce' }
+    end
+
+    trait :with_base_type do
+      ingredient_type { 'base' }
+    end
+
+    trait :with_base_type_and_recipe do
+      ingredient_type { 'base' }
+      transient do
+        trait_ingredient_recipe_amount { 5 }
+      end
+      after :create do |ingredient, evaluator|
+        create(
+          :recipe,
+          :with_ingredient,
+          ingredient: ingredient,
+          trait_ingredient_recipe_amount: evaluator.trait_ingredient_recipe_amount
+        )
+      end
     end
   end
 end

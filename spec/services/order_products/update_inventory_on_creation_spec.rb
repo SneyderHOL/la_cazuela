@@ -1,21 +1,12 @@
 require 'rails_helper'
 
-RSpec.shared_examples "calls the CreateInventoryTransactionsJob" do
-  it { expect(CreateInventoryTransactionsJob).to have_received(:perform_later) }
-end
-
-RSpec.shared_examples "not call the CreateInventoryTransactionsJob" do
-  it { expect(CreateInventoryTransactionsJob).not_to have_received(:perform_later) }
-end
-
 RSpec.describe OrderProducts::UpdateInventoryOnCreation, type: :service do
   subject(:update_inventory_transaction_on_create) { described_class.new(order_product) }
 
   describe '#call' do
     let(:order_product) { build(:order_product, :with_order, product: product) }
     let(:product) { create(:product) }
-
-    let(:recipe) { create(:recipe, product: product) }
+    let(:recipe) { create(:recipe, :as_approved, product: product) }
     let(:ingredient_recipe) do
       create(:ingredient_recipe, required_quantity: 5,
         ingredient: ingredient, recipe: recipe

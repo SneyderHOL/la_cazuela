@@ -37,7 +37,7 @@ RSpec.describe OrderProduct, type: :model do
       let(:order_product) { build(:order_product, :with_order, product: product) }
       let(:product) { create(:product) }
       let(:ingredient) { create(:ingredient, stored_quantity: 10) }
-      let(:recipe) { create(:recipe, product: product) }
+      let(:recipe) { create(:recipe, :as_approved, product: product) }
       let(:ingredient_recipe) do
         create(:ingredient_recipe, required_quantity: 11,
           ingredient: ingredient, recipe: recipe)

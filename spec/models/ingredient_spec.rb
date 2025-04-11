@@ -24,6 +24,7 @@ RSpec.describe Ingredient, type: :model do
   end
 
   describe 'associations' do
+    it { is_expected.to have_one(:recipe) }
     it { is_expected.to have_many(:recipes).through(:ingredient_recipes) }
     it { is_expected.to have_many(:ingredient_recipes) }
   end
@@ -85,6 +86,18 @@ RSpec.describe Ingredient, type: :model do
         expect { ingredient.running_out }.to change(
           ingredient, :status).from("available").to("scarce")
       end
+    end
+  end
+
+  describe "#base_type?" do
+    context "with ingredient_type as regular" do
+      it { expect(ingredient).not_to be_base_type }
+    end
+
+    context "with ingredient_type as base" do
+      before { ingredient.ingredient_type = "base" }
+
+      it { expect(ingredient).to be_base_type }
     end
   end
 end

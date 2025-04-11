@@ -56,15 +56,15 @@ RSpec.describe InventoryTransaction, type: :model do
     let(:ingredient_stored_quantity) { 100 }
     let(:inventory_transaction_quantity) { 10 }
     let(:kind) { :addition }
-    let(:ingredient) do
-      create(:ingredient, stored_quantity: ingredient_stored_quantity)
-    end
+    let(:ingredient) { create(:ingredient, stored_quantity: ingredient_stored_quantity) }
     let(:transaction) do
       create(:inventory_transaction, ingredient: ingredient,
         quantity: inventory_transaction_quantity, kind: kind)
     end
 
-    context "when inventory_transaction is of type addition" do
+    before { allow(CreateInventoryTransactionsJob).to receive(:perform_later) }
+
+    context "when inventory_transaction is of type addition and ingredient is regular" do
       before do
         transaction.apply!
         ingredient.reload
@@ -72,9 +72,32 @@ RSpec.describe InventoryTransaction, type: :model do
 
       it { expect(ingredient.stored_quantity).to be(110) }
       it { expect(transaction).to be_completed }
+
+      it_behaves_like "not call the CreateInventoryTransactionsJob"
     end
 
-    context "when inventory_transaction is of type substraction" do
+    context "when inventory_transaction is of type addition and ingredient is base" do
+      let(:ingredient) do
+        create(
+          :ingredient,
+          :with_base_type_and_recipe,
+          stored_quantity: ingredient_stored_quantity,
+          trait_ingredient_recipe_amount: 2
+        )
+      end
+
+      before do
+        transaction.apply!
+        ingredient.reload
+      end
+
+      it { expect(ingredient.stored_quantity).to be(110) }
+      it { expect(transaction).to be_completed }
+
+      it_behaves_like "calls the CreateInventoryTransactionsJob"
+    end
+
+    context "when inventory_transaction is of type substraction and ingredient is regular" do
       let(:kind) { :substraction }
 
       before do
@@ -84,9 +107,33 @@ RSpec.describe InventoryTransaction, type: :model do
 
       it { expect(ingredient.stored_quantity).to be(90) }
       it { expect(transaction).to be_completed }
+
+      it_behaves_like "not call the CreateInventoryTransactionsJob"
     end
 
-    context "when inventory_transaction has status completed" do
+    context "when inventory_transaction is of type substraction and ingredient is base" do
+      let(:ingredient) do
+        create(
+          :ingredient,
+          :with_base_type_and_recipe,
+          stored_quantity: ingredient_stored_quantity,
+          trait_ingredient_recipe_amount: 2
+        )
+      end
+      let(:kind) { :substraction }
+
+      before do
+        transaction.apply!
+        ingredient.reload
+      end
+
+      it { expect(ingredient.stored_quantity).to be(90) }
+      it { expect(transaction).to be_completed }
+
+      it_behaves_like "calls the CreateInventoryTransactionsJob"
+    end
+
+    context "when inventory_transaction has status completed and ingredient is regular" do
       before { transaction.complete! }
 
       it "raises an error" do
@@ -94,6 +141,68 @@ RSpec.describe InventoryTransaction, type: :model do
           InventoryTransaction::InvalidTransactionStatusError, "the transaction was already completed"
         )
       end
+
+      it_behaves_like "not call the CreateInventoryTransactionsJob"
+    end
+
+    context "when there is insufficient stock on associated ingredient" do
+      before do
+        allow(transaction.ingredient)
+        .to receive(:update!) { raise ActiveRecord::RecordInvalid }
+      end
+
+      it "raises an error" do
+        expect { transaction.apply! }.to raise_error(
+          InventoryTransaction::InsufficientStockError, "Insufficient stock. Error: Record invalid"
+        )
+      end
+
+      it_behaves_like "not call the CreateInventoryTransactionsJob"
+    end
+
+    # rubocop:disable RSpec/MultipleMemoizedHelpers
+    # rubocop:disable RSpec/AnyInstance
+    context "when there is insufficient stock if associated ingredient is a base ingredient" do
+      let(:error_message) do
+        "Validation failed: Stored quantity must be greater than or equal to 0 for "\
+        "ingredient Sugar"
+      end
+
+      before do
+        allow_any_instance_of(Ingredients::UpdateInventoryForBaseIngredients)
+        .to receive(:call) { raise InventoryTransaction::InsufficientBaseStockError, error_message }
+      end
+
+      it "raises an error" do
+        expect { transaction.apply! }.to raise_error(
+          InventoryTransaction::InsufficientStockError, "Insufficient stock. Error: #{error_message}"
+        )
+      end
+
+      it_behaves_like "not call the CreateInventoryTransactionsJob"
+    end
+    # rubocop:enable RSpec/AnyInstance
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+    context "when inventory_transaction has status completed and ingredient is base" do
+      let(:ingredient) do
+        create(
+          :ingredient,
+          :with_base_type_and_recipe,
+          stored_quantity: ingredient_stored_quantity,
+          trait_ingredient_recipe_amount: 2
+        )
+      end
+
+      before { transaction.complete! }
+
+      it "raises an error" do
+        expect { transaction.apply! }.to raise_error(
+          InventoryTransaction::InvalidTransactionStatusError, "the transaction was already completed"
+        )
+      end
+
+      it_behaves_like "not call the CreateInventoryTransactionsJob"
     end
   end
 end

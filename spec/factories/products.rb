@@ -37,7 +37,7 @@ FactoryBot.define do
         trait_ingredient_recipe_amount { 5 }
       end
       after :create do |product, evaluator|
-        recipe = create(:recipe, product: product)
+        recipe = create(:recipe, :as_approved, product: product)
         create_list :ingredient_recipe, evaluator.trait_ingredient_recipe_amount, :with_ingredient, recipe: recipe
       end
     end

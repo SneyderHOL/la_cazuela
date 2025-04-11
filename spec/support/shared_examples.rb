@@ -5,3 +5,11 @@ RSpec.shared_examples "job enqueued for resource" do
 
   it { expect { execute_job }.to have_enqueued_job }
 end
+
+RSpec.shared_examples "calls the CreateInventoryTransactionsJob" do
+  it { expect(CreateInventoryTransactionsJob).to have_received(:perform_later) }
+end
+
+RSpec.shared_examples "not call the CreateInventoryTransactionsJob" do
+  it { expect(CreateInventoryTransactionsJob).not_to have_received(:perform_later) }
+end

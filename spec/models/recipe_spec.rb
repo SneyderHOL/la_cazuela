@@ -31,18 +31,80 @@ RSpec.describe Recipe, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:status) }
 
-    describe "with foreign key as unique" do
+    context "with product foreign key as unique" do
       before do
+        recipe.status = "approved"
         recipe.product = create(:product)
         recipe.save
       end
 
       it { is_expected.to validate_uniqueness_of(:product_id).allow_nil }
     end
+
+    context "when recipe is not approved is not valid to associate product" do
+      before { recipe.product = create(:product) }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context "with ingredient foreign key as unique" do
+      before do
+        recipe.status = "approved"
+        recipe.ingredient = create(:ingredient, :with_base_type)
+        recipe.save
+      end
+
+      it { is_expected.to validate_uniqueness_of(:ingredient_id).allow_nil }
+    end
+
+    context "with a regular ingredient foreign key" do
+      before do
+        recipe.status = "approved"
+        recipe.ingredient = create(:ingredient)
+      end
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context "when recipe is not approved is not valid to associate ingredient" do
+      before { recipe.ingredient = create(:ingredient) }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context "with approved recipe and is not valid to associate both product and ingredient" do
+      before do
+        recipe.status = "approved"
+        recipe.ingredient = create(:ingredient)
+        recipe.product = create(:product)
+      end
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context "when the ingredient association is included in the recipe's ingredient list" do
+      let(:base_ingredient) { create(:ingredient, :with_base_type) }
+      let(:recipe_for_base_ingredient) { create(:recipe, :as_approved) }
+      let(:ingredient_recipe) do
+        create(
+          :ingredient_recipe,
+          recipe: recipe_for_base_ingredient,
+          ingredient: base_ingredient
+        )
+      end
+
+      before do
+        ingredient_recipe
+        recipe_for_base_ingredient.ingredient = base_ingredient
+      end
+
+      it { expect(recipe_for_base_ingredient).not_to be_valid }
+    end
   end
 
   describe 'associations' do
     it { is_expected.to belong_to(:product).optional }
+    it { is_expected.to belong_to(:ingredient).optional }
     it { is_expected.to have_many(:ingredients).through(:ingredient_recipes) }
     it { is_expected.to have_many(:ingredient_recipes) }
     it { is_expected.to have_many(:order_products) }
