@@ -66,6 +66,15 @@ RSpec.describe Recipe, type: :model do
       it { is_expected.not_to be_valid }
     end
 
+    context "with a material ingredient foreign key" do
+      before do
+        recipe.status = "approved"
+        recipe.ingredient = create(:ingredient, :with_material_type)
+      end
+
+      it { is_expected.not_to be_valid }
+    end
+
     context "when recipe is not approved is not valid to associate ingredient" do
       before { recipe.ingredient = create(:ingredient) }
 

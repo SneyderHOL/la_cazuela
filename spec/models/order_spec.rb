@@ -146,6 +146,30 @@ RSpec.describe Order, type: :model do
       end
     end
 
+    context "when deliver is executed and the order is processing and has a desk allocation" do
+      before do
+        order.status = 'processing'
+        order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order.deliver }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    context "when deliver is executed and the order is processing and has a delivery allocation" do
+      before do
+        order.status = 'processing'
+        order.save
+        order.allocation.delivery!
+      end
+
+      it "change status" do
+        expect { order.deliver }.to change(
+          order, :status).from("processing").to("delivering")
+      end
+    end
+
     context "when complete is executed and the order is processing and is not persisted" do
       before do
         allow(CompleteOrderProductsJob).to receive(:perform_later)

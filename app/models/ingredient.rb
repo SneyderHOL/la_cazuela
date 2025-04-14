@@ -1,7 +1,7 @@
 class Ingredient < ApplicationRecord
   include IngredientAasm
 
-  VALID_INGREDIENT_TYPES = %w[regular base].freeze
+  VALID_INGREDIENT_TYPES = %w[regular base material].freeze
 
   has_one :recipe
   has_many :ingredient_recipes
@@ -16,6 +16,14 @@ class Ingredient < ApplicationRecord
 
   def base_type?
     ingredient_type == "base"
+  end
+
+  def regular_type?
+    ingredient_type == "regular"
+  end
+
+  def material_type?
+    ingredient_type == "material"
   end
 
   def stock_level

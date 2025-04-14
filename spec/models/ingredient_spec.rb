@@ -111,6 +111,32 @@ RSpec.describe Ingredient, type: :model do
     end
   end
 
+  describe "#regular_type?" do
+    context "with ingredient_type as base" do
+      before { ingredient.ingredient_type = "base" }
+
+      it { expect(ingredient).not_to be_regular_type }
+    end
+
+    context "with ingredient_type as regular" do
+      before { ingredient.ingredient_type = "regular" }
+
+      it { expect(ingredient).to be_regular_type }
+    end
+  end
+
+  describe "#material_type?" do
+    context "with ingredient_type as regular" do
+      it { expect(ingredient).not_to be_material_type }
+    end
+
+    context "with ingredient_type as material" do
+      before { ingredient.ingredient_type = "material" }
+
+      it { expect(ingredient).to be_material_type }
+    end
+  end
+
   describe "#stock_level" do
     context "when is undefined" do
       it { expect(ingredient.low_threshold).to be(0) }

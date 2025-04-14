@@ -13,6 +13,10 @@ class Order < ApplicationRecord
 
   private
 
+  def delivery_allocation?
+    allocation.delivery?
+  end
+
   def prepare_order_products
     return unless persisted?
 

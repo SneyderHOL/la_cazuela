@@ -5,7 +5,7 @@ module OrderAasm
 
     aasm column: "status" do
       state :opened, initial: true
-      state :processing, :completed, :closed
+      state :processing, :delivering, :completed, :closed
 
       event :process do
         after do
@@ -14,11 +14,15 @@ module OrderAasm
         transitions from: :opened, to: :processing
       end
 
+      event :deliver do
+        transitions from: :processing, to: :delivering, guard: :delivery_allocation?
+      end
+
       event :complete do
         after do
           complete_order_products
         end
-        transitions from: :processing, to: :completed
+        transitions from: %i[ processing delivering ], to: :completed
       end
 
       event :close do
@@ -26,7 +30,7 @@ module OrderAasm
           close_suborders
           complete_order_products
         end
-        transitions from: %i[ processing completed ], to: :closed
+        transitions from: %i[ processing delivering completed ], to: :closed
       end
     end
   end

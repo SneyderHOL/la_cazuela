@@ -1,19 +1,19 @@
 FactoryBot.define do
   factory :allocation do
     sequence(:name) { |n| "#{Faker::Lorem.word} #{n}" }
-    kind { Faker::Number.between(from: 0, to: 1) }
+    kind { :desk }
     active { false }
 
     trait :with_active_on do
       active { true }
     end
 
-    trait :desk do
-      kind { 0 }
+    trait :as_desk do
+      kind { :desk }
     end
 
-    trait :delivery do
-      kind { 1 }
+    trait :as_delivery do
+      kind { :delivery }
     end
   end
 end
