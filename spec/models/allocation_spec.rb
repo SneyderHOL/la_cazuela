@@ -17,6 +17,10 @@ RSpec.describe Allocation, type: :model do
     it "status is not nil" do
       expect(allocation.status).not_to be_nil
     end
+
+    it "active is not nil" do
+      expect(allocation.active).not_to be_nil
+    end
   end
 
   describe 'associations' do
@@ -34,6 +38,7 @@ RSpec.describe Allocation, type: :model do
     it { is_expected.to validate_uniqueness_of(:name) }
     it { is_expected.to validate_presence_of(:kind) }
     it { is_expected.to validate_presence_of(:status) }
+    it { is_expected.to validate_exclusion_of(:active).in_array([ nil ]) }
   end
 
   describe "status transitions" do
@@ -71,6 +76,39 @@ RSpec.describe Allocation, type: :model do
         expect { allocation.free }.to change(
           allocation, :status).from("on_hold").to("available")
       end
+    end
+  end
+
+  describe "scopes" do
+    describe "#active" do
+      let(:inactive_allocations) { create_list(:allocation, 3) }
+      let(:active_allocations) { create_list(:allocation, 2, :with_active_on) }
+      let(:allocations) { described_class.active }
+
+      before do
+        inactive_allocations
+        active_allocations
+      end
+
+      it { expect(allocations.count).to be(2) }
+      it { expect(allocations.first).to eql(active_allocations.first) }
+      it { expect(allocations.last).to eql(active_allocations.last) }
+    end
+
+    describe "#inactive" do
+      let(:inactive_allocations) { create_list(:allocation, 3) }
+      let(:active_allocations) { create_list(:allocation, 2, :with_active_on) }
+      let(:allocations) { described_class.inactive }
+
+      before do
+        inactive_allocations
+        active_allocations
+      end
+
+      it { expect(allocations.count).to be(3) }
+      it { expect(allocations.first).to eql(inactive_allocations.first) }
+      it { expect(allocations.second).to eql(inactive_allocations.second) }
+      it { expect(allocations.last).to eql(inactive_allocations.last) }
     end
   end
 end
