@@ -10,5 +10,9 @@ FactoryBot.define do
     trait :with_active_on do
       active { true }
     end
+
+    trait :with_admin_role do
+      role { :admin }
+    end
   end
 end

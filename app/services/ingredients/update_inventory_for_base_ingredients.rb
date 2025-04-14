@@ -12,7 +12,7 @@ module Ingredients
     end
 
     def call
-      return unless @base_ingredient.base_type? && @base_ingredient.recipe && VALID_KIND_VALUES.include?(@kind)
+      return unless @base_ingredient.base? && @base_ingredient.recipe && VALID_KIND_VALUES.include?(@kind)
 
       update_inventory!
     end

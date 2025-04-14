@@ -36,7 +36,7 @@ class Recipe < ApplicationRecord
   end
 
   def ingredient_with_correct_type
-    return unless ingredient && (ingredient.regular_type? || ingredient.material_type?)
+    return unless ingredient && (ingredient.regular? || ingredient.material?)
 
     errors.add(:ingredient, "is not a base type")
   end

@@ -3,7 +3,7 @@ FactoryBot.define do
     name { Faker::Food.ingredient }
     unit  { :mg }
     stored_quantity { 10_0000 }
-    ingredient_type { 'regular' }
+    ingredient_type { :regular }
     low_threshold { 0 }
     high_threshold { 0 }
 
@@ -32,11 +32,11 @@ FactoryBot.define do
     end
 
     trait :with_base_type do
-      ingredient_type { 'base' }
+      ingredient_type { :base }
     end
 
     trait :with_material_type do
-      ingredient_type { 'material' }
+      ingredient_type { :material }
     end
 
     trait :with_base_type_and_recipe do

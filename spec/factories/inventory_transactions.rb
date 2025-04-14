@@ -15,5 +15,13 @@ FactoryBot.define do
     trait :with_ingredient do
       association :ingredient
     end
+
+    trait :as_addition do
+      kind { :addition }
+    end
+
+    trait :as_substraction do
+      kind { :substraction }
+    end
   end
 end

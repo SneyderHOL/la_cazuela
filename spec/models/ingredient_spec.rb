@@ -14,6 +14,10 @@ RSpec.describe Ingredient, type: :model do
       expect(ingredient.unit).not_to be_nil
     end
 
+    it "ingredient_type is not nil" do
+      expect(ingredient.ingredient_type).not_to be_nil
+    end
+
     it "stored_quantity is not nil" do
       expect(ingredient.stored_quantity).not_to be_nil
     end
@@ -44,9 +48,16 @@ RSpec.describe Ingredient, type: :model do
       }).backed_by_column_of_type(:integer)
     end
 
+    it do
+      expect(ingredient).to define_enum_for(:ingredient_type).with_values({
+        regular: "regular", base: "base", material: "material"
+      }).backed_by_column_of_type(:string)
+    end
+
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:unit) }
     it { is_expected.to validate_presence_of(:status) }
+    it { is_expected.to validate_presence_of(:ingredient_type) }
     it { is_expected.to validate_numericality_of(:stored_quantity).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:low_threshold).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:high_threshold).is_greater_than_or_equal_to(0) }
@@ -96,44 +107,6 @@ RSpec.describe Ingredient, type: :model do
         expect { ingredient.running_out }.to change(
           ingredient, :status).from("available").to("scarce")
       end
-    end
-  end
-
-  describe "#base_type?" do
-    context "with ingredient_type as regular" do
-      it { expect(ingredient).not_to be_base_type }
-    end
-
-    context "with ingredient_type as base" do
-      before { ingredient.ingredient_type = "base" }
-
-      it { expect(ingredient).to be_base_type }
-    end
-  end
-
-  describe "#regular_type?" do
-    context "with ingredient_type as base" do
-      before { ingredient.ingredient_type = "base" }
-
-      it { expect(ingredient).not_to be_regular_type }
-    end
-
-    context "with ingredient_type as regular" do
-      before { ingredient.ingredient_type = "regular" }
-
-      it { expect(ingredient).to be_regular_type }
-    end
-  end
-
-  describe "#material_type?" do
-    context "with ingredient_type as regular" do
-      it { expect(ingredient).not_to be_material_type }
-    end
-
-    context "with ingredient_type as material" do
-      before { ingredient.ingredient_type = "material" }
-
-      it { expect(ingredient).to be_material_type }
     end
   end
 
