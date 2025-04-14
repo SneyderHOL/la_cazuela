@@ -3,6 +3,7 @@ FactoryBot.define do
     name { Faker::Food.dish }
     kind { Faker::Number.between(from: 0, to: 5) }
     active { false }
+    price { Faker::Number.between(from: 1_000, to: 50_000) }
 
     trait :with_active_on do
       active { true }
