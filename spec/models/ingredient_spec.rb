@@ -21,6 +21,14 @@ RSpec.describe Ingredient, type: :model do
     it "status is not nil" do
       expect(ingredient.status).not_to be_nil
     end
+
+    it "low_threshold is not nil" do
+      expect(ingredient.low_threshold).not_to be_nil
+    end
+
+    it "high_threshold is not nil" do
+      expect(ingredient.high_threshold).not_to be_nil
+    end
   end
 
   describe 'associations' do
@@ -40,6 +48,8 @@ RSpec.describe Ingredient, type: :model do
     it { is_expected.to validate_presence_of(:unit) }
     it { is_expected.to validate_presence_of(:status) }
     it { is_expected.to validate_numericality_of(:stored_quantity).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:low_threshold).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:high_threshold).is_greater_than_or_equal_to(0) }
   end
 
   describe "status transitions" do
@@ -98,6 +108,54 @@ RSpec.describe Ingredient, type: :model do
       before { ingredient.ingredient_type = "base" }
 
       it { expect(ingredient).to be_base_type }
+    end
+  end
+
+  describe "#stock_level" do
+    context "when is undefined" do
+      it { expect(ingredient.low_threshold).to be(0) }
+      it { expect(ingredient.high_threshold).to be(0) }
+      it { expect(ingredient.stock_level).to eql("undefined") }
+    end
+
+    context "when is empty" do
+      before do
+        ingredient.stored_quantity = 0
+        ingredient.low_threshold = 100
+        ingredient.high_threshold = 300
+      end
+
+      it { expect(ingredient.stock_level).to eql("empty") }
+    end
+
+    context "when is low" do
+      before do
+        ingredient.stored_quantity = 50
+        ingredient.low_threshold = 100
+        ingredient.high_threshold = 300
+      end
+
+      it { expect(ingredient.stock_level).to eql("low") }
+    end
+
+    context "when is medium" do
+      before do
+        ingredient.stored_quantity = 150
+        ingredient.low_threshold = 100
+        ingredient.high_threshold = 300
+      end
+
+      it { expect(ingredient.stock_level).to eql("medium") }
+    end
+
+    context "when is high" do
+      before do
+        ingredient.stored_quantity = 350
+        ingredient.low_threshold = 100
+        ingredient.high_threshold = 300
+      end
+
+      it { expect(ingredient.stock_level).to eql("high") }
     end
   end
 end

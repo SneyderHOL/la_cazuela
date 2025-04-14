@@ -4,6 +4,8 @@ FactoryBot.define do
     unit  { Faker::Number.between(from: 0, to: 2) }
     stored_quantity { 10_0000 }
     ingredient_type { 'regular' }
+    low_threshold { 0 }
+    high_threshold { 0 }
 
     trait :with_ml_unit do
       unit { :ml }
