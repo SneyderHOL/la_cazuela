@@ -20,7 +20,7 @@ class Recipe < ApplicationRecord
   private
 
   def approved_recipe_for_associations
-    return unless (product_id || ingredient_id) && declined?
+    return unless (product_id || ingredient_id) && !approved?
 
     errors.add(:base, :invalid, message: "This Recipe has not been approved")
   end

@@ -4,15 +4,19 @@ module RecipeAasm
     include AASM
 
     aasm column: "status" do
-      state :declined, initial: true
-      state :approved
+      state :drafting, initial: true
+      state :declined, :approved
 
       event :approve do
-        transitions from: :declined, to: :approved
+        transitions from: %i[ drafting declined ], to: :approved
       end
 
       event :decline do
-        transitions from: :approved, to: :declined
+        transitions from: %i[ drafting approved ], to: :declined
+      end
+
+      event :draft do
+        transitions from: :declined, to: :drafting
       end
     end
   end

@@ -120,6 +120,33 @@ RSpec.describe Recipe, type: :model do
   end
 
   describe "status transitions" do
+    describe 'when approve is executed with drafting' do
+      before { recipe.status = 'drafting' }
+
+      it do
+        expect { recipe.approve }.to change(
+          recipe, :status).from("drafting").to("approved")
+      end
+    end
+
+    describe 'when decline is executed with drafting' do
+      before { recipe.status = 'drafting' }
+
+      it do
+        expect { recipe.decline }.to change(
+          recipe, :status).from("drafting").to("declined")
+      end
+    end
+
+    describe 'when draft is executed with declined' do
+      before { recipe.status = 'declined' }
+
+      it do
+        expect { recipe.draft }.to change(
+          recipe, :status).from("declined").to("drafting")
+      end
+    end
+
     describe 'when approve is executed with declined' do
       before { recipe.status = 'declined' }
 
