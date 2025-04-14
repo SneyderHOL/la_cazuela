@@ -32,4 +32,9 @@ RSpec.describe Product, type: :model do
     it { is_expected.to validate_presence_of(:kind) }
     it { is_expected.to validate_exclusion_of(:active).in_array([ nil ]) }
   end
+
+  describe "scopes" do
+    it_behaves_like "active scoping", :product
+    it_behaves_like "inactive scoping", :product
+  end
 end

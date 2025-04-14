@@ -1,4 +1,6 @@
 class Product < ApplicationRecord
+  include ActiveScopeable
+
   has_one :recipe
   has_many :order_products
   has_many :orders, through: :order_products

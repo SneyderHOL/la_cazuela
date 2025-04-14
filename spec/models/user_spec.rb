@@ -50,4 +50,9 @@ RSpec.describe User, type: :model do
       it { is_expected.to allow_value("test@test.com").for(:email) }
     end
   end
+
+  describe "scopes" do
+    it_behaves_like "active scoping", :user
+    it_behaves_like "inactive scoping", :user
+  end
 end

@@ -4,7 +4,7 @@ FactoryBot.define do
     kind { Faker::Number.between(from: 0, to: 5) }
     active { false }
 
-    trait :is_active do
+    trait :with_active_on do
       active { true }
     end
 

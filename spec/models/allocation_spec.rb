@@ -80,35 +80,7 @@ RSpec.describe Allocation, type: :model do
   end
 
   describe "scopes" do
-    describe "#active" do
-      let(:inactive_allocations) { create_list(:allocation, 3) }
-      let(:active_allocations) { create_list(:allocation, 2, :with_active_on) }
-      let(:allocations) { described_class.active }
-
-      before do
-        inactive_allocations
-        active_allocations
-      end
-
-      it { expect(allocations.count).to be(2) }
-      it { expect(allocations.first).to eql(active_allocations.first) }
-      it { expect(allocations.last).to eql(active_allocations.last) }
-    end
-
-    describe "#inactive" do
-      let(:inactive_allocations) { create_list(:allocation, 3) }
-      let(:active_allocations) { create_list(:allocation, 2, :with_active_on) }
-      let(:allocations) { described_class.inactive }
-
-      before do
-        inactive_allocations
-        active_allocations
-      end
-
-      it { expect(allocations.count).to be(3) }
-      it { expect(allocations.first).to eql(inactive_allocations.first) }
-      it { expect(allocations.second).to eql(inactive_allocations.second) }
-      it { expect(allocations.last).to eql(inactive_allocations.last) }
-    end
+    it_behaves_like "active scoping", :allocation
+    it_behaves_like "inactive scoping", :allocation
   end
 end
