@@ -22,7 +22,7 @@ class OrderProduct < ApplicationRecord
       break if error_msg
 
       remaining_quantity = ingredient_recipe.ingredient.stored_quantity -
-        ingredient_recipe.required_quantity
+                           (ingredient_recipe.required_quantity * quantity)
 
       next if remaining_quantity.zero? || remaining_quantity.positive?
 

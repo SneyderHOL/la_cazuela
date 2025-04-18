@@ -14,32 +14,23 @@ RSpec.describe CreateInventoryTransactionsJob, type: :job do
   end
 
   describe "#perform_now" do
-    subject(:create_inventory_transaction_job) { described_class.perform_now(resource) }
+    subject(:create_inventory_transactions_job) { described_class.perform_now(resource) }
 
-    context "when creates the inventory transactions" do
-      let(:inventory_transaction) { InventoryTransaction.first }
-
-      it { expect { create_inventory_transaction_job }.to change(InventoryTransaction, :count) }
-
-      it "create the record" do
-        create_inventory_transaction_job
-        expect(inventory_transaction.ingredient).to eql(ingredient)
+    context "when enqueues the inventory transaction for creation" do
+      before do
+        ActiveJob::Base.queue_adapter = :test
       end
 
-      it "match the kind param" do
-        create_inventory_transaction_job
-        expect(inventory_transaction.kind).to eql(transaction_param[:kind].to_s)
+      it { expect { create_inventory_transactions_job }.to have_enqueued_job }
+    end
+
+    context "when CreateInventoryTransactionJob is called" do
+      before do
+        allow(CreateInventoryTransactionJob).to receive(:perform_later).with(transaction_param)
+        create_inventory_transactions_job
       end
 
-      it "match the status param" do
-        create_inventory_transaction_job
-        expect(inventory_transaction.status).to eql(transaction_param[:status])
-      end
-
-      it "match the quantity param" do
-        create_inventory_transaction_job
-        expect(inventory_transaction.quantity).to eql(transaction_param[:quantity])
-      end
+      it { expect(CreateInventoryTransactionJob).to have_received(:perform_later).once }
     end
   end
 end

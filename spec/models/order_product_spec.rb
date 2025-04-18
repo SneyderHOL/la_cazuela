@@ -30,18 +30,20 @@ RSpec.describe OrderProduct, type: :model do
   end
 
   describe "validations" do
+    let(:recipe) { create(:recipe, :as_approved, product: create(:product)) }
+    let(:ingredient_recipe) do
+      create(:ingredient_recipe, required_quantity: 11,
+        ingredient: ingredient, recipe: recipe)
+    end
+
     it { is_expected.to validate_presence_of(:status) }
     it { is_expected.to validate_numericality_of(:quantity).is_greater_than(0) }
 
-    describe "ingredient_availability on create" do
-      let(:order_product) { build(:order_product, :with_order, product: product) }
-      let(:product) { create(:product) }
-      let(:ingredient) { create(:ingredient, stored_quantity: 10) }
-      let(:recipe) { create(:recipe, :as_approved, product: product) }
-      let(:ingredient_recipe) do
-        create(:ingredient_recipe, required_quantity: 11,
-          ingredient: ingredient, recipe: recipe)
+    describe "ingredient_availability on create when quantity is 1 is invalid" do
+      let(:order_product) do
+        build(:order_product, :with_order, product: recipe.product, quantity: 1)
       end
+      let(:ingredient) { create(:ingredient, stored_quantity: 10) }
 
       before do
         ingredient_recipe
@@ -69,6 +71,35 @@ RSpec.describe OrderProduct, type: :model do
         expect(order_product.errors.full_messages).to include(
           "Product is insufficient in #{ingredient.name}"
         )
+      end
+    end
+
+    describe "ingredient_availability on create when quantity is 1 is valid" do
+      let(:order_product) do
+        build(:order_product, :with_order, product: recipe.product, quantity: 2)
+      end
+      let(:ingredient) { create(:ingredient, stored_quantity: 22) }
+
+      before do
+        ingredient_recipe
+        order_product.save
+        ingredient.reload
+      end
+
+      it "does not updates the stored_quantity to the related ingredient" do
+        expect(ingredient.stored_quantity).to be(22)
+      end
+
+      it "does not save the order product object" do
+        expect(order_product).to be_persisted
+      end
+
+      it "is invalid" do
+        expect(order_product).to be_valid
+      end
+
+      it "does not have errors" do
+        expect(order_product.errors).to be_empty
       end
     end
   end

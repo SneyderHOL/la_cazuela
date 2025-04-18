@@ -89,7 +89,7 @@ beverage_product_attribute_list = []
 entry_product_attribute_list = []
 dessert_product_attribute_list = [
   { name: "Big Dessert", kind: 4, active: false, price: 10000 },
-  { name: "Medium Dessert", kind: 4, active: false, price: 7000 },
+  { name: "Medium Dessert", kind: 4, active: false, price: 7000 }
 ]
 aside_product_attribute_list = []
 packing_product_attribute_list = [

@@ -4,6 +4,6 @@ class CreateInventoryTransactionsJob < ApplicationJob
   def perform(params_data)
     return unless params_data.present?
 
-    params_data.each { |params| InventoryTransaction.create!(params) }
+    params_data.each { |params| CreateInventoryTransactionJob.perform_later(params) }
   end
 end
