@@ -38,6 +38,13 @@ class Order < ApplicationRecord
     CloseSubordersJob.perform_later(self)
   end
 
+  def create_bill
+    return unless persisted? && parent_id.nil?
+
+    Rails.logger.info "Calling CreateBillJob for order_id #{id}"
+    CreateBillJob.perform_later(self)
+  end
+
   def parent_status_cannot_be_closed
     return unless parent&.closed?
 

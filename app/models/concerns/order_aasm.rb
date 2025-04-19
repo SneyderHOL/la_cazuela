@@ -29,6 +29,7 @@ module OrderAasm
         after do
           close_suborders
           complete_order_products
+          create_bill
         end
         transitions from: %i[ processing delivering completed ], to: :closed
       end
