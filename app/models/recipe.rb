@@ -10,6 +10,7 @@ class Recipe < ApplicationRecord
   has_many :order_products
 
   validates :name, :status, presence: true
+  validates :name, uniqueness: true
   validate :approved_recipe_for_associations
   validate :it_belongs_only_to_one_association
   validate :ingredient_with_correct_type

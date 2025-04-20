@@ -55,6 +55,7 @@ RSpec.describe Ingredient, type: :model do
     end
 
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name) }
     it { is_expected.to validate_presence_of(:unit) }
     it { is_expected.to validate_presence_of(:status) }
     it { is_expected.to validate_presence_of(:ingredient_type) }

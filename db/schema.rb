@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_19_032125) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_20_153219) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_19_032125) do
     t.boolean "active", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_allocations_on_name", unique: true
   end
 
   create_table "bills", force: :cascade do |t|
@@ -53,6 +54,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_19_032125) do
     t.string "ingredient_type", default: "regular", null: false
     t.integer "low_threshold", default: 0, null: false
     t.integer "high_threshold", default: 0, null: false
+    t.index ["name"], name: "index_ingredients_on_name", unique: true
   end
 
   create_table "inventory_transactions", force: :cascade do |t|
@@ -98,6 +100,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_19_032125) do
     t.datetime "updated_at", null: false
     t.integer "price", null: false
     t.string "detail"
+    t.index ["name"], name: "index_products_on_name", unique: true
   end
 
   create_table "recipes", force: :cascade do |t|
@@ -108,6 +111,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_19_032125) do
     t.bigint "product_id"
     t.bigint "ingredient_id"
     t.index ["ingredient_id"], name: "index_recipes_on_ingredient_id", unique: true
+    t.index ["name"], name: "index_recipes_on_name", unique: true
     t.index ["product_id"], name: "index_recipes_on_product_id", unique: true
   end
 

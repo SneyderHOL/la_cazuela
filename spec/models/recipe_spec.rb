@@ -29,6 +29,7 @@ RSpec.describe Recipe, type: :model do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name) }
     it { is_expected.to validate_presence_of(:status) }
 
     context "with product foreign key as unique" do

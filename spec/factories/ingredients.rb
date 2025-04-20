@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :ingredient do
-    name { Faker::Food.ingredient }
+    sequence(:name) { |n| "#{Faker::Food.ingredient} #{n}" }
     unit  { :mg }
     stored_quantity { 10_0000 }
     ingredient_type { :regular }

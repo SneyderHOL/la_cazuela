@@ -11,6 +11,7 @@ class Ingredient < ApplicationRecord
   enum :ingredient_type, { regular: "regular", base: "base", material: "material" }, default: :regular
 
   validates :name, :unit, :status, :ingredient_type, presence: true
+  validates :name, uniqueness: true
   validates :stored_quantity, :low_threshold, :high_threshold,
             numericality: { greater_than_or_equal_to: 0 }
 

@@ -37,6 +37,7 @@ RSpec.describe Product, type: :model do
     end
 
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name) }
     it { is_expected.to validate_presence_of(:kind) }
     it { is_expected.to validate_exclusion_of(:active).in_array([ nil ]) }
     it { is_expected.to validate_numericality_of(:price).is_greater_than_or_equal_to(0) }

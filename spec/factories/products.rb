@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :product do
-    name { Faker::Food.dish }
+    sequence(:name) { |n| "#{Faker::Food.dish} #{n}" }
     kind { Faker::Number.between(from: 0, to: 5) }
     active { false }
     price { Faker::Number.between(from: 1_000, to: 50_000) }
