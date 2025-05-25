@@ -3,8 +3,9 @@ class Ingredient < ApplicationRecord
 
   VALID_INGREDIENT_TYPES = %w[regular base material].freeze
 
-  has_one :recipe
-  has_many :ingredient_recipes
+  # For base ingredients only
+  has_one :recipe, dependent: :restrict_with_error
+  has_many :ingredient_recipes, dependent: :restrict_with_error
   has_many :recipes, through: :ingredient_recipes
 
   enum :unit, { ml: 0, mg: 1, one: 2 }

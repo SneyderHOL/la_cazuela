@@ -24,9 +24,9 @@ RSpec.describe Product, type: :model do
   end
 
   describe 'associations' do
-    it { is_expected.to have_one(:recipe) }
+    it { is_expected.to have_one(:recipe).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:orders).through(:order_products) }
-    it { is_expected.to have_many(:order_products) }
+    it { is_expected.to have_many(:order_products).dependent(:restrict_with_error) }
   end
 
   describe "validations" do

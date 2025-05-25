@@ -4,12 +4,14 @@ class Order < ApplicationRecord
   belongs_to :allocation
   belongs_to :parent, class_name: "Order", optional: true
   has_many :suborders, class_name: "Order", foreign_key: "parent_id"
-  has_many :order_products
+  has_many :order_products, dependent: :destroy
   has_many :products, through: :order_products
 
   validates :status, presence: true
   validate :parent_status_cannot_be_closed, on: :create
   validate :parent_assignation
+
+  before_destroy :check_status
 
   private
 
@@ -55,5 +57,11 @@ class Order < ApplicationRecord
     return unless parent&.parent_id
 
     errors.add(:parent, "cannot be a suborder")
+  end
+
+  def check_status
+    return if opened?
+
+    throw :abort
   end
 end

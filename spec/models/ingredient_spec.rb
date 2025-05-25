@@ -36,9 +36,9 @@ RSpec.describe Ingredient, type: :model do
   end
 
   describe 'associations' do
-    it { is_expected.to have_one(:recipe) }
+    it { is_expected.to have_one(:recipe).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:recipes).through(:ingredient_recipes) }
-    it { is_expected.to have_many(:ingredient_recipes) }
+    it { is_expected.to have_many(:ingredient_recipes).dependent(:restrict_with_error) }
   end
 
   describe "validations" do
