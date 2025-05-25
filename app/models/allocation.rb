@@ -2,7 +2,7 @@ class Allocation < ApplicationRecord
   include AllocationAasm
   include ActiveScopeable
 
-  has_many :orders
+  has_many :orders, dependent: :restrict_with_error
 
   enum :kind, { desk: 0, delivery: 1 }
 

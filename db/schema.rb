@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_20_153219) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_16_220226) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,6 +65,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_153219) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "error_message"
+    t.boolean "by_admin", default: false, null: false
     t.index ["ingredient_id"], name: "index_inventory_transactions_on_ingredient_id"
   end
 

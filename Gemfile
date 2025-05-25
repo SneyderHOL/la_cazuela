@@ -43,6 +43,8 @@ gem "aasm"
 
 gem "devise", "~> 4.9"
 
+gem "pundit", "~> 2.5"
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
@@ -65,6 +67,7 @@ group :development, :test do
 
   # Test library
   gem "rspec-rails"
+  gem "pundit-matchers", "~> 4.0"
 end
 
 group :development do

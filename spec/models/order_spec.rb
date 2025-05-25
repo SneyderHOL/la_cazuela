@@ -281,4 +281,108 @@ RSpec.describe Order, type: :model do
       end
     end
   end
+
+  describe "#before_destroy callback" do
+    context "when the order does not have order_products association and is opened" do
+      before { order.save }
+
+      it { expect { order.destroy }.to change(described_class, :count).by(-1) }
+    end
+
+    context "when the order does have order_products associations and is opened" do
+      let(:order_with_order_products) do
+        create(:order, :with_allocation, :with_products, trait_amount: 2)
+      end
+
+      before { order_with_order_products }
+
+      it { expect { order_with_order_products.destroy }.to change(described_class, :count).by(-1) }
+      it { expect { order_with_order_products.destroy }.to change(OrderProduct, :count).by(-2) }
+    end
+
+    context "when the suborder does not have order_products associations and is opened" do
+      before { suborder }
+
+      it { expect { suborder.destroy }.to change(described_class, :count).by(-1) }
+    end
+
+    context "when the suborder does have order_products associations and is opened" do
+      let(:suborder_with_order_products) do
+        create(:suborder, :with_allocation, :with_products, trait_amount: 2)
+      end
+
+      before { suborder_with_order_products }
+
+      it { expect { suborder_with_order_products.destroy }.to change(described_class, :count).by(-1) }
+      it { expect { suborder_with_order_products.destroy }.to change(OrderProduct, :count).by(-2) }
+    end
+
+    context "when the order is processing" do
+      before do
+        order.status = "processing"
+        order.save
+      end
+
+      it { expect { order.destroy }.not_to change(described_class, :count) }
+    end
+
+    context "when the order is delivering" do
+      before do
+        order.status = "delivering"
+        order.save
+      end
+
+      it { expect { order.destroy }.not_to change(described_class, :count) }
+    end
+
+    context "when the order is completed" do
+      before do
+        order.status = "completed"
+        order.save
+      end
+
+      it { expect { order.destroy }.not_to change(described_class, :count) }
+    end
+
+    context "when the order is closed" do
+      before do
+        order.status = "closed"
+        order.save
+      end
+
+      it { expect { order.destroy }.not_to change(described_class, :count) }
+    end
+
+    context "when the suborder is processing" do
+      before do
+        suborder.update(status: "processing")
+      end
+
+      it { expect { suborder.destroy }.not_to change(described_class, :count) }
+    end
+
+    context "when the suborder is delivering" do
+      before do
+        suborder.update(status: "delivering")
+      end
+
+      it { expect { suborder.destroy }.not_to change(described_class, :count) }
+    end
+
+    context "when the suborder is completed" do
+      before do
+        suborder.update(status: "completed")
+      end
+
+      it { expect { suborder.destroy }.not_to change(described_class, :count) }
+    end
+
+    context "when the suborder is closed" do
+      before do
+        suborder.update(status: "closed")
+      end
+
+      it { expect { suborder.destroy }.not_to change(described_class, :count) }
+    end
+  end
 end
