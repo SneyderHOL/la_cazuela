@@ -13,7 +13,7 @@ class Ingredient < ApplicationRecord
 
   validates :name, :unit, :status, :ingredient_type, presence: true
   validates :name, uniqueness: true
-  validates :stored_quantity, :low_threshold, :high_threshold,
+  validates :stored_quantity, :low_threshold, :high_threshold, :cost,
             numericality: { greater_than_or_equal_to: 0 }
 
   def stock_level

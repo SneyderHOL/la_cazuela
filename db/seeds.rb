@@ -32,10 +32,11 @@ material_ingredient_attribute_list = []
   regular_ingredient_attribute_list << {
     name: Faker::Food.ingredient,
     unit: Faker::Number.between(from: 0, to: 1),
-    stored_quantity: 30_0000,
+    stored_quantity: 30_000,
     ingredient_type: :regular,
-    low_threshold: Faker::Number.between(from: 10_0000, to: 13_0000),
-    high_threshold: Faker::Number.between(from: 16_0000, to: 20_0000)
+    low_threshold: Faker::Number.between(from: 10_000, to: 13_000),
+    high_threshold: Faker::Number.between(from: 16_000, to: 20_000),
+    cost: Faker::Number.between(from: 1_000, to: 50_000)
   }
 end
 

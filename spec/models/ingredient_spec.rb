@@ -33,6 +33,10 @@ RSpec.describe Ingredient, type: :model do
     it "high_threshold is not nil" do
       expect(ingredient.high_threshold).not_to be_nil
     end
+
+    it "cost is not nil" do
+      expect(ingredient.cost).not_to be_nil
+    end
   end
 
   describe 'associations' do
@@ -62,6 +66,7 @@ RSpec.describe Ingredient, type: :model do
     it { is_expected.to validate_numericality_of(:stored_quantity).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:low_threshold).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:high_threshold).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:cost).is_greater_than_or_equal_to(0) }
   end
 
   describe "status transitions" do

@@ -27,14 +27,10 @@ module Ingredients
       Rails.logger.info("Updating Inventory for base_ingredient id #{@base_ingredient.id}")
       ActiveRecord::Base.transaction do
         @base_ingredient.recipe.ingredient_recipes.each do |ingredient_recipe|
-          new_stock = if @kind == :addition
-            ingredient_recipe.ingredient.stored_quantity + ingredient_recipe.required_quantity
-          else
-            ingredient_recipe.ingredient.stored_quantity - ingredient_recipe.required_quantity
-          end
-
+          new_stock = calculated_quantity(ingredient_recipe)
+          new_cost = calculated_cost(ingredient_recipe)
           begin
-            ingredient_recipe.ingredient.update!(stored_quantity: new_stock)
+            ingredient_recipe.ingredient.update!(stored_quantity: new_stock, cost: new_cost)
           rescue  ActiveRecord::RecordInvalid => e
             error_message = "#{e.message} for ingredient #{ingredient_recipe.ingredient.name}"
             raise InventoryTransaction::InsufficientBaseStockError, error_message
@@ -49,6 +45,24 @@ module Ingredients
         end
       end
       @result = true
+    end
+
+    def calculated_cost(ingredient_recipe)
+      cost_per_unity = ingredient_recipe.ingredient.cost / ingredient_recipe.ingredient.stored_quantity
+      cost_per_required_quantity = ingredient_recipe.required_quantity * cost_per_unity
+      if @kind == :addition
+        ingredient_recipe.ingredient.cost + cost_per_required_quantity
+      else
+        ingredient_recipe.ingredient.cost - cost_per_required_quantity
+      end
+    end
+
+    def calculated_quantity(ingredient_recipe)
+      if @kind == :addition
+        ingredient_recipe.ingredient.stored_quantity + ingredient_recipe.required_quantity
+      else
+        ingredient_recipe.ingredient.stored_quantity - ingredient_recipe.required_quantity
+      end
     end
   end
 end

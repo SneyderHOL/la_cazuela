@@ -2,10 +2,11 @@ FactoryBot.define do
   factory :ingredient do
     sequence(:name) { |n| "#{Faker::Food.ingredient} #{n}" }
     unit  { :mg }
-    stored_quantity { 10_0000 }
+    stored_quantity { 10_000 }
     ingredient_type { :regular }
     low_threshold { 0 }
     high_threshold { 0 }
+    cost { Faker::Number.between(from: 1_000, to: 50_000) }
 
     trait :with_ml_unit do
       unit { :ml }

@@ -13,7 +13,7 @@ RSpec.describe Ingredients::UpdateInventoryForBaseIngredients, type: :service do
 
     context "with a valid base ingredient and addition kind the stored_quantity of the "\
       "ingredient gets an added" do
-        let(:preingredient) { create(:ingredient, stored_quantity: 10) }
+        let(:preingredient) { create(:ingredient, stored_quantity: 10, cost: 100) }
 
       before do
         ingredient_recipe
@@ -25,12 +25,16 @@ RSpec.describe Ingredients::UpdateInventoryForBaseIngredients, type: :service do
         expect(preingredient.stored_quantity).to be(20)
       end
 
+      it "updates the cost to the related ingredient" do
+        expect(preingredient.cost).to be(200)
+      end
+
       it { is_expected.to be_succeeded }
     end
 
     context "with a valid base ingredient and substraction kind the required_quantity of the "\
       "ingredient_recipes does not exceeds the stored_quantity" do
-        let(:preingredient) { create(:ingredient, stored_quantity: 10) }
+        let(:preingredient) { create(:ingredient, stored_quantity: 10, cost: 100) }
         let(:kind) { :substraction }
 
       before do
@@ -43,6 +47,10 @@ RSpec.describe Ingredients::UpdateInventoryForBaseIngredients, type: :service do
         expect(preingredient.stored_quantity).to be(0)
       end
 
+      it "updates the cost to the related ingredient" do
+        expect(preingredient.cost).to be(0)
+      end
+
       it { is_expected.to be_succeeded }
     end
 
@@ -52,8 +60,8 @@ RSpec.describe Ingredients::UpdateInventoryForBaseIngredients, type: :service do
         let(:preingredient) { create(:ingredient, stored_quantity: 9) }
         let(:kind) { :substraction }
         let(:error_message) do
-          "Validation failed: Stored quantity must be greater than or equal to 0 for "\
-          "ingredient #{preingredient.name}"
+          "Validation failed: Stored quantity must be greater than or equal to 0, Cost must "\
+          "be greater than or equal to 0 for ingredient #{preingredient.name}"
         end
 
         before { ingredient_recipe }

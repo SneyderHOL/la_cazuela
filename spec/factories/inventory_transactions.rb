@@ -3,6 +3,7 @@ FactoryBot.define do
     ingredient { nil }
     quantity { Faker::Number.between(from: 1, to: 50) }
     kind { Faker::Number.between(from: 0, to: 1) }
+    cost { Faker::Number.between(from: 30, to: 100) }
     by_admin { false }
 
     trait :as_pending do

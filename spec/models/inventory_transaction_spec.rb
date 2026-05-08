@@ -16,6 +16,10 @@ RSpec.describe InventoryTransaction, type: :model do
       expect(inventory_transaction.quantity).not_to be_nil
     end
 
+    it 'cost is not nil' do
+      expect(inventory_transaction.cost).not_to be_nil
+    end
+
     it 'status is not nil' do
       expect(inventory_transaction.status).not_to be_nil
     end
@@ -29,6 +33,7 @@ RSpec.describe InventoryTransaction, type: :model do
     it { is_expected.to validate_presence_of(:kind) }
     it { is_expected.to validate_presence_of(:status) }
     it { is_expected.to validate_numericality_of(:quantity).is_greater_than(0) }
+    it { is_expected.to validate_numericality_of(:cost).is_greater_than(0) }
 
     context "when status is set with a different value" do
       before { inventory_transaction.status = "bad" }
@@ -52,14 +57,20 @@ RSpec.describe InventoryTransaction, type: :model do
     end
   end
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
   describe "#apply!" do
     let(:ingredient_stored_quantity) { 100 }
+    let(:ingredient_cost) { 1000 }
     let(:inventory_transaction_quantity) { 10 }
+    let(:inventory_transaction_cost) { 100 }
     let(:kind) { :addition }
-    let(:ingredient) { create(:ingredient, stored_quantity: ingredient_stored_quantity) }
+    let(:ingredient) do
+      create(:ingredient, stored_quantity: ingredient_stored_quantity,
+        cost: ingredient_cost)
+    end
     let(:transaction) do
-      create(:inventory_transaction, ingredient: ingredient,
-        quantity: inventory_transaction_quantity, kind: kind)
+      create(:inventory_transaction, ingredient: ingredient, kind: kind,
+        quantity: inventory_transaction_quantity, cost: inventory_transaction_cost)
     end
 
     before { allow(CreateInventoryTransactionsJob).to receive(:perform_later) }
@@ -71,6 +82,7 @@ RSpec.describe InventoryTransaction, type: :model do
       end
 
       it { expect(ingredient.stored_quantity).to be(110) }
+      it { expect(ingredient.cost).to be(1100) }
       it { expect(transaction).to be_completed }
 
       it_behaves_like "not call the CreateInventoryTransactionsJob"
@@ -82,6 +94,7 @@ RSpec.describe InventoryTransaction, type: :model do
           :ingredient,
           :with_base_type_and_recipe,
           stored_quantity: ingredient_stored_quantity,
+          cost: ingredient_cost,
           trait_ingredient_recipe_amount: 2
         )
       end
@@ -92,6 +105,7 @@ RSpec.describe InventoryTransaction, type: :model do
       end
 
       it { expect(ingredient.stored_quantity).to be(110) }
+      it { expect(ingredient.cost).to be(1100) }
       it { expect(transaction).to be_completed }
 
       it_behaves_like "calls the CreateInventoryTransactionsJob"
@@ -106,6 +120,7 @@ RSpec.describe InventoryTransaction, type: :model do
       end
 
       it { expect(ingredient.stored_quantity).to be(90) }
+      it { expect(ingredient.cost).to be(900) }
       it { expect(transaction).to be_completed }
 
       it_behaves_like "not call the CreateInventoryTransactionsJob"
@@ -117,6 +132,7 @@ RSpec.describe InventoryTransaction, type: :model do
           :ingredient,
           :with_base_type_and_recipe,
           stored_quantity: ingredient_stored_quantity,
+          cost: ingredient_cost,
           trait_ingredient_recipe_amount: 2
         )
       end
@@ -128,6 +144,7 @@ RSpec.describe InventoryTransaction, type: :model do
       end
 
       it { expect(ingredient.stored_quantity).to be(90) }
+      it { expect(ingredient.cost).to be(900) }
       it { expect(transaction).to be_completed }
 
       it_behaves_like "calls the CreateInventoryTransactionsJob"
@@ -160,7 +177,6 @@ RSpec.describe InventoryTransaction, type: :model do
       it_behaves_like "not call the CreateInventoryTransactionsJob"
     end
 
-    # rubocop:disable RSpec/MultipleMemoizedHelpers
     # rubocop:disable RSpec/AnyInstance
     context "when there is insufficient stock if associated ingredient is a base ingredient" do
       let(:error_message) do
@@ -182,7 +198,6 @@ RSpec.describe InventoryTransaction, type: :model do
       it_behaves_like "not call the CreateInventoryTransactionsJob"
     end
     # rubocop:enable RSpec/AnyInstance
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     context "when inventory_transaction has status completed and ingredient is base" do
       let(:ingredient) do
@@ -190,6 +205,7 @@ RSpec.describe InventoryTransaction, type: :model do
           :ingredient,
           :with_base_type_and_recipe,
           stored_quantity: ingredient_stored_quantity,
+          cost: ingredient_cost,
           trait_ingredient_recipe_amount: 2
         )
       end
@@ -205,4 +221,5 @@ RSpec.describe InventoryTransaction, type: :model do
       it_behaves_like "not call the CreateInventoryTransactionsJob"
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 end

@@ -5,22 +5,25 @@ class InventoryTransaction < ApplicationRecord
   class InsufficientStockError < StandardError; end
   class InsufficientBaseStockError < StandardError; end
 
+  COP_CURRENCY_FACTOR = 100.0
   belongs_to :ingredient
 
   enum :kind, { addition: 0, substraction: 1 }
 
   validates :kind, :status, presence: true
-  validates :quantity, numericality: { greater_than: 0 }
+  validates :quantity, :cost, numericality: { greater_than: 0 }
 
   def apply!
     if self.completed?
       raise InvalidTransactionStatusError, "the transaction was already completed"
     end
 
-    stored_quantity = if addition?
-      ingredient.stored_quantity + quantity
+    if addition?
+      stored_quantity = ingredient.stored_quantity + quantity
+      cost = ingredient.cost + self.cost
     else
-      ingredient.stored_quantity - quantity
+      stored_quantity = ingredient.stored_quantity - quantity
+      cost = ingredient.cost - self.cost
     end
 
     base_ingredient_kind = addition? ? :substraction : :addition
@@ -31,7 +34,7 @@ class InventoryTransaction < ApplicationRecord
     ActiveRecord::Base.transaction do
       begin
         base_ingredient_update.call
-        ingredient.update!(stored_quantity: stored_quantity)
+        ingredient.update!(stored_quantity: stored_quantity, cost: cost)
         self.complete!
       rescue ActiveRecord::RecordInvalid, InsufficientBaseStockError => e
         error_msg = "Insufficient stock. Error: #{e.message}"

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe CreateInventoryTransactionJob, type: :job do
   let(:ingredient) { create(:ingredient) }
   let(:transaction_param) do
-    { ingredient_id: ingredient.id, quantity: 2, kind: :substraction, status: "completed" }
+    { ingredient_id: ingredient.id, quantity: 2, cost: 10, kind: :substraction, status: "completed" }
   end
   let(:resource) { transaction_param }
 

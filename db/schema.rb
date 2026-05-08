@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_04_192215) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_08_004140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -45,6 +45,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_04_192215) do
   end
 
   create_table "ingredients", force: :cascade do |t|
+    t.integer "cost", default: 0, null: false
     t.datetime "created_at", null: false
     t.integer "high_threshold", default: 0, null: false
     t.string "ingredient_type", default: "regular", null: false
@@ -59,6 +60,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_04_192215) do
 
   create_table "inventory_transactions", force: :cascade do |t|
     t.boolean "by_admin", default: false, null: false
+    t.integer "cost", default: 0, null: false
     t.datetime "created_at", null: false
     t.string "error_message"
     t.bigint "ingredient_id", null: false
