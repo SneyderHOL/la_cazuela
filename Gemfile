@@ -41,7 +41,7 @@ gem "thruster", require: false
 
 gem "aasm"
 
-gem "devise", "~> 5.0", ">= 5.0.3"
+gem "devise", "~> 5.0"
 
 gem "pundit", "~> 2.5", ">= 2.5.2"
 
