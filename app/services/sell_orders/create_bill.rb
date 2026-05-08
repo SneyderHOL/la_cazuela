@@ -1,18 +1,17 @@
-module Orders
+module SellOrders
   class CreateBill
-    def initialize(order)
-      @order = order
+    def initialize(sell_order)
+      @sell_order = sell_order
       @detail = {}
       @total = 0
     end
 
     def call
-      return unless @order&.closed? && @order&.parent_id.nil?
+      return if @sell_order.opened? || @sell_order.bill
 
-      @order.suborders.each do |order|
+      @sell_order.orders.each do |order|
         create_detail_hash(order)
       end
-      create_detail_hash(@order)
       calculate_total
       create_bill!
     end
@@ -20,7 +19,7 @@ module Orders
     private
 
     def create_bill!
-      Bill.create!(order: @order, detail: @detail, total: @total)
+      Bill.create!(sell_order: @sell_order, detail: @detail, total: @total)
     end
 
     def calculate_total

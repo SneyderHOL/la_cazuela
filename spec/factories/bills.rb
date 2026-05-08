@@ -1,11 +1,11 @@
 FactoryBot.define do
   factory :bill do
-    order { nil }
+    sell_order { nil }
     total { 1 }
     detail { "{}" }
   end
 
-  trait :with_order do
-    order { build(:order, :with_allocation) }
+  trait :with_sell_order do
+    sell_order { build(:sell_order, :with_associations) }
   end
 end
