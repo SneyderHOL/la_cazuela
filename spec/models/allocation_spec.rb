@@ -60,6 +60,15 @@ RSpec.describe Allocation, type: :model do
       end
     end
 
+    context "when take is executed with cleaning status" do
+      before { allocation.status = 'cleaning' }
+
+      it do
+        expect { allocation.take }.to change(
+          allocation, :status).from("cleaning").to("busy")
+      end
+    end
+
     context "when free is executed with busy status" do
       before { allocation.status = 'busy' }
 
@@ -75,6 +84,33 @@ RSpec.describe Allocation, type: :model do
       it do
         expect { allocation.free }.to change(
           allocation, :status).from("on_hold").to("available")
+      end
+    end
+
+    context "when clean is executed from available" do
+      before { allocation.status = 'available' }
+
+      it do
+        expect { allocation.clean }.to change(
+          allocation, :status).from("available").to("cleaning")
+      end
+    end
+
+    context "when clean is executed from on_hold" do
+      before { allocation.status = 'on_hold' }
+
+      it do
+        expect { allocation.clean }.to change(
+          allocation, :status).from("on_hold").to("cleaning")
+      end
+    end
+
+    context "when clean is executed from busy" do
+      before { allocation.status = 'busy' }
+
+      it do
+        expect { allocation.clean }.to change(
+          allocation, :status).from("busy").to("cleaning")
       end
     end
   end
