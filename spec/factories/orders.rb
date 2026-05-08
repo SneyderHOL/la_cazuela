@@ -1,8 +1,5 @@
 FactoryBot.define do
-  factory :base_order, class: "Order" do
-    parent { nil }
-    allocation { nil }
-
+  factory :order do
     trait :as_processing do
       status { "processing" }
     end
@@ -11,12 +8,8 @@ FactoryBot.define do
       status { "completed" }
     end
 
-    trait :as_closed do
-      status { "closed" }
-    end
-
-    trait :with_allocation do
-      association :allocation
+    trait :as_packed do
+      status { "packed" }
     end
 
     trait :with_products do
@@ -28,35 +21,8 @@ FactoryBot.define do
       end
     end
 
-    factory :order do
-      trait :with_suborders do
-        transient do
-          trait_amount { 5 }
-        end
-        after :create do |order, evaluator|
-          create_list :suborder, evaluator.trait_amount, parent: order, allocation: order.allocation
-        end
-      end
-
-      trait :with_completed_suborders do
-        transient do
-          trait_amount { 5 }
-        end
-        after :create do |order, evaluator|
-          create_list :suborder, evaluator.trait_amount, :as_completed, parent: order, allocation: order.allocation
-        end
-      end
-    end
-
-    factory :suborder, class: "Order" do
-      trait :with_parent_order do
-        parent { build(:order, :with_allocation) }
-      end
-
-      trait :with_associations do
-        parent { build(:order, :with_allocation) }
-        allocation { parent.allocation }
-      end
+    trait :with_sell_order do
+      sell_order { build(:sell_order, :with_allocation) }
     end
   end
 end

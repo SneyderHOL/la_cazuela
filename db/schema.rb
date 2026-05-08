@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_08_004140) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_08_151437) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -27,10 +27,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_004140) do
   create_table "bills", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.jsonb "detail"
-    t.bigint "order_id", null: false
+    t.bigint "sell_order_id", null: false
     t.integer "total", null: false
     t.datetime "updated_at", null: false
-    t.index ["order_id"], name: "index_bills_on_order_id"
+    t.index ["sell_order_id"], name: "index_bills_on_sell_order_id"
   end
 
   create_table "ingredient_recipes", force: :cascade do |t|
@@ -86,13 +86,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_004140) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.bigint "allocation_id", null: false
     t.datetime "created_at", null: false
-    t.bigint "parent_id"
+    t.bigint "sell_order_id", null: false
     t.string "status", null: false
     t.datetime "updated_at", null: false
-    t.index ["allocation_id"], name: "index_orders_on_allocation_id"
-    t.index ["parent_id"], name: "index_orders_on_parent_id"
+    t.index ["sell_order_id"], name: "index_orders_on_sell_order_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -118,6 +116,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_004140) do
     t.index ["product_id"], name: "index_recipes_on_product_id", unique: true
   end
 
+  create_table "sell_orders", force: :cascade do |t|
+    t.bigint "allocation_id", null: false
+    t.integer "cash_change"
+    t.integer "cash_pay"
+    t.datetime "created_at", null: false
+    t.string "payment_type"
+    t.string "status", null: false
+    t.integer "total"
+    t.datetime "updated_at", null: false
+    t.index ["allocation_id"], name: "index_sell_orders_on_allocation_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.boolean "active", default: false, null: false
     t.datetime "created_at", null: false
@@ -135,14 +145,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_004140) do
     t.index ["role"], name: "index_users_on_role"
   end
 
-  add_foreign_key "bills", "orders"
+  add_foreign_key "bills", "sell_orders"
   add_foreign_key "ingredient_recipes", "ingredients"
   add_foreign_key "ingredient_recipes", "recipes"
   add_foreign_key "inventory_transactions", "ingredients"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
-  add_foreign_key "orders", "allocations"
-  add_foreign_key "orders", "orders", column: "parent_id"
+  add_foreign_key "orders", "sell_orders"
   add_foreign_key "recipes", "ingredients"
   add_foreign_key "recipes", "products"
+  add_foreign_key "sell_orders", "allocations"
 end

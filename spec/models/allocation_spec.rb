@@ -24,7 +24,7 @@ RSpec.describe Allocation, type: :model do
   end
 
   describe 'associations' do
-    it { is_expected.to have_many(:orders).dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:sell_orders).dependent(:restrict_with_error) }
   end
 
   describe "validations" do

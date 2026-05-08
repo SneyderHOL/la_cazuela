@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CompleteOrderProductsJob, type: :job do
-  let(:order) { create(:order, :as_processing, :with_allocation, :with_products, trait_amount: 2) }
+  let(:order) { create(:order, :as_processing, :with_sell_order, :with_products, trait_amount: 2) }
 
   describe '#perform_later' do
     describe "enqueing a new job" do
@@ -26,9 +26,9 @@ RSpec.describe CompleteOrderProductsJob, type: :job do
       end
     end
 
-    context "when updates order_products status with a closed order" do
+    context "when updates order_products status with a packed order" do
       before do
-        order.update(status: "closed")
+        order.update(status: "packed")
         order.order_products.each { |order_product| order_product.update(status: "preparing") }
         complete_order_product_job
       end

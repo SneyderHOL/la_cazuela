@@ -1,10 +1,10 @@
 class CreateBillJob < ApplicationJob
-  queue_as :orders
+  queue_as :sell_orders
 
-  def perform(order)
-    return unless order&.closed? && order&.parent_id.nil?
+  def perform(sell_order)
+    return unless sell_order&.closed?
 
-    Rails.logger.info "Creating Bill for order_id #{order.id}"
-    Orders::CreateBill.new(order).call
+    Rails.logger.info "Creating Bill for sell_order_id #{sell_order.id}"
+    SellOrders::CreateBill.new(sell_order).call
   end
 end
