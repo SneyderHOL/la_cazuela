@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_08_151437) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_24_172948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -31,6 +31,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_151437) do
     t.integer "total", null: false
     t.datetime "updated_at", null: false
     t.index ["sell_order_id"], name: "index_bills_on_sell_order_id"
+  end
+
+  create_table "funds", force: :cascade do |t|
+    t.integer "amount", null: false
+    t.datetime "created_at", null: false
+    t.string "detail", null: false
+    t.boolean "is_deposit", null: false
+    t.date "transaction_date", null: false
+    t.datetime "updated_at", null: false
+    t.index ["transaction_date"], name: "index_funds_on_transaction_date"
   end
 
   create_table "ingredient_recipes", force: :cascade do |t|
