@@ -337,7 +337,7 @@ GEM
     securerandom (0.4.1)
     shoulda-matchers (8.0.1)
       activesupport (>= 7.2)
-    solid_cable (3.0.12)
+    solid_cable (4.0.0)
       actioncable (>= 7.2)
       activejob (>= 7.2)
       activerecord (>= 7.2)
@@ -424,7 +424,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   shoulda-matchers (~> 8.0)
-  solid_cable (~> 3.0, >= 3.0.12)
+  solid_cable (~> 4.0)
   solid_cache (~> 1.0, >= 1.0.10)
   solid_queue (~> 1.4)
   stimulus-rails
