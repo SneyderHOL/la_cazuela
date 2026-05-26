@@ -24,9 +24,6 @@ FactoryBot.define do
 
     trait :with_cash do
       payment_type { :cash }
-      total { 9 }
-      cash_pay { 10 }
-      cash_change { 1 }
     end
 
     trait :with_transfer do

@@ -6,9 +6,19 @@ class SellOrder < ApplicationRecord
   has_one :bill
 
   enum :payment_type, { cash: "cash", transfer: "transfer", card: "card" }
+
   validates :status, presence: true
+  validates :total, numericality: { greater_than: 0 }, allow_nil: true
+  validates :cash_pay, comparison: { greater_than_or_equal_to: :total }, if: :paying_in_cash?
 
   before_destroy :check_orders
+
+  def calculate_cash_change
+    return unless invoicing? && bill && paying_in_cash?
+
+    self.cash_change = cash_pay - total
+    self.save
+  end
 
   private
 
@@ -32,5 +42,9 @@ class SellOrder < ApplicationRecord
 
   def check_orders
     throw :abort unless orders.empty?
+  end
+
+  def paying_in_cash?
+    cash? && total && cash_pay
   end
 end
