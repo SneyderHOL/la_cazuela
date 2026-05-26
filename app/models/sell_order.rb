@@ -13,6 +13,8 @@ class SellOrder < ApplicationRecord
 
   before_destroy :check_orders
 
+  scope :sales_by_date, ->(date) { where(created_at: date.beginning_of_day..date.end_of_day) }
+
   def calculate_cash_change
     return unless invoicing? && bill && paying_in_cash?
 

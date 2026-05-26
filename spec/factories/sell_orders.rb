@@ -22,15 +22,15 @@ FactoryBot.define do
       status { :packed }
     end
 
-    trait :with_cash do
+    trait :with_cash_payment do
       payment_type { :cash }
     end
 
-    trait :with_transfer do
+    trait :with_transfer_payment do
       payment_type { :transfer }
     end
 
-    trait :with_card do
+    trait :with_card_payment do
       payment_type { :card }
     end
 

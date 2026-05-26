@@ -31,6 +31,41 @@ RSpec.describe SellOrder, type: :model do
     end
   end
 
+  describe "scopes" do
+    context "with sales_by_date" do
+      include_context "with sell_orders for scopes"
+
+      # SUM is only performed on invoicing and closed sell_orders since the total value should bes
+      # rubocop:disable RSpec/ExampleLength
+      # rubocop:disable RSpec/MultipleExpectations
+      it "retrieves the corresponding sell_orders" do
+        expect(described_class.sales_by_date(thursday.to_date).count).to eq(12)
+        expect(described_class.sales_by_date(thursday.to_date).opened.count).to eq(3)
+        expect(described_class.sales_by_date(thursday.to_date).packed.count).to eq(3)
+        expect(described_class.sales_by_date(thursday.to_date).invoicing.count).to eq(3)
+        expect(described_class.sales_by_date(thursday.to_date).closed.count).to eq(3)
+        expect(described_class.sales_by_date(thursday.to_date).invoicing.sum(&:total)).to eq(2_400)
+        expect(described_class.sales_by_date(thursday.to_date).closed.sum(&:total)).to eq(3_300)
+        expect(described_class.sales_by_date(friday.to_date).count).to eq(12)
+        expect(described_class.sales_by_date(friday.to_date).opened.count).to eq(3)
+        expect(described_class.sales_by_date(friday.to_date).packed.count).to eq(3)
+        expect(described_class.sales_by_date(friday.to_date).invoicing.count).to eq(3)
+        expect(described_class.sales_by_date(friday.to_date).closed.count).to eq(3)
+        expect(described_class.sales_by_date(friday.to_date).invoicing.sum(&:total)).to eq(24_000)
+        expect(described_class.sales_by_date(friday.to_date).closed.sum(&:total)).to eq(33_000)
+        expect(described_class.sales_by_date(saturday.to_date).count).to eq(12)
+        expect(described_class.sales_by_date(saturday.to_date).opened.count).to eq(3)
+        expect(described_class.sales_by_date(saturday.to_date).packed.count).to eq(3)
+        expect(described_class.sales_by_date(saturday.to_date).invoicing.count).to eq(3)
+        expect(described_class.sales_by_date(saturday.to_date).closed.count).to eq(3)
+        expect(described_class.sales_by_date(saturday.to_date).invoicing.sum(&:total)).to eq(240_000)
+        expect(described_class.sales_by_date(saturday.to_date).closed.sum(&:total)).to eq(330_000)
+      end
+      # rubocop:enable RSpec/ExampleLength
+      # rubocop:enable RSpec/MultipleExpectations
+    end
+  end
+
   describe "status transitions" do
     before do
       allow(CompleteOrdersJob).to receive(:perform_later)
@@ -389,13 +424,13 @@ RSpec.describe SellOrder, type: :model do
     end
 
     context "when sell_order does not have a total value" do
-      let(:sell_order) { create(:sell_order, :with_associations, :as_invoicing, :with_cash, :with_bill) }
+      let(:sell_order) { create(:sell_order, :with_associations, :as_invoicing, :with_cash_payment, :with_bill) }
 
       it { expect { sell_order.calculate_cash_change }.not_to change(sell_order, :cash_change) }
     end
 
     context "when sell_order does not have a cash_pay value" do
-      let(:sell_order) { create(:sell_order, :with_associations, :as_invoicing, :with_cash, :with_bill) }
+      let(:sell_order) { create(:sell_order, :with_associations, :as_invoicing, :with_cash_payment, :with_bill) }
 
       before { sell_order.update(total: sell_order.bill.total) }
 
@@ -405,7 +440,7 @@ RSpec.describe SellOrder, type: :model do
     context "when sell_order is able to calculate cash_change value" do
       let(:total) { 75_000 }
       let(:cash_pay) { 100_000 }
-      let(:sell_order) { create(:sell_order, :with_associations, :as_invoicing, :with_cash, :with_bill, total:, cash_pay:) }
+      let(:sell_order) { create(:sell_order, :with_associations, :as_invoicing, :with_cash_payment, :with_bill, total:, cash_pay:) }
 
       it { expect { sell_order.calculate_cash_change }.to change(sell_order, :cash_change) }
 
