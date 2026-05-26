@@ -402,16 +402,16 @@ OrderProduct.create(order: order5, status: "preparing", product: prod_soda, quan
 OrderProduct.create(order: order5, status: "preparing", product: prod_tiramisu, quantity: 1)
 OrderProduct.create(order: order5, status: "preparing", product: prod_rice_with_chicken, quantity: 1)
 
-OrderProduct.create(order: order6, status: "to_prepare", product: prod_lemonade, quantity: 1)
-OrderProduct.create(order: order6, status: "to_prepare", product: prod_spaguetti, quantity: 1)
-OrderProduct.create(order: order6, status: "to_prepare", product: prod_large_bowl_pack, quantity: 1)
-OrderProduct.create(order: order6, status: "to_prepare", product: prod_medium_drink_pack, quantity: 1)
+OrderProduct.create(order: order6, status: "prepare", product: prod_lemonade, quantity: 1)
+OrderProduct.create(order: order6, status: "prepare", product: prod_spaguetti, quantity: 1)
+OrderProduct.create(order: order6, status: "prepare", product: prod_large_bowl_pack, quantity: 1)
+OrderProduct.create(order: order6, status: "prepare", product: prod_medium_drink_pack, quantity: 1)
 
-OrderProduct.create(order: order7, status: "to_prepare", product: prod_super_chicken_bowl, quantity: 1)
-OrderProduct.create(order: order7, status: "to_prepare", product: prod_lemonade, quantity: 1)
-OrderProduct.create(order: order7, status: "to_prepare", product: prod_large_bowl_pack, quantity: 1)
-OrderProduct.create(order: order7, status: "to_prepare", product: prod_medium_drink_pack, quantity: 1)
+OrderProduct.create(order: order7, status: "prepare", product: prod_super_chicken_bowl, quantity: 1)
+OrderProduct.create(order: order7, status: "prepare", product: prod_lemonade, quantity: 1)
+OrderProduct.create(order: order7, status: "prepare", product: prod_large_bowl_pack, quantity: 1)
+OrderProduct.create(order: order7, status: "prepare", product: prod_medium_drink_pack, quantity: 1)
 
-OrderProduct.create(order: order8, status: "to_prepare", product: prod_panela_lemonade, quantity: 1)
+OrderProduct.create(order: order8, status: "prepare", product: prod_panela_lemonade, quantity: 1)
 
 SellOrders::CreateBill.new(sell_order1).call

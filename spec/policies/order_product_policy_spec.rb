@@ -3,23 +3,23 @@ require 'rails_helper'
 RSpec.describe OrderProductPolicy, type: :policy do
   subject(:order_product_policy) { described_class.new(user, order_product) }
 
-  context 'with admin and to_prepare order_product' do
+  context 'with admin and prepare order_product' do
     let(:user) { User.new(role: :admin) }
-    let(:order_product) { create(:order_product, :with_associations, status: "to_prepare") }
+    let(:order_product) { create(:order_product, :with_associations, status: "prepare") }
 
     it { is_expected.to permit_all_actions }
   end
 
-  context 'with waiter and to_prepare order_product' do
+  context 'with waiter and prepare order_product' do
     let(:user) { User.new(role: :waiter) }
-    let(:order_product) { create(:order_product, :with_associations, status: "to_prepare") }
+    let(:order_product) { create(:order_product, :with_associations, status: "prepare") }
 
     it { is_expected.to permit_all_actions }
   end
 
-  context 'with kitchen_auxiliar and to_prepare order_product' do
+  context 'with kitchen_auxiliar and prepare order_product' do
     let(:user) { User.new(role: :kitchen_auxiliar) }
-    let(:order_product) { create(:order_product, :with_associations, status: "to_prepare") }
+    let(:order_product) { create(:order_product, :with_associations, status: "prepare") }
 
     it "grants access for index" do
       expect(order_product_policy).to permit_action(:index)
@@ -119,7 +119,7 @@ RSpec.describe OrderProductPolicy, type: :policy do
 
   context "when user is nil" do
       let(:user) { nil }
-      let(:order_product) { create(:order_product, :with_associations, status: "to_prepare") }
+      let(:order_product) { create(:order_product, :with_associations, status: "prepare") }
 
       it { expect { order_product_policy }.to raise_error(Pundit::NotAuthorizedError, "must be logged in") }
   end

@@ -25,10 +25,10 @@ class OrderProductPolicy < ApplicationPolicy
   end
 
   def update?
-    user.admin? || (user.waiter? && record.to_prepare?) || (user.kitchen_auxiliar? && record.preparing?)
+    user.admin? || (user.waiter? && record.prepare?) || (user.kitchen_auxiliar? && record.preparing?)
   end
 
   def destroy?
-    (user.admin? || user.waiter?) && record.to_prepare?
+    (user.admin? || user.waiter?) && (record.requested? || record.prepare?)
   end
 end

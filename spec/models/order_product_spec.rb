@@ -135,12 +135,12 @@ RSpec.describe OrderProduct, type: :model do
   end
 
   describe "status transitions" do
-    describe "when prepare is executed with to_prepare" do
-      before { order_product_object.status = 'to_prepare' }
+    describe "when cook is executed with prepare" do
+      before { order_product_object.status = 'prepare' }
 
       it do
-        expect { order_product_object.prepare }.to change(
-          order_product_object, :status).from("to_prepare").to("preparing")
+        expect { order_product_object.cook }.to change(
+          order_product_object, :status).from("prepare").to("preparing")
       end
     end
 

@@ -9,7 +9,7 @@ module OrderAasm
 
       event :process do
         after do
-          prepare_order_products
+          ready_to_cook_order_products
         end
         transitions from: :opened, to: :processing
       end

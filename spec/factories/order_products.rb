@@ -5,6 +5,10 @@ FactoryBot.define do
     quantity { Faker::Number.between(from: 1, to: 5) }
     note { nil }
 
+    trait :as_prepare do
+      status { "prepare" }
+    end
+
     trait :as_preparing do
       status { "preparing" }
     end

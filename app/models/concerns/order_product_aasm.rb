@@ -4,11 +4,15 @@ module OrderProductAasm
     include AASM
 
     aasm column: "status" do
-      state :to_prepare, initial: true
-      state :preparing, :completed
+      state :requested, initial: true
+      state :prepare, :preparing, :completed
 
-      event :prepare do
-        transitions from: :to_prepare, to: :preparing
+      event :ready_to_cook do
+        transitions from: :requested, to: :prepare
+      end
+
+      event :cook do
+        transitions from: :prepare, to: :preparing
       end
 
       event :complete do

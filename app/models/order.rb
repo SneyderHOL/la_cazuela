@@ -11,11 +11,11 @@ class Order < ApplicationRecord
 
   private
 
-  def prepare_order_products
+  def ready_to_cook_order_products
     return unless persisted?
 
-    Rails.logger.info "Calling PrepareOrderProductsJob for order_id #{id}"
-    PrepareOrderProductsJob.perform_later(self)
+    Rails.logger.info "Calling ReadyToCookOrderProductsJob for order_id #{id}"
+    ReadyToCookOrderProductsJob.perform_later(self)
   end
 
   def complete_order_products

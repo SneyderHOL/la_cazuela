@@ -24,8 +24,7 @@ RSpec.describe Order, type: :model do
   describe "status transitions" do
     context "when process is executed and the order is opened and is persisted" do
       before do
-        allow(PrepareOrderProductsJob).to receive(:perform_later)
-        # order.status = 'opened'
+        allow(ReadyToCookOrderProductsJob).to receive(:perform_later)
         order.save
       end
 
@@ -36,14 +35,13 @@ RSpec.describe Order, type: :model do
 
       it do
         order.process
-        expect(PrepareOrderProductsJob).to have_received(:perform_later)
+        expect(ReadyToCookOrderProductsJob).to have_received(:perform_later)
       end
     end
 
     context "when process is executed and the order is opened and is not persisted" do
       before do
-        allow(PrepareOrderProductsJob).to receive(:perform_later)
-        # order.status = 'opened'
+        allow(ReadyToCookOrderProductsJob).to receive(:perform_later)
       end
 
       it "change status" do
@@ -53,7 +51,7 @@ RSpec.describe Order, type: :model do
 
       it do
         order.process
-        expect(PrepareOrderProductsJob).not_to have_received(:perform_later)
+        expect(ReadyToCookOrderProductsJob).not_to have_received(:perform_later)
       end
     end
 
