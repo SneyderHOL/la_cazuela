@@ -13,22 +13,22 @@ class OrderProductPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.waiter? || user.kitchen_auxiliar?
+    user.admin? || user.waiter? || user.kitchen_auxiliar? || user.cashier?
   end
 
   def show?
-    user.admin? || user.waiter? || user.kitchen_auxiliar?
+    user.admin? || user.waiter? || user.kitchen_auxiliar? || user.cashier?
   end
 
   def create?
-    user.admin? || user.waiter?
+    user.admin? || (user.waiter? && (record.requested? || record.prepare?))
   end
 
   def update?
-    user.admin? || (user.waiter? && record.prepare?) || (user.kitchen_auxiliar? && record.preparing?)
+    user.admin? || (user.waiter? && record.requested?) || (user.kitchen_auxiliar? && (record.prepare? || record.preparing?))
   end
 
   def destroy?
-    (user.admin? || user.waiter?) && (record.requested? || record.prepare?)
+    user.admin? || (user.waiter? && (record.requested? || record.prepare?))
   end
 end

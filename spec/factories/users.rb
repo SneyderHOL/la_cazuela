@@ -18,5 +18,9 @@ FactoryBot.define do
     trait :with_waiter_role do
       role { :waiter }
     end
+
+    trait :with_cashier_role do
+      role { :cashier }
+    end
   end
 end

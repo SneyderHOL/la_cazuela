@@ -28,7 +28,7 @@ class AllocationPolicy < ApplicationPolicy
   end
 
   def update?
-    user.admin? || (user.waiter? && record.active?)
+    user.admin? || ((user.waiter?  || user.cashier?) && record.active?)
   end
 
   def destroy?

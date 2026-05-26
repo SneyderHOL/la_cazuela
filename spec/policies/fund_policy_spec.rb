@@ -11,6 +11,12 @@ RSpec.describe FundPolicy, type: :policy do
     it { is_expected.to permit_all_actions }
   end
 
+  context 'with cashier' do
+    let(:user) { User.new(role: :cashier) }
+
+    it { is_expected.to permit_all_actions }
+  end
+
   context 'with waiter' do
     let(:user) { User.new(role: :waiter) }
 

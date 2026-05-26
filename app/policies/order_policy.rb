@@ -13,11 +13,11 @@ class OrderPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.waiter? || user.kitchen_auxiliar?
+    user.admin? || user.waiter? || user.kitchen_auxiliar? || user.cashier?
   end
 
   def show?
-    user.admin? || user.waiter? || user.kitchen_auxiliar?
+    user.admin? || user.waiter? || user.kitchen_auxiliar? || user.cashier?
   end
 
   def create?

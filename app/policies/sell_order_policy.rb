@@ -13,11 +13,11 @@ class SellOrderPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.waiter? || user.kitchen_auxiliar?
+    user.admin? || user.waiter? || user.kitchen_auxiliar? || user.cashier?
   end
 
   def show?
-    user.admin? || user.waiter? || user.kitchen_auxiliar?
+    user.admin? || user.waiter? || user.kitchen_auxiliar? || user.cashier?
   end
 
   def create?
@@ -25,7 +25,7 @@ class SellOrderPolicy < ApplicationPolicy
   end
 
   def update?
-    user.admin? || user.waiter?
+    user.admin? || (user.waiter? && (record.opened? || record.packed?)) || (user.cashier? && !record.opened?)
   end
 
   def destroy?

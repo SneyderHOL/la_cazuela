@@ -42,6 +42,31 @@ RSpec.describe SellOrderPolicy, type: :policy do
     end
   end
 
+  context 'with cashier and opened sell_order' do
+    let(:user) { User.new(role: :cashier) }
+    let(:sell_order) { create(:sell_order, :with_allocation, status: "opened") }
+
+    it "grants access for index" do
+      expect(sell_order_policy).to permit_action(:index)
+    end
+
+    it "grants access for show" do
+      expect(sell_order_policy).to permit_action(:show)
+    end
+
+    it "denies access for create" do
+      expect(sell_order_policy).not_to permit_action(:create)
+    end
+
+    it "denies access for update" do
+      expect(sell_order_policy).not_to permit_action(:update)
+    end
+
+    it "denies access for destroy" do
+      expect(sell_order_policy).not_to permit_action(:destroy)
+    end
+  end
+
   context 'with admin and delivering sell_order' do
     let(:user) { User.new(role: :admin) }
     let(:sell_order) { create(:sell_order, :with_allocation, status: "delivering") }
@@ -84,7 +109,7 @@ RSpec.describe SellOrderPolicy, type: :policy do
     end
 
     it "grants access for update" do
-      expect(sell_order_policy).to permit_action(:update)
+      expect(sell_order_policy).not_to permit_action(:update)
     end
 
     it "denies access for destroy" do
@@ -110,6 +135,31 @@ RSpec.describe SellOrderPolicy, type: :policy do
 
     it "denies access for update" do
       expect(sell_order_policy).not_to permit_action(:update)
+    end
+
+    it "denies access for destroy" do
+      expect(sell_order_policy).not_to permit_action(:destroy)
+    end
+  end
+
+  context 'with cashier and delivering sell_order' do
+    let(:user) { User.new(role: :cashier) }
+    let(:sell_order) { create(:sell_order, :with_allocation, status: "delivering") }
+
+    it "grants access for index" do
+      expect(sell_order_policy).to permit_action(:index)
+    end
+
+    it "grants access for show" do
+      expect(sell_order_policy).to permit_action(:show)
+    end
+
+    it "denies access for create" do
+      expect(sell_order_policy).not_to permit_action(:create)
+    end
+
+    it "denies access for update" do
+      expect(sell_order_policy).to permit_action(:update)
     end
 
     it "denies access for destroy" do
@@ -194,6 +244,31 @@ RSpec.describe SellOrderPolicy, type: :policy do
     end
   end
 
+  context 'with cashier and packed sell_order' do
+    let(:user) { User.new(role: :cashier) }
+    let(:sell_order) { create(:sell_order, :with_allocation, status: "packed") }
+
+    it "grants access for index" do
+      expect(sell_order_policy).to permit_action(:index)
+    end
+
+    it "grants access for show" do
+      expect(sell_order_policy).to permit_action(:show)
+    end
+
+    it "denies access for create" do
+      expect(sell_order_policy).not_to permit_action(:create)
+    end
+
+    it "denies access for update" do
+      expect(sell_order_policy).to permit_action(:update)
+    end
+
+    it "denies access for destroy" do
+      expect(sell_order_policy).not_to permit_action(:destroy)
+    end
+  end
+
   context 'with admin and closed sell_order' do
     let(:user) { User.new(role: :admin) }
     let(:sell_order) { create(:sell_order, :with_allocation, status: "closed") }
@@ -236,7 +311,7 @@ RSpec.describe SellOrderPolicy, type: :policy do
     end
 
     it "grants access for update" do
-      expect(sell_order_policy).to permit_action(:update)
+      expect(sell_order_policy).not_to permit_action(:update)
     end
 
     it "denies access for destroy" do
@@ -262,6 +337,31 @@ RSpec.describe SellOrderPolicy, type: :policy do
 
     it "denies access for update" do
       expect(sell_order_policy).not_to permit_action(:update)
+    end
+
+    it "denies access for destroy" do
+      expect(sell_order_policy).not_to permit_action(:destroy)
+    end
+  end
+
+  context 'with cashier and closed sell_order' do
+    let(:user) { User.new(role: :cashier) }
+    let(:sell_order) { create(:sell_order, :with_allocation, status: "closed") }
+
+    it "grants access for index" do
+      expect(sell_order_policy).to permit_action(:index)
+    end
+
+    it "grants access for show" do
+      expect(sell_order_policy).to permit_action(:show)
+    end
+
+    it "denies access for create" do
+      expect(sell_order_policy).not_to permit_action(:create)
+    end
+
+    it "denies access for update" do
+      expect(sell_order_policy).to permit_action(:update)
     end
 
     it "denies access for destroy" do

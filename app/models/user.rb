@@ -6,7 +6,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  enum :role, { waiter: "waiter", admin: "admin", kitchen_auxiliar: "kitchen_auxiliar" }, default: :kitchen_auxiliar
+  enum :role, {
+    waiter: "waiter", admin: "admin", kitchen_auxiliar: "kitchen_auxiliar", cashier: "cashier"
+  }, default: :kitchen_auxiliar
 
   validates :name, :role, presence: true
   validates :active, exclusion: [ nil ]

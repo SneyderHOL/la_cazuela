@@ -30,7 +30,7 @@ RSpec.describe User, type: :model do
   describe "validations" do
     it do
       expect(user).to define_enum_for(:role).with_values({
-        waiter: "waiter", admin: "admin", kitchen_auxiliar: "kitchen_auxiliar"
+        waiter: "waiter", admin: "admin", kitchen_auxiliar: "kitchen_auxiliar", cashier: "cashier"
       }).backed_by_column_of_type(:string)
     end
 

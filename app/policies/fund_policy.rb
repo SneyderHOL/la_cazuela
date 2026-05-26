@@ -13,22 +13,22 @@ class FundPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin?
+    user.admin? || user.cashier?
   end
 
   def show?
-    user.admin?
+    user.admin? || user.cashier?
   end
 
   def create?
-    user.admin?
+    user.admin? || user.cashier?
   end
 
   def update?
-    user.admin?
+    user.admin? || user.cashier?
   end
 
   def destroy?
-    user.admin?
+    user.admin? || user.cashier?
   end
 end

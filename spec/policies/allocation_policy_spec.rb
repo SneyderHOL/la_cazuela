@@ -38,6 +38,31 @@ RSpec.describe AllocationPolicy, type: :policy do
     end
   end
 
+  context 'with cashier and inactive allocation' do
+    let(:user) { User.new(role: :cashier) }
+    let(:allocation) { create(:allocation, active: false) }
+
+    it "denies access for index" do
+      expect(allocation_policy).not_to permit_action(:index)
+    end
+
+    it "denies access for show" do
+      expect(allocation_policy).not_to permit_action(:show)
+    end
+
+    it "denies access for create" do
+      expect(allocation_policy).not_to permit_action(:create)
+    end
+
+    it "denies access for update" do
+      expect(allocation_policy).not_to permit_action(:update)
+    end
+
+    it "denies access for destroy" do
+      expect(allocation_policy).not_to permit_action(:destroy)
+    end
+  end
+
   context 'with kitchen_auxiliar and inactive allocation' do
     let(:user) { User.new(role: :kitchen_auxiliar) }
     let(:allocation) { create(:allocation, active: false) }
@@ -72,6 +97,31 @@ RSpec.describe AllocationPolicy, type: :policy do
 
   context 'with waiter and active allocation' do
     let(:user) { User.new(role: :waiter) }
+    let(:allocation) { create(:allocation, active: true) }
+
+    it "grants access for index" do
+      expect(allocation_policy).to permit_action(:index)
+    end
+
+    it "grants access for show" do
+      expect(allocation_policy).to permit_action(:show)
+    end
+
+    it "denies access for create" do
+      expect(allocation_policy).not_to permit_action(:create)
+    end
+
+    it "grants access for update" do
+      expect(allocation_policy).to permit_action(:update)
+    end
+
+    it "denies access for destroy" do
+      expect(allocation_policy).not_to permit_action(:destroy)
+    end
+  end
+
+  context 'with cashier and active allocation' do
+    let(:user) { User.new(role: :cashier) }
     let(:allocation) { create(:allocation, active: true) }
 
     it "grants access for index" do
