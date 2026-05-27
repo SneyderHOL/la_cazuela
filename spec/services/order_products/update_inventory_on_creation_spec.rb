@@ -5,48 +5,64 @@ RSpec.describe OrderProducts::UpdateInventoryOnCreation, type: :service do
 
   describe '#call' do
     let(:recipe) { create(:recipe, :as_approved, product: create(:product)) }
-    let(:order_product) { build(:order_product, :with_order, product: recipe.product, quantity: 5) }
     let(:ingredient_recipe) do
       create(:ingredient_recipe, required_quantity: 5,
         ingredient: ingredient, recipe: recipe
       )
     end
 
-    before { allow(CreateInventoryTransactionsJob).to receive(:perform_later) }
+    before do
+      allow(CreateInventoryTransactionsJob).to receive(:perform_later)
+      ingredient_recipe
+      order_product
+    end
 
     context "when parent product have a recipe with a non persisted order_product "\
       "and the required_quantity does not exceeds the stored_quantity" do
+      let(:order_product) do
+        build(:order_product, :with_order, product: recipe.product, quantity: 5)
+      end
       let(:ingredient) { create(:ingredient, stored_quantity: 25) }
 
       before do
-        ingredient_recipe
         update_inventory_transaction_on_create.call
         ingredient.reload
       end
 
-      it "updates the stored_quantity to the related ingredient" do
-        expect(ingredient.stored_quantity).to be(0)
+      it "does not updates the stored_quantity to the related ingredient" do
+        expect(ingredient.stored_quantity).to eq(25)
       end
 
-      it "saves the order_product record" do
-        expect(order_product).to be_persisted
+      it "does not saves the order_product record" do
+        expect(order_product).not_to be_persisted
       end
 
-      it { is_expected.to be_succeeded }
+      it "does not update the order_product record" do
+        expect(order_product.inventoried).to be_nil
+      end
 
-      it_behaves_like "calls the CreateInventoryTransactionsJob"
+      it { is_expected.not_to be_succeeded }
+
+      it_behaves_like "not call the CreateInventoryTransactionsJob"
     end
 
-    context "when parent product have a recipe with a non persisted order_product "\
+    context "when parent product have a recipe with a persisted order_product "\
       "and the required_quantity exceeds the stored_quantity" do
-        let(:ingredient) { create(:ingredient, stored_quantity: 24) }
+      let(:order_product) { create(:order_product, :with_order, product: recipe.product, quantity: 5) }
+      let(:ingredient) { create(:ingredient, stored_quantity: 25) }
 
-      it "does not update the stored_quantity to the related ingredient" do
-        expect(ingredient.stored_quantity).to be(24)
+      before do
+        ingredient.update(stored_quantity: 10)
+        update_inventory_transaction_on_create.call
+        ingredient.reload
       end
 
-      it "does not save the order_product record" do
-        expect(order_product).not_to be_persisted
+      it "does not update the stored_quantity to the related ingredient" do
+        expect(ingredient.stored_quantity).to eq(10)
+      end
+
+      it "does not update the order_product record" do
+        expect(order_product.reload.inventoried).to be_falsey
       end
 
       it { is_expected.not_to be_succeeded }
@@ -55,22 +71,25 @@ RSpec.describe OrderProducts::UpdateInventoryOnCreation, type: :service do
     end
 
     context "when parent product have a recipe with a persisted order_product" do
-      let(:ingredient) { create(:ingredient, stored_quantity: 10) }
+      let(:order_product) { create(:order_product, :with_order, product: recipe.product, quantity: 5) }
+      let(:ingredient) { create(:ingredient, stored_quantity: 25) }
 
       before do
-        ingredient_recipe
-        order_product.save
         update_inventory_transaction_on_create.call
         ingredient.reload
       end
 
       it "does not update the stored_quantity to the related ingredient" do
-        expect(ingredient.stored_quantity).to be(10)
+        expect(ingredient.reload.stored_quantity).to eq(0)
       end
 
-      it { is_expected.not_to be_succeeded }
+      it "does not update the order_product record" do
+        expect(order_product.reload.inventoried).to be_truthy
+      end
 
-      it_behaves_like "not call the CreateInventoryTransactionsJob"
+      it { is_expected.to be_succeeded }
+
+      it_behaves_like "calls the CreateInventoryTransactionsJob"
     end
   end
 end

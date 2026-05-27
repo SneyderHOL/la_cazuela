@@ -2,14 +2,19 @@ module OrderProducts
   class UpdateInventoryOnCreation < BaseUpdateInventory
     private
 
-    def guard = @order_product.product.recipe && @order_product.new_record?
+    def guard
+      initiate_order_product_processing
+      !@order_product.inventoried? && @order_product.requested?
+    end
 
-    def order_product_transaction = @order_product.save!
+    def initiate_order_product_processing
+      @order_product.inventoried = false if @order_product.inventoried.nil?
+    end
+
+    def order_product_transaction = @order_product.update!(inventoried: true)
 
     def new_stock_quantity(stored, required) = stored - required
 
     def kind = :substraction
-
-    def update_inventory_result = @result = @order_product.persisted?
   end
 end

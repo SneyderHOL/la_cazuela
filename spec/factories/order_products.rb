@@ -4,6 +4,7 @@ FactoryBot.define do
     product { nil }
     quantity { Faker::Number.between(from: 1, to: 5) }
     note { nil }
+    inventoried { nil }
 
     trait :as_prepare do
       status { "prepare" }
