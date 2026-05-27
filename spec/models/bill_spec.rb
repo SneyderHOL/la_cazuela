@@ -24,6 +24,17 @@ RSpec.describe Bill, type: :model do
   end
 
   describe "validations" do
-    it { is_expected.to validate_numericality_of(:total).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:total).is_greater_than(0) }
+
+    context "when detail is empty" do
+      before { bill.detail = {} }
+
+      it { is_expected.not_to be_valid }
+
+      it "must have an detail error message" do
+        bill.valid?
+        expect(bill.errors.full_messages).to eq([ "Detail cannot be empty" ])
+      end
+    end
   end
 end

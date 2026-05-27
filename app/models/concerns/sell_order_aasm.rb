@@ -27,7 +27,7 @@ module SellOrderAasm
           complete_orders
           create_bill
         end
-        transitions from: %i[ opened delivering invoicing], to: :closed
+        transitions from: %i[ opened delivering invoicing], to: :closed, guard: :enable_to_close?
       end
     end
   end

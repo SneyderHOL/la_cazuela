@@ -22,6 +22,17 @@ class SellOrder < ApplicationRecord
 
   private
 
+  def enable_to_close?
+    case payment_type
+    when "cash"
+      (total && cash_pay && cash_change) ? true : false
+    when "transfer", "card"
+      total ? true : false
+    else
+      false
+    end
+  end
+
   def delivery_allocation?
     allocation.delivery?
   end

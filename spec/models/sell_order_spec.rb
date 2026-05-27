@@ -32,9 +32,13 @@ RSpec.describe SellOrder, type: :model do
   end
 
   describe "status transitions" do
+    before do
+      allow(CompleteOrdersJob).to receive(:perform_later)
+      allow(CreateBillJob).to receive(:perform_later)
+    end
+
     context "when invoice is executed with opened status" do
       before do
-        allow(CreateBillJob).to receive(:perform_later)
         sell_order.status = "opened"
         sell_order.save
       end
@@ -52,7 +56,6 @@ RSpec.describe SellOrder, type: :model do
 
     context "when invoice is executed with packed status" do
       before do
-        allow(CreateBillJob).to receive(:perform_later)
         sell_order.status = "packed"
         sell_order.save
       end
@@ -70,7 +73,6 @@ RSpec.describe SellOrder, type: :model do
 
     context "when invoice is executed with delivering status" do
       before do
-        allow(CreateBillJob).to receive(:perform_later)
         sell_order.status = "delivering"
         sell_order.save
       end
@@ -133,11 +135,9 @@ RSpec.describe SellOrder, type: :model do
     end
 
     context "when close is executed with opened status and is persisted" do
-      before do
-        allow(CompleteOrdersJob).to receive(:perform_later)
-        allow(CreateBillJob).to receive(:perform_later)
-        sell_order.save
-      end
+      include_context "with sell_order close transition valid cash validation"
+
+      before { sell_order.save }
 
       it "change status" do
         expect { sell_order.close }.to change(
@@ -156,10 +156,7 @@ RSpec.describe SellOrder, type: :model do
     end
 
     context "when close is executed with opened status and is not persisted" do
-      before do
-        allow(CompleteOrdersJob).to receive(:perform_later)
-        allow(CreateBillJob).to receive(:perform_later)
-      end
+      include_context "with sell_order close transition valid cash validation"
 
       it "change status" do
         expect { sell_order.close }.to change(
@@ -178,9 +175,9 @@ RSpec.describe SellOrder, type: :model do
     end
 
     context "when close is executed with delivering status and is persisted" do
+      include_context "with sell_order close transition valid cash validation"
+
       before do
-        allow(CompleteOrdersJob).to receive(:perform_later)
-        allow(CreateBillJob).to receive(:perform_later)
         sell_order.status = "delivering"
         sell_order.save
       end
@@ -202,11 +199,9 @@ RSpec.describe SellOrder, type: :model do
     end
 
     context "when close is executed with delivering status and is not persisted" do
-      before do
-        allow(CompleteOrdersJob).to receive(:perform_later)
-        allow(CreateBillJob).to receive(:perform_later)
-        sell_order.status = "delivering"
-      end
+      include_context "with sell_order close transition valid cash validation"
+
+      before { sell_order.status = "delivering" }
 
       it "change status" do
         expect { sell_order.close }.to change(
@@ -224,10 +219,58 @@ RSpec.describe SellOrder, type: :model do
       end
     end
 
-    context "when close is executed with invoicing status and is persisted" do
+    context "when close is executed with invoicing status, cash payment_type and is persisted" do
+      include_context "with sell_order close transition valid cash validation"
+
       before do
-        allow(CompleteOrdersJob).to receive(:perform_later)
-        allow(CreateBillJob).to receive(:perform_later)
+        sell_order.status = "invoicing"
+        sell_order.save
+      end
+
+      it "change status" do
+        expect { sell_order.close }.to change(
+          sell_order, :status).from("invoicing").to("closed")
+      end
+
+      it do
+        sell_order.close
+        expect(CompleteOrdersJob).to have_received(:perform_later)
+      end
+
+      it do
+        sell_order.close
+        expect(CreateBillJob).to have_received(:perform_later)
+      end
+    end
+
+    context "when close is executed with invoicing status, transfer payment_type and is persisted" do
+      before do
+        sell_order.payment_type = "transfer"
+        sell_order.total = 20_000
+        sell_order.status = "invoicing"
+        sell_order.save
+      end
+
+      it "change status" do
+        expect { sell_order.close }.to change(
+          sell_order, :status).from("invoicing").to("closed")
+      end
+
+      it do
+        sell_order.close
+        expect(CompleteOrdersJob).to have_received(:perform_later)
+      end
+
+      it do
+        sell_order.close
+        expect(CreateBillJob).to have_received(:perform_later)
+      end
+    end
+
+    context "when close is executed with invoicing status, card payment_type and is persisted" do
+      before do
+        sell_order.payment_type = "card"
+        sell_order.total = 20_000
         sell_order.status = "invoicing"
         sell_order.save
       end
@@ -249,11 +292,9 @@ RSpec.describe SellOrder, type: :model do
     end
 
     context "when close is executed with invoicing status and is not persisted" do
-      before do
-        allow(CompleteOrdersJob).to receive(:perform_later)
-        allow(CreateBillJob).to receive(:perform_later)
-        sell_order.status = "invoicing"
-      end
+      include_context "with sell_order close transition valid cash validation"
+
+      before { sell_order.status = "invoicing" }
 
       it "change status" do
         expect { sell_order.close }.to change(
@@ -268,6 +309,42 @@ RSpec.describe SellOrder, type: :model do
       it do
         sell_order.close
         expect(CreateBillJob).not_to have_received(:perform_later)
+      end
+    end
+
+    context "when close is executed with invoicing status and is not enable to close with card payment_type" do
+      before do
+        sell_order.payment_type = "card"
+        sell_order.status = "invoicing"
+        sell_order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { sell_order.close }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    context "when close is executed with invoicing status and is not enable to close with transfer payment_type" do
+      before do
+        sell_order.payment_type = "transfer"
+        sell_order.status = "invoicing"
+        sell_order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { sell_order.close }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    context "when close is executed with invoicing status and is not enable to close with cash payment_type" do
+      before do
+        sell_order.payment_type = "cash"
+        sell_order.status = "invoicing"
+        sell_order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { sell_order.close }.to raise_error(AASM::InvalidTransition)
       end
     end
   end
