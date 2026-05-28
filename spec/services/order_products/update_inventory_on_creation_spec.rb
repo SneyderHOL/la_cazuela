@@ -4,7 +4,7 @@ RSpec.describe OrderProducts::UpdateInventoryOnCreation, type: :service do
   subject(:update_inventory_transaction_on_create) { described_class.new(order_product) }
 
   describe '#call' do
-    let(:recipe) { create(:recipe, :as_approved, product: create(:product)) }
+    let(:recipe) { create(:recipe, :as_approved, product: create(:product, :with_category)) }
     let(:ingredient_recipe) do
       create(:ingredient_recipe, required_quantity: 5,
         ingredient: ingredient, recipe: recipe

@@ -14,10 +14,10 @@ RSpec.shared_examples "not call the CreateInventoryTransactionsJob" do
   it { expect(CreateInventoryTransactionsJob).not_to have_received(:perform_later) }
 end
 
-RSpec.shared_examples "active scoping" do |resource|
+RSpec.shared_examples "active scoping" do |resource, traits = nil|
   describe "#active" do
-    let(:inactive_resources) { create_list(resource, 3) }
-    let(:active_resources) { create_list(resource, 2, :with_active_on) }
+    let(:inactive_resources) { create_list(resource, 3, *Array(traits)) }
+    let(:active_resources) { create_list(resource, 2, :with_active_on, *Array(traits)) }
     let(:scope_result) { described_class.active }
 
     before do
@@ -31,10 +31,10 @@ RSpec.shared_examples "active scoping" do |resource|
   end
 end
 
-RSpec.shared_examples "inactive scoping" do |resource|
+RSpec.shared_examples "inactive scoping" do |resource, traits = nil|
   describe "#inactive" do
-    let(:inactive_resources) { create_list(resource, 3) }
-    let(:active_resources) { create_list(resource, 2, :with_active_on) }
+    let(:inactive_resources) { create_list(resource, 3, *Array(traits)) }
+    let(:active_resources) { create_list(resource, 2, :with_active_on, *Array(traits)) }
     let(:scope_result) { described_class.inactive }
 
     before do

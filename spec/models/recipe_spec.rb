@@ -35,7 +35,7 @@ RSpec.describe Recipe, type: :model do
     context "with product foreign key as unique" do
       before do
         recipe.status = "approved"
-        recipe.product = create(:product)
+        recipe.product = create(:product, :with_category)
         recipe.save
       end
 
@@ -43,7 +43,7 @@ RSpec.describe Recipe, type: :model do
     end
 
     context "when recipe is not approved is not valid to associate product" do
-      before { recipe.product = create(:product) }
+      before { recipe.product = create(:product, :with_category) }
 
       it { is_expected.not_to be_valid }
     end
@@ -86,7 +86,7 @@ RSpec.describe Recipe, type: :model do
       before do
         recipe.status = "approved"
         recipe.ingredient = create(:ingredient)
-        recipe.product = create(:product)
+        recipe.product = create(:product, :with_category)
       end
 
       it { is_expected.not_to be_valid }

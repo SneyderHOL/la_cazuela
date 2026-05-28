@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ProductPolicy, type: :policy do
   subject(:product_policy) { described_class.new(user, product) }
 
-  let(:product) { create(:product) }
+  let(:product) { create(:product, :with_category) }
 
   context 'with admin' do
     let(:user) { User.new(role: :admin) }

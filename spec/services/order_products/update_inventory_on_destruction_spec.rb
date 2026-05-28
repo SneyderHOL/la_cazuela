@@ -4,7 +4,7 @@ RSpec.describe OrderProducts::UpdateInventoryOnDestruction, type: :service do
   subject(:update_inventory_transaction_on_destroy) { described_class.new(order_product) }
 
   describe '#call' do
-    let(:recipe) { create(:recipe, :as_approved, product: create(:product)) }
+    let(:recipe) { create(:recipe, :as_approved, product: create(:product, :with_category)) }
     let(:order_product) { create(:order_product, :with_order, product: recipe.product, quantity: 5) }
     let(:ingredient_recipe) do
       create(:ingredient_recipe, required_quantity: 5,

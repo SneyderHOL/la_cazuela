@@ -1,12 +1,3 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
 return unless Rails.env.development?
 
 allocation_attribute_list = [
@@ -29,6 +20,7 @@ user_attribute_list = [
   { name: "Aux Waiter", email: "aux_waiter@example.com", password: "MySecretPassword+12", role: :waiter, active: false, nickname: "Awaiter" },
   { name: "Main Cheff", email: "main_cheff@example.com", password: "MySecretPassword+13", role: :kitchen_auxiliar, active: true, nickname: "Mcheff" },
   { name: "Sub Cheff", email: "sub_cheff@example.com", password: "MySecretPassword+14", role: :kitchen_auxiliar, active: false, nickname: "Scheff" },
+  { name: "Main Cashier", email: "main_cashier@example.com", password: "MySecretPassword+15", role: :cashier, active: false, nickname: "Mcashier" },
   { name: "Admin", email: "admin@example.com", password: "MySecretPassword+10", role: :admin, active: true }
 ]
 
@@ -93,41 +85,50 @@ end
 recipe_attribute_list = draft_recipe_attribute_list + declined_recipe_attribute_list +
                         approved_recipe_attribute_list
 
+p "Creating categories ..."
+dish_category = Category.create_with(active: true).find_or_create_by(name: "Dish")
+beverage_category = Category.create_with(active: true).find_or_create_by(name: "Beverage")
+packing_category = Category.create_with(active: true).find_or_create_by(name: "Packing")
+main_dish_subcategory = Category.create_with(active: true, parent_id: dish_category.id).find_or_create_by(name: "Main")
+entry_subcategory = Category.create_with(active: true, parent_id: dish_category.id).find_or_create_by(name: "Entry")
+aside_subcategory = Category.create_with(active: true, parent_id: dish_category.id).find_or_create_by(name: "Aside")
+dessert_subcategory = Category.create_with(active: true, parent_id: dish_category.id).find_or_create_by(name: "Dessert")
+
 dish_product_attribute_list = []
 beverage_product_attribute_list = []
 entry_product_attribute_list = []
 dessert_product_attribute_list = [
-  { name: "Big Dessert", kind: 4, active: false, price: 10000 },
-  { name: "Medium Dessert", kind: 4, active: false, price: 7000 }
+  { name: "Big Dessert", active: false, category_id: dessert_subcategory.id, price: 10000 },
+  { name: "Medium Dessert", active: false, category_id: dessert_subcategory.id, price: 7000 }
 ]
 aside_product_attribute_list = []
 packing_product_attribute_list = [
-  { name: "Big Packing", kind: 5, active: false, price: 1000 },
-  { name: "Medium Packing", kind: 5, active: false, price: 700 },
-  { name: "Small Packing", kind: 5, active: false, price: 500 }
+  { name: "Big Packing", active: false, category_id: packing_category.id, price: 1000 },
+  { name: "Medium Packing", active: false, category_id: packing_category.id, price: 700 },
+  { name: "Small Packing", active: false, category_id: packing_category.id, price: 500 }
 ]
 
 (1..5).each do
   dish_product_attribute_list << {
-    name: Faker::Food.dish, kind: 0, active: false, price: Faker::Number.between(from: 25, to: 70) * 1000
+    name: Faker::Food.dish, active: false, category_id: main_dish_subcategory.id, price: Faker::Number.between(from: 25, to: 70) * 1000
   }
 end
 
 (1..5).each do
   beverage_product_attribute_list << {
-    name: Faker::Beer.name, kind: 1, active: false, price: Faker::Number.between(from: 5, to: 9) * 1000
+    name: Faker::Beer.name, active: false, category_id: beverage_category.id, price: Faker::Number.between(from: 5, to: 9) * 1000
   }
 end
 
 (1..5).each do
   entry_product_attribute_list << {
-    name: Faker::Food.fruits, kind: 2, active: false, price: Faker::Number.between(from: 9, to: 12) * 1000
+    name: Faker::Food.fruits, active: false, category_id: entry_subcategory.id, price: Faker::Number.between(from: 9, to: 12) * 1000
   }
 end
 
 (1..5).each do
   aside_product_attribute_list << {
-    name: Faker::Food.sushi, kind: 4, active: false, price: Faker::Number.between(from: 25, to: 70) * 1000
+    name: Faker::Food.sushi, active: false, category_id: aside_subcategory.id, price: Faker::Number.between(from: 25, to: 70) * 1000
   }
 end
 
@@ -174,7 +175,7 @@ p "Creating products ..."
 
 product_attribute_list.each do |product|
   Product.create_with(
-    kind: product[:kind], active: product[:active], price: product[:price]
+    category_id: product[:category_id], active: product[:active], price: product[:price]
   ).find_or_create_by(name: product[:name])
 end
 
@@ -240,32 +241,32 @@ ingred_medium_drink = Ingredient.create_with(unit: "one", stored_quantity: 100, 
 p "Creating products for suborders ..."
 
 # p1
-prod_coco_rice = Product.create_with(kind: "entry", active: true, price: 2_000).find_or_create_by(name: "Coco Rice")
-prod_fish_bowl = Product.create_with(kind: "dish", active: true, price: 35_000).find_or_create_by(name: "Fish Bowl")
+prod_coco_rice = Product.create_with(category_id: entry_subcategory.id, active: true, price: 2_000).find_or_create_by(name: "Coco Rice")
+prod_fish_bowl = Product.create_with(category_id: main_dish_subcategory.id, active: true, price: 35_000).find_or_create_by(name: "Fish Bowl")
 # coco_rice, fish_bowl, lemonade
 # p2
-prod_super_chicken_bowl = Product.create_with(kind: "dish", active: true, price: 50_000).find_or_create_by(name: "Super Chicken Bowl")
-prod_lemonade = Product.create_with(kind: "beverage", active: true, price: 5_000).find_or_create_by(name: "Lemonade")
-prod_large_bowl_pack = Product.create_with(kind: "packing", active: true, price: 1_000).find_or_create_by(name: "Large Bowl Packing")
-prod_medium_drink_pack = Product.create_with(kind: "packing", active: true, price: 500).find_or_create_by(name: "Medium Drink Packing")
+prod_super_chicken_bowl = Product.create_with(category_id: main_dish_subcategory.id, active: true, price: 50_000).find_or_create_by(name: "Super Chicken Bowl")
+prod_lemonade = Product.create_with(category_id: beverage_category.id, active: true, price: 5_000).find_or_create_by(name: "Lemonade")
+prod_large_bowl_pack = Product.create_with(category_id: packing_category.id, active: true, price: 1_000).find_or_create_by(name: "Large Bowl Packing")
+prod_medium_drink_pack = Product.create_with(category_id: packing_category.id, active: true, price: 500).find_or_create_by(name: "Medium Drink Packing")
 # super_chicken_bowl, lemonade, included_in_order -> large_bowl_packing, medium_drink_packing
 # p3
-prod_super_fish_bowl = Product.create_with(kind: "dish", active: true, price: 50_000).find_or_create_by(name: "Super Fish Bowl")
+prod_super_fish_bowl = Product.create_with(category_id: main_dish_subcategory.id, active: true, price: 50_000).find_or_create_by(name: "Super Fish Bowl")
 # super_fish_bowl, soda, large_bowl_packing
 # p4
-prod_white_rice = Product.create_with(kind: "entry", active: true, price: 1_000).find_or_create_by(name: "White Rice")
-prod_bitter_sweet_chicken_bowl = Product.create_with(kind: "dish", active: true, price: 35_000).find_or_create_by(name: "Bitter Sweet Chicken Bowl")
+prod_white_rice = Product.create_with(category_id: entry_subcategory.id, active: true, price: 1_000).find_or_create_by(name: "White Rice")
+prod_bitter_sweet_chicken_bowl = Product.create_with(category_id: main_dish_subcategory.id, active: true, price: 35_000).find_or_create_by(name: "Bitter Sweet Chicken Bowl")
 # rice, bitter_sweet_chicken_bowl, lemonade
 # p5
-prod_rice_with_chicken = Product.create_with(kind: "dish", active: true, price: 35_000).find_or_create_by(name: "Rice with Chicken")
-prod_tiramisu = Product.create_with(kind: "dessert", active: true, price: 4_000).find_or_create_by(name: "Tiramisu")
-prod_soda = Product.create_with(kind: "beverage", active: true, price: 5_000).find_or_create_by(name: "Soda")
+prod_rice_with_chicken = Product.create_with(category_id: main_dish_subcategory.id, active: true, price: 35_000).find_or_create_by(name: "Rice with Chicken")
+prod_tiramisu = Product.create_with(category_id: dessert_subcategory.id, active: true, price: 4_000).find_or_create_by(name: "Tiramisu")
+prod_soda = Product.create_with(category_id: beverage_category.id, active: true, price: 5_000).find_or_create_by(name: "Soda")
 # rice_with_chicken, tiramisu_dessert, soda
 # p6
-prod_spaguetti = Product.create_with(kind: "dish", active: true, price: 35_000).find_or_create_by(name: "Spaguetti")
+prod_spaguetti = Product.create_with(category_id: main_dish_subcategory.id, active: true, price: 35_000).find_or_create_by(name: "Spaguetti")
 # spaguetti, lemonade, large_bowl_packing, medium_drink_packing
 # p8
-prod_panela_lemonade = Product.create_with(kind: "beverage", active: true, price: 5_000).find_or_create_by(name: "Panela Lemonade")
+prod_panela_lemonade = Product.create_with(category_id: beverage_category.id, active: true, price: 5_000).find_or_create_by(name: "Panela Lemonade")
 # panela_lemonade
 # p7
 # super_chicken_bowl, lemonade, large_bowl_packing, medium_drink_packing
@@ -360,7 +361,7 @@ allocation_two = Allocation.active.desk.second
 allocation_delivery = Allocation.active.delivery.first
 allocation_takeout = Allocation.where(name: "Takeout").first
 
-sell_order1 = SellOrder.create(allocation: allocation_one, payment_type: "card", status: "closed")
+sell_order1 = SellOrder.create(allocation: allocation_one, payment_type: "card", status: "closed", total: 42_000)
 sell_order2 = SellOrder.create(allocation: allocation_delivery, payment_type: "cash", status: "delivering")
 sell_order3 = SellOrder.create(allocation: allocation_takeout, status: "packed") # Transfer
 sell_order4 = SellOrder.create(allocation: allocation_one) # Cash

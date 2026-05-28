@@ -1,36 +1,36 @@
 FactoryBot.define do
   factory :product do
     sequence(:name) { |n| "#{Faker::Food.dish} #{n}" }
-    kind { Faker::Number.between(from: 0, to: 5) }
     active { false }
     price { Faker::Number.between(from: 1_000, to: 50_000) }
+    category { nil }
 
     trait :with_active_on do
       active { true }
     end
 
     trait :dish do
-      kind { 0 }
+      category { build(:category, name: "Dish") }
     end
 
     trait :beverage do
-      kind { 1 }
+      category { build(:category, name: "Beverage") }
     end
 
     trait :entry do
-      kind { 2 }
+      category { build(:category, name: "Entry") }
     end
 
     trait :dessert do
-      kind { 3 }
+      category { build(:category, name: "Dessert") }
     end
 
     trait :aside do
-      kind { 4 }
+      category { build(:category, name: "Aside") }
     end
 
     trait :packing do
-      kind { 5 }
+      category { build(:category, name: "Packing") }
     end
 
     trait :with_recipe do
@@ -41,6 +41,10 @@ FactoryBot.define do
         recipe = create(:recipe, :as_approved, product: product)
         create_list :ingredient_recipe, evaluator.trait_ingredient_recipe_amount, :with_ingredient, recipe: recipe
       end
+    end
+
+    trait :with_category do
+      category { build(:category) } if category.nil?
     end
   end
 end

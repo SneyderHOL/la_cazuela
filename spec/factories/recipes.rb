@@ -13,7 +13,7 @@ FactoryBot.define do
     end
 
     trait :with_product do
-      association :product
+      product { build(:product, :with_recipe, :with_category) }
       status { 'approved' }
       transient do
         trait_ingredient_recipe_amount { 5 }

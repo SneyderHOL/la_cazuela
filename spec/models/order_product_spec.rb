@@ -30,7 +30,7 @@ RSpec.describe OrderProduct, type: :model do
   end
 
   describe "validations" do
-    let(:recipe) { create(:recipe, :as_approved, product: create(:product)) }
+    let(:recipe) { create(:recipe, :as_approved, product: create(:product, :with_category)) }
     let(:ingredient_recipe) do
       create(:ingredient_recipe, required_quantity: 11,
         ingredient: ingredient, recipe: recipe)
@@ -110,7 +110,7 @@ RSpec.describe OrderProduct, type: :model do
     before { order_product.save }
 
     context "when parent product have a recipe_id add_recipe before_create" do
-      let(:product) { create(:product, :with_recipe, trait_ingredient_recipe_amount: 2) }
+      let(:product) { create(:product, :with_recipe, :with_category, trait_ingredient_recipe_amount: 2) }
 
       it "adds the recipe_id of the parent product" do
         expect(order_product.recipe_id).not_to be_nil
@@ -122,7 +122,7 @@ RSpec.describe OrderProduct, type: :model do
     end
 
     context "when parent product does not add_recipe before_create" do
-      let(:product) { create(:product) }
+      let(:product) { create(:product, :with_category) }
 
       it "recipe_id is nil" do
         expect(order_product.recipe_id).to be_nil

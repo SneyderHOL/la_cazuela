@@ -1,9 +1,9 @@
 # rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.shared_context "with sell_order composite" do
-  let(:product_one) { create(:product, :with_recipe, price: 15_000) }
-  let(:product_two) { create(:product, :with_recipe, price: 10_000) }
-  let(:product_three) { create(:product, :with_recipe, price: 5_000) }
-  let(:product_four) { create(:product, :with_recipe, price: 4_000) }
+  let(:product_one) { create(:product, :with_recipe, :with_category, price: 15_000) }
+  let(:product_two) { create(:product, :with_recipe, :with_category, price: 10_000) }
+  let(:product_three) { create(:product, :with_recipe, :with_category, price: 5_000) }
+  let(:product_four) { create(:product, :with_recipe, :with_category, price: 4_000) }
   let(:order_one) { create(:order, :as_completed, sell_order: sell_order) }
   let(:order_two) { create(:order, :as_completed, sell_order: sell_order) }
   let(:order_three) { create(:order, :as_completed, sell_order: sell_order) }
@@ -29,7 +29,7 @@ end
 # rubocop:enable RSpec/MultipleMemoizedHelpers
 
 RSpec.shared_context "with sell_order soft composite" do
-  let(:product_one) { create(:product, :with_recipe, price: 15_000) }
+  let(:product_one) { create(:product, :with_recipe, :with_category, price: 15_000) }
   let(:order_one) { create(:order, :as_completed, sell_order: sell_order) }
   let(:expected_detail) do
     {
@@ -122,4 +122,16 @@ RSpec.shared_context "with sell_orders for scopes" do
       end
     end
   end
+end
+
+RSpec.shared_context "with a category tree" do
+  let(:dish_category) { create(:category, :with_active_on, name: "Dish") }
+  let(:dish_subcategories) do
+    create(:category, :with_active_on, :with_products, trait_products_amount: 3, parent: dish_category, name: "Main")
+    create(:category, :with_active_on, :with_products, trait_products_amount: 2, parent: dish_category, name: "Entry")
+    dish_aside = create(:category, :with_active_on, :with_products, trait_products_amount: 1, parent: dish_category, name: "Aside")
+    create(:category, :with_active_on, :with_products, trait_products_amount: 1, parent: dish_aside, name: "Dessert")
+  end
+
+  before { dish_subcategories }
 end

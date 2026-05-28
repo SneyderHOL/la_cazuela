@@ -20,7 +20,7 @@ FactoryBot.define do
 
     trait :with_associations do
       order { build(:order, :with_sell_order) }
-      association :product
+      product { build(:product, :with_recipe, :with_category) }
     end
 
     trait :with_order do
@@ -28,11 +28,11 @@ FactoryBot.define do
     end
 
     trait :with_product do
-      association :product
+      product { build(:product, :with_recipe, :with_category) }
     end
 
     trait :with_product_and_recipe do
-      product { create(:product, :with_recipe) }
+      product { build(:product, :with_recipe, :with_category) }
     end
   end
 end
