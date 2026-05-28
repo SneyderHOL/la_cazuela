@@ -15,5 +15,18 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "pages#home"
+
+  get "about", to: "pages#about", as: :about
+  get "contact", to: "pages#contact", as: :contact
+  get "location", to: "pages#location", as: :location
+  get "menu", to: "pages#menu", as: :menu
+
+  # scope module: 'app' do
+  #   get 'dashboard', to: 'dashboards#index'
+  #   resources :allocations
+  # end
+  # scope module: 'admin' do
+  #   get 'dashboard', to: 'dashboards#index'
+  # end
 end

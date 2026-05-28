@@ -1,0 +1,181 @@
+<% content_for :page_stylesheets do %>
+  <%= stylesheet_link_tag "pages/home", "data-turbo-track": "reload" %>
+<% end %>
+
+<!-- HERO -->
+
+<section class="hero">
+
+  <div class="hero-overlay">
+
+    <div class="container hero-content">
+
+        <h1>
+          The freshest seafood in Orlando,
+          served straight from the dock to your table.
+        </h1>
+
+        <p>
+          An authentic coastal dining experience
+          in the heart of International Drive.
+        </p>
+
+        <%= link_to "Get Directions", "https://maps.google.com/?q=4951+International+Dr+Orlando+FL+32819", class:"btn-primary" %>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- VALUE POINTS -->
+
+<section class="values">
+
+  <div class="container values-grid">
+
+    <div class="value-card">
+
+      <div class="icon">🐟</div>
+
+      <h3>Fresh Daily Catch</h3>
+
+      <p>
+        Seafood delivered every morning
+        and prepared to order.
+      </p>
+
+    </div>
+
+    <div class="value-card">
+
+      <div class="icon">🍲</div>
+
+      <h3>Authentic Coastal Recipes</h3>
+
+      <p>
+        Traditional recipes inspired by
+        generations of coastal cooking.
+      </p>
+
+    </div>
+
+    <div class="value-card">
+
+      <div class="icon">👨‍👩‍👧‍👦</div>
+
+      <h3>Family-Friendly Atmosphere</h3>
+
+      <p>
+        Comfortable dining for family meals
+        and special occasions.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- MENU PREVIEW -->
+
+<section class="menu-preview" id="menu">
+
+  <div class="container">
+
+    <h2>Signature Dishes</h2>
+
+    <div class="menu-grid">
+
+      <article class="dish-card">
+
+        <img
+        src="https://images.unsplash.com/photo-1565680018434-b513d5e5fd47"
+        alt="Grilled Seafood Platter">
+
+        <h3>Grilled Seafood Platter</h3>
+
+        <span>Fresh from the Gulf</span>
+
+      </article>
+
+      <article class="dish-card">
+
+        <img
+        src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62"
+        alt="Shrimp Dish">
+
+        <h3>Garlic Shrimp</h3>
+
+        <span>House Favorite</span>
+
+      </article>
+
+      <article class="dish-card">
+
+        <img
+        src="https://images.unsplash.com/photo-1559847844-5315695dadae"
+        alt="Seafood Paella">
+
+        <h3>Seafood Paella</h3>
+
+        <span>Traditional Coastal Recipe</span>
+
+      </article>
+
+    </div>
+
+    <div class="menu-link">
+
+      <%= link_to "See Full Menu →", "menu_path", class:"btn" %>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- VISIT US -->
+
+<section class="visit" id="location">
+
+  <div class="container">
+
+    <h2>Visit La Cazuela</h2>
+
+    <div class="visit-grid">
+
+      <div>
+
+        <h3>Address</h3>
+
+        <p>
+          4951 International Dr,
+          Orlando, FL 32819,
+          Estados Unidos
+        </p>
+
+      </div>
+
+      <div>
+
+        <h3>Hours</h3>
+
+        <p>
+          Monday - Friday:
+          11:00am - 8:00pm
+        </p>
+
+        <p>
+          Saturday - Sunday:
+          11:00am - 5:00pm
+        </p>
+
+      </div>
+
+    </div>
+
+    <%= link_to "Get Directions", "https://maps.google.com/?q=4951+International+Dr+Orlando+FL+32819", class:"btn-primary" %>
+
+  </div>
+  
+</section>

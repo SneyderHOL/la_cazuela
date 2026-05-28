@@ -1,0 +1,148 @@
+/* MENU HERO */
+.menu-hero {
+  background:
+    linear-gradient(rgba(1, 23, 64, .55),
+      rgba(1, 23, 64, .55)),
+    url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4');
+
+  background-size: cover;
+  background-position: center;
+  min-height: 50vh;
+}
+
+.menu-hero-image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  inset: 0px;
+  position: absolute;
+  display: block;
+  vertical-align: middle;
+}
+
+.menu-hero-overlay {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.menu-hero h1 {
+  color: white;
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.menu-hero p {
+  color: white;
+  margin-top: 1rem;
+}
+
+/* CATEGORY NAV */
+
+.menu-nav {
+  position: sticky;
+  top: 80px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  z-index: 50;
+}
+
+.menu-nav-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+
+.menu-nav a {
+  color: var(--secondary);
+  white-space: nowrap;
+}
+
+/* FEATURED */
+
+.featured-dish {
+  padding: 80px 0;
+}
+
+.featured-grid {
+  display: grid;
+  gap: 3rem;
+}
+
+.featured-grid img {
+  border-radius: 16px;
+}
+
+.badge {
+  background: var(--accent);
+  color: white;
+  padding: .4rem .8rem;
+  border-radius: 999px;
+  font-size: .85rem;
+}
+
+.featured-content h2 {
+  margin: 1rem 0;
+}
+
+/* MENU CATEGORY */
+
+.menu-category {
+  padding: 80px 0;
+}
+
+.menu-category:nth-child(even) {
+  background: #fafafa;
+}
+
+.menu-category h2 {
+  margin-bottom: 2rem;
+}
+
+.menu-items {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.menu-item h3 {
+  margin-bottom: .3rem;
+}
+
+.menu-item span {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* CTA */
+
+.menu-cta {
+  background: var(--primary);
+  color: white;
+  text-align: center;
+  padding: 100px 0;
+}
+
+.menu-cta h2 {
+  margin-bottom: 1rem;
+}
+
+.menu-cta p {
+  margin-bottom: 2rem;
+}
+
+@media(min-width:1024px) {
+  .featured-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
