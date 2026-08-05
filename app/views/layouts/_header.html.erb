@@ -32,10 +32,10 @@
           <% if signed_in? %>
             <div class="user_name_email" id="user_name_email">
               <%= "#{current_user.nickname ? current_user.nickname : current_user.email}" %>
+              <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "staff-logout" %>
             </div>
-            <%= button_to "Sign Out", "session_path", method: :delete, class: "staff-login" %>
           <% else %>
-            <%= link_to "Staff Login", "signin_path", class: "staff-login" %>
+            <%= link_to "Staff Login", new_user_session_path, class: "staff-login" %>
           <% end %>
         </li>
 
@@ -69,10 +69,10 @@
     <% if signed_in? %>
       <div class="user_name_email" id="user_name_email">
         <%= "#{current_user.nickname ? current_user.nickname : current_user.email}" %>
+        <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "staff-logout" %>
       </div>
-      <%= button_to "Sign Out", "session_path", method: :delete, class: "staff-login" %>
     <% else %>
-      <%= link_to "Staff Login", "signin_path", class: "staff-login" %>
+      <%= link_to "Staff Login", new_user_session_path, class: "staff-login" %>
     <% end %>
 
   <div>
