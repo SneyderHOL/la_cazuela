@@ -1,0 +1,97 @@
+.hero {
+  background:
+    linear-gradient(rgba(1, 23, 64, .55),
+      rgba(1, 23, 64, .55)),
+    url('https://images.unsplash.com/photo-1552566626-52f8b828add9');
+  background-size: cover;
+  background-position: center;
+  min-height: 85vh;
+}
+
+.hero-overlay {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  text-align: center;
+  color: white;
+  max-width: 850px;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  margin-bottom: 2rem;
+}
+
+.values {
+  padding: 100px 0;
+}
+
+.values-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.value-card {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, .06);
+}
+
+.icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.menu-preview {
+  padding: 100px 0;
+}
+
+.menu-preview h2 {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.menu-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.dish-card img {
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.dish-card h3 {
+  margin-top: 1rem;
+}
+
+.dish-card span {
+  color: #666;
+}
+
+.menu-link {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.visit {
+  background: var(--neutral);
+  padding: 100px 0;
+  text-align: center;
+}
+
+.visit-grid {
+  display: grid;
+  gap: 2rem;
+  margin: 3rem 0;
+}

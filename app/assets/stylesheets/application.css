@@ -1,10 +1,239 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+:root {
+  --primary: #02BDF2;
+  --secondary: #011740;
+  --accent: #F47C20;
+  --light: #FFFFFF;
+  --neutral: #F8F8F5;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--secondary);
+  line-height: 1.6;
+}
+
+.container {
+  width: min(90%, 1200px);
+  margin: auto;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  width: 100%;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1000;
+  transition: .3s;
+}
+
+.header.scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 80px;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+}
+
+nav a {
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--secondary);
+}
+
+.logo img {
+  width: 55px;
+}
+
+.staff-login {
+  opacity: .6;
+}
+
+.desktop-nav {
+  display: none;
+}
+
+.mobile-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hamburger {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--secondary);
+  margin: 5px 0;
+}
+
+.header-cta,
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.header-cta {
+  padding: .7rem 1rem;
+  font-size: .85rem;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 1rem 2rem;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  background: white;
+  border-top: 1px solid #eee;
+}
+
+.mobile-menu.active {
+  display: flex;
+}
+
+.mobile-menu a {
+  padding: 1rem 5%;
+  color: var(--secondary);
+}
+
+.mobile-login {
+  opacity: .6;
+}
+
+.footer {
+  background: var(--secondary);
+  color: white;
+  padding: 80px 0 20px;
+}
+
+.footer-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: white;
+}
+
+.socials {
+  display: flex;
+  gap: 15px;
+  font-size: 24px;
+}
+
+.footer a {
+  display: block;
+  color: white;
+  margin: .5rem 0;
+}
+
+.footer-logo {
+  width: 80px;
+  margin-bottom: 1rem;
+}
+
+.copyright {
+  text-align: center;
+  opacity: .6;
+  margin-top: 2rem;
+}
+
+@media(min-width:1024px) {
+
+  .hamburger,
+  .header-cta,
+  .mobile-menu {
+    display: none;
+  }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .desktop-nav a {
+    color: var(--secondary);
+  }
+
+  .staff-login {
+    margin-left: 2rem;
+    font-size: .9rem;
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .visit-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns:
+      repeat(4, 1fr);
+  }
+
+  .hero {
+    min-height: 90vh;
+  }
+
+  .hero-overlay {
+    min-height: 90vh;
+  }
+}
