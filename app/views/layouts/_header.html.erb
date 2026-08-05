@@ -39,8 +39,12 @@
           <% end %>
         </li>
 
+        <% if signed_in? && current_user.admin? %>
+          <li>
+            <%= link_to "Administrative Panel", avo_path, class: "staff-login" %>
+          </li>
+        <% end %>
       </ul>
-
 
     </nav>
 
@@ -73,6 +77,10 @@
       </div>
     <% else %>
       <%= link_to "Staff Login", new_user_session_path, class: "staff-login" %>
+    <% end %>
+
+    <% if signed_in? && current_user.admin? %>
+      <%= link_to "Administrative Panel", avo_path, class: "staff-login" %>
     <% end %>
 
   <div>

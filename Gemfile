@@ -12,9 +12,9 @@ gem "pg", "~> 1.6", ">= 1.6.3"
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
-# Hotwire"s SPA-like page accelerator [https://turbo.hotwired.dev]
+# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
-# Hotwire"s modest JavaScript framework [https://stimulus.hotwired.dev]
+# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -46,6 +46,8 @@ gem "devise", "~> 5.0"
 gem "pundit", "~> 2.5", ">= 2.5.2"
 
 gem "ancestry", "~> 5.1"
+
+gem "avo", ">= 4.1.3"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"

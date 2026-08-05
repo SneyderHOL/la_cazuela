@@ -182,6 +182,10 @@ nav a {
   display: flex;
 }
 
+.mobile-menu.active .user_name_email {
+  padding: 1rem 5%;
+}
+
 .mobile-menu a {
   padding: 1rem 5%;
   color: var(--secondary);

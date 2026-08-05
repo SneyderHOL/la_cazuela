@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
   devise_for :users, only: :sessions
+  scope module: "admin" do
+    authenticate :user, ->(user) { user.admin? } do
+      mount_avo
+    end
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -18,11 +23,8 @@ Rails.application.routes.draw do
   get "location", to: "pages#location", as: :location
   get "menu", to: "pages#menu", as: :menu
 
-  # scope module: 'app' do
-  #   get 'dashboard', to: 'dashboards#index'
+  # scope module: "app" do
+  #   get "dashboard", to: "dashboards#index"
   #   resources :allocations
-  # end
-  # scope module: 'admin' do
-  #   get 'dashboard', to: 'dashboards#index'
   # end
 end
