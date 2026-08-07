@@ -1,5 +1,22 @@
 require 'rails_helper'
 
+# == Schema Information
+#
+# Table name: allocations
+# Database name: primary
+#
+#  id         :bigint           not null, primary key
+#  active     :boolean          not null
+#  kind       :integer          not null
+#  name       :string           not null
+#  status     :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_allocations_on_name  (name) UNIQUE
+#
 RSpec.describe Allocation, type: :model do
   subject(:allocation) { build(:allocation) }
 

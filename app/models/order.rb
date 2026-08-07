@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: orders
+# Database name: primary
+#
+#  id            :bigint           not null, primary key
+#  status        :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  sell_order_id :bigint           not null
+#
+# Indexes
+#
+#  index_orders_on_sell_order_id  (sell_order_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (sell_order_id => sell_orders.id)
+#
 class Order < ApplicationRecord
   include OrderAasm
 

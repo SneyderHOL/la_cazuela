@@ -1,5 +1,29 @@
 require 'rails_helper'
 
+# == Schema Information
+#
+# Table name: recipes
+# Database name: primary
+#
+#  id            :bigint           not null, primary key
+#  name          :string           not null
+#  status        :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  ingredient_id :bigint
+#  product_id    :bigint
+#
+# Indexes
+#
+#  index_recipes_on_ingredient_id  (ingredient_id) UNIQUE
+#  index_recipes_on_name           (name) UNIQUE
+#  index_recipes_on_product_id     (product_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (ingredient_id => ingredients.id)
+#  fk_rails_...  (product_id => products.id)
+#
 RSpec.describe Recipe, type: :model do
   subject(:recipe) { build(:recipe) }
 
