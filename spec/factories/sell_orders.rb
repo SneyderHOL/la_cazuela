@@ -1,3 +1,26 @@
+# == Schema Information
+#
+# Table name: sell_orders
+# Database name: primary
+#
+#  id            :bigint           not null, primary key
+#  cash_change   :integer
+#  cash_pay      :integer
+#  payment_type  :string
+#  status        :string           not null
+#  total         :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  allocation_id :bigint           not null
+#
+# Indexes
+#
+#  index_sell_orders_on_allocation_id  (allocation_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (allocation_id => allocations.id)
+#
 FactoryBot.define do
   factory :sell_order do
     allocation { nil }

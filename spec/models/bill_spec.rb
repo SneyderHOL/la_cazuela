@@ -1,5 +1,25 @@
 require 'rails_helper'
 
+# == Schema Information
+#
+# Table name: bills
+# Database name: primary
+#
+#  id            :bigint           not null, primary key
+#  detail        :jsonb
+#  total         :integer          not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  sell_order_id :bigint           not null
+#
+# Indexes
+#
+#  index_bills_on_sell_order_id  (sell_order_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (sell_order_id => sell_orders.id)
+#
 RSpec.describe Bill, type: :model do
   subject(:bill) { build(:bill, :with_sell_order) }
 

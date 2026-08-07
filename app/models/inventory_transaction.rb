@@ -1,3 +1,27 @@
+# == Schema Information
+#
+# Table name: inventory_transactions
+# Database name: primary
+#
+#  id            :bigint           not null, primary key
+#  by_admin      :boolean          default(FALSE), not null
+#  cost          :integer          default(0), not null
+#  error_message :string
+#  kind          :integer          not null
+#  quantity      :integer          not null
+#  status        :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  ingredient_id :bigint           not null
+#
+# Indexes
+#
+#  index_inventory_transactions_on_ingredient_id  (ingredient_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (ingredient_id => ingredients.id)
+#
 class InventoryTransaction < ApplicationRecord
   include InventoryTransactionAasm
 

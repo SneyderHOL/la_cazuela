@@ -1,5 +1,22 @@
 require 'rails_helper'
 
+# == Schema Information
+#
+# Table name: funds
+# Database name: primary
+#
+#  id               :bigint           not null, primary key
+#  amount           :integer          not null
+#  detail           :string           not null
+#  is_deposit       :boolean          not null
+#  transaction_date :date             not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+# Indexes
+#
+#  index_funds_on_transaction_date  (transaction_date)
+#
 RSpec.describe Fund, type: :model do
   subject(:deposit_fund) { build(:fund, :as_deposit) }
 
