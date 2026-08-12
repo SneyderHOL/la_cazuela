@@ -1,0 +1,141 @@
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/sell_orders", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+
+<div class="dashboard-content">
+
+  <!-- Page Header -->
+  <section class="dashboard-page-header">
+
+    <div>
+
+      <span class="dashboard-eyebrow">
+        Sales
+      </span>
+
+      <h1>
+        Sell Orders
+      </h1>
+
+      <p>
+        Manage open sales, payments and billing.
+      </p>
+
+    </div>
+
+    <div class="dashboard-header-actions">
+
+      <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, @kind_filter_param), method: :get, class: "dashboard-secondary-button", id: "refresh-sell-orders" do %>
+
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 11a8 8 0 0 0-14.9-3"></path>
+          <path d="M4 4v4h4"></path>
+          <path d="M4 13a8 8 0 0 0 14.9 3"></path>
+          <path d="M20 20v-4h-4"></path>
+        </svg>
+
+        Refresh
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+
+  <!-- Filters -->
+  <section class="sell-orders-filters" aria-label="Sell order status">
+
+    <!-- Status -->
+    <div class="sell-orders-filter-group">
+
+      <span class="sell-orders-filter-label">
+          Status
+      </span>
+
+      <div class="sell-orders-filter-options">
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(nil, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status].nil?), data: { status: "all", filter: "status" } do %>
+          <span>All</span>
+          <strong><%= @current_sales_counting.values.sum %></strong>
+        <% end %>
+
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "opened" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "opened"), data: { status: "opened", filter: "status" } do %>
+          <span>Opened</span>
+          <strong><%= @current_sales_counting["opened"] || 0 %></strong>
+        <% end %>
+
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "packed" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "packed"), data: { status: "packed", filter: "status" } do %>
+          <span>Packed</span>
+          <strong><%= @current_sales_counting["packed"] || 0 %></strong>
+        <% end %>
+
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "invoicing" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "invoicing"), data: { status: "invoicing", filter: "status" } do %>
+          <span>Invoicing</span>
+          <strong><%= @current_sales_counting["invoicing"] || 0 %></strong>
+        <% end %>
+
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "delivering" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "delivering"), data: { status: "delivering", filter: "status" } do %>
+          <span>Delivering</span>
+          <strong><%= @current_sales_counting["delivering"] || 0 %></strong>
+        <% end %>
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "closed" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "closed"), data: { status: "closed", filter: "status" } do %>
+          <span>Closed</span>
+          <strong><%= @current_sales_counting["closed"] || 0 %></strong>
+        <% end %>
+
+      </div>
+    </div>
+
+    <!-- Allocation Kind -->
+    <div class="sell-orders-filter-group">
+
+      <span class="sell-orders-filter-label">
+          Order Type
+      </span>
+
+      <div class="sell-orders-filter-options">
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, nil), method: :get, class: class_names("sell-order-filter", active: params[:kind].nil?), data: { kind: "all", filter: "kind" } do %>
+            <span>All</span>
+            <strong><%= @current_sales_counting_by_kind.values.sum %></strong>
+        <% end %>
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, { kind: "desk" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "desk"), data: { kind: "desk", filter: "kind" } do %>
+            <span>Tables</span>
+            <strong><%= @current_sales_counting_by_kind["desk"] || 0  %></strong>
+        <% end %>
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, { kind: "delivery" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "delivery"), data: { kind: "delivery", filter: "kind" } do %>
+            <span>Deliveries</span>
+            <strong><%= @current_sales_counting_by_kind["delivery"] || 0  %></strong>
+        <% end %>
+
+        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, { kind: "takeout" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "takeout"), data: { kind: "takeout", filter: "kind" } do %>
+            <span>Takeout</span>
+            <strong><%= @current_sales_counting_by_kind["takeout"] || 0  %></strong>
+        <% end %>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Sell Orders Table -->
+  <section class="sell-orders-container">
+
+    <div class="sell-orders-table-wrapper">
+
+      <%= render 'dashboard/sell_orders/sales_table_rows', current_sales: @current_sales %>
+
+    </div>
+
+  </section>
+
+</div>

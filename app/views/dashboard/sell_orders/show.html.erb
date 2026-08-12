@@ -1,0 +1,342 @@
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/sell_orders", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+
+<div class="dashboard-main sell-order-detail-page">
+
+  <!-- =====================================================
+      HEADER
+  ====================================================== -->
+
+  <section class="dashboard-page-header sell-order-detail-header">
+
+    <div class="sell-order-header-left">
+
+      <%= link_to dashboard_sell_orders_path, class: "dashboard-back-link" do %>
+
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 12H5"></path>
+          <path d="M12 19l-7-7 7-7"></path>
+        </svg>
+
+        Sell Orders
+
+      <% end %>
+
+      <%= render "layouts/flash" %>
+
+
+      <div class="sell-order-heading">
+
+        <div>
+
+          <span class="dashboard-eyebrow">
+            Sell Order
+          </span>
+
+          <h1>
+            #<%= @sell_order.id %>
+          </h1>
+
+        </div>
+
+        <span class="sell-order-status <%= @sell_order.status.dasherize %>">
+          <%= @sell_order.status.humanize %>
+        </span>
+
+      </div>
+
+
+      <p>
+        <%= @sell_order.allocation.name %> · <%= @sell_order.created_at.strftime("%A, %I:%M %p") %>
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <% if @sell_order.is_available_to_invoice? %>
+    <!-- =====================================================
+        PRE-INVOICING ACTION
+    ====================================================== -->
+
+    <section class="sell-order-action-card">
+
+      <div>
+
+        <h2>
+          Ready to invoice?
+        </h2>
+
+        <p>
+          Calculate the sell order total and begin the
+          checkout process.
+        </p>
+
+      </div>
+
+      <%= button_to invoice_dashboard_sell_order_path(@sell_order.id), class: "dashboard-primary-button", id: "start-invoicing" do %>
+        Start Invoicing
+      <% end %>
+
+    </section>
+
+  <% end %>
+
+  <% if @sell_order.status == "invoicing" %>
+
+    <section class="sell-order-checkout-card">
+
+      <div class="dashboard-card-header">
+
+        <div>
+
+          <h2>
+            Checkout
+          </h2>
+
+          <p>
+            Complete the payment for this sell order.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="sell-order-checkout-body">
+
+        <div class="sell-order-final-total">
+
+            <span>
+              Total to Pay
+            </span>
+
+            <strong>
+              <%= number_to_currency(@sell_order.total, precision: 0) %>
+            </strong>
+
+        </div>
+
+        <div class="sell-order-payment">
+
+          <h3>
+            Payment Type
+          </h3>
+
+          <%= form_with url: payment_dashboard_sell_order_path(@sell_order), method: :post, data: { controller: "payment-option" } do |form| %>
+
+            <div class="payment-options" role="radiogroup" aria-label="Payment type" data-action="change->payment-option#update">
+
+              <!-- Cash -->
+
+              <%= form.label :payment_type_cash, class: "payment-option" do %>
+
+                <%= form.radio_button :payment_type, "cash" %>
+
+                <span class="payment-option-content">
+
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="6" width="18" height="12" rx="2" ></rect>
+
+                    <circle cx="12" cy="12" r="2.5"></circle>
+
+                    <path d="M7 9h.01"></path>
+                    <path d="M17 15h.01"></path>
+                  </svg>
+
+                  <span>
+                    Cash
+                  </span>
+
+                </span>
+
+              <% end %>
+
+
+              <!-- Transfer -->
+
+              <%= form.label :payment_type_transfer, class: "payment-option" do %>
+
+                <%= form.radio_button :payment_type, "transfer" %>
+
+                <span class="payment-option-content">
+
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 7h10"></path>
+                    <path d="M13 3l4 4-4 4"></path>
+
+                    <path d="M17 17H7"></path>
+                    <path d="M11 13l-4 4 4 4"></path>
+                  </svg>
+
+                  <span>
+                    Transfer
+                  </span>
+
+                </span>
+
+              <% end %>
+
+
+              <!-- Card -->
+
+              <%= form.label :payment_type_card, class: "payment-option" do %>
+
+                <%= form.radio_button :payment_type, "card" %>
+
+                <span class="payment-option-content">
+
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+
+                    <path d="M3 10h18"></path>
+
+                    <path d="M7 15h3"></path>
+                  </svg>
+
+                  <span>
+                    Card
+                  </span>
+
+                </span>
+
+              <% end %>
+
+            </div>
+
+
+            <!-- =====================================================
+                CASH PAYMENT
+            ====================================================== -->
+
+            <div class="cash-payment-fields" id="cash-payment-fields" >
+
+              <%= form.label "cash-pay", class: "dashboard-form-label" do %>
+                Cash received
+              <% end %>
+
+
+              <div class="cash-input-wrapper">
+
+                <span>
+                  $
+                </span>
+
+                <%= form.number_field :cash_pay, id: "cash-pay", min: 0, inputmode: "numeric", placeholder: "0", autocomplete: "off", value: @sell_order.cash_pay.to_s, data: { payment_option_target: "input", action: "input->payment-option#input_update" } %>
+
+              </div>
+
+
+              <div class="cash-change">
+
+                <span>
+                  Change
+                </span>
+
+                <strong id="cash-change-amount">
+                  <%= number_to_currency(@sell_order.cash_change || 0, precision: 0) %>
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                PAYMENT ACTION
+            ====================================================== -->
+
+            <div class="sell-order-payment-actions">
+
+              <%= form.submit "Save Payment", class: "dashboard-primary-button", id: "save-payment", disabled: true, data: { payment_option_target: "submit" } %>
+
+
+            </div>
+
+          <% end %>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <% if @sell_order.is_available_to_deliver? %>
+
+      <section class="sell-order-action-card">
+
+        <div>
+
+          <h2>
+            The sell order is available to deliver
+          </h2>
+
+          <p>
+            You can now deliver this sell order.
+          </p>
+
+        </div>
+
+        <%= button_to("Deliver Sell Order", deliver_dashboard_sell_order_path(@sell_order), method: :patch, class: "dashboard-primary-button") %>
+
+      </section>
+
+    <% end %>
+
+    <% if @sell_order.is_available_to_close? %>
+
+      <section class="sell-order-action-card">
+
+        <div>
+
+          <h2>
+            Payment completed
+          </h2>
+
+          <p>
+            The payment has been recorded.
+            You can now close this sell order.
+          </p>
+
+        </div>
+
+        <%= button_to("Close Sell Order", close_dashboard_sell_order_path(@sell_order), method: :patch, class: "dashboard-primary-button") %>
+
+      </section>
+
+    <% end %>
+
+  <% end %>
+
+  <!-- =====================================================
+      ORDERS
+  ====================================================== -->
+
+  <section class="sell-order-orders">
+
+    <div class="dashboard-card-header">
+
+      <div>
+
+        <h2>
+          Orders
+        </h2>
+
+        <p>
+          Orders attached to this sell order.
+        </p>
+
+      </div>
+
+      <span class="sell-order-item-count">
+        <%= pluralize(@sell_order.orders.size, "order")  %>
+      </span>
+
+    </div>
+
+    <%= render "dashboard/sell_orders/orders", orders: @sell_order.orders %>
+
+  </section>
+
+</div>

@@ -26,4 +26,11 @@ class Allocation < ApplicationRecord
   validates :name, :kind, :status, presence: true
   validates :name, uniqueness: true
   validates :active, exclusion: [ nil ]
+
+  # scope :current_pending_delivery, -> {
+  #   where(kind: :delivery, active: true)
+  #     .joins(:sell_orders)
+  #     .where(sell_orders: { created_at: Time.zone.today.beginning_of_day..Time.current,
+  #            status: [:opened, :packed, :invoicing]})
+  # }
 end

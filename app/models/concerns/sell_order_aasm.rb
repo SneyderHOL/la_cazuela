@@ -15,7 +15,7 @@ module SellOrderAasm
         after do
           create_bill
         end
-        transitions from: %i[ opened packed delivering ], to: :invoicing
+        transitions from: %i[ opened packed delivering ], to: :invoicing, guard: :suborders_are_done?
       end
 
       event :deliver do
@@ -27,7 +27,7 @@ module SellOrderAasm
           complete_orders
           create_bill
         end
-        transitions from: %i[ opened delivering invoicing], to: :closed, guard: :enable_to_close?
+        transitions from: %i[ delivering invoicing], to: :closed, guard: :is_paid?
       end
     end
   end

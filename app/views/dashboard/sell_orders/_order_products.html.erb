@@ -1,0 +1,85 @@
+<% if order_products.empty? %>
+
+  <div class="sell-order-products-empty-state">
+
+    <div class="sell-order-products-empty-state-icon">
+
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 10h12"></path>
+
+        <path d="M7 10a4 4 0 0 1 0-8
+                      4 4 0 0 1 3.5 2
+                      4 4 0 0 1 7.5 2
+                      4 4 0 0 1-1 8"></path>
+
+        <path d="M7 10v8"></path>
+        <path d="M17 10v8"></path>
+        <path d="M7 18h10"></path>
+        <path d="M9 22h6"></path>
+      </svg>
+
+    </div>
+
+    <h3>
+      Order Products is empty.
+    </h3>
+
+    <p>
+      There are no products attached to this order yet.
+    </p>
+
+  </div>
+
+<% else %>
+
+  <div class="sell-order-products">
+
+    <% order_products.each do |order_product| %>
+
+      <div class="sell-order-product">
+
+        <div class="sell-order-product-info">
+
+          <span class="sell-order-product-quantity">
+            <%= order_product.quantity %>x
+          </span>
+
+          <div>
+
+            <h3>
+              <%= order_product.product.name.humanize %>
+            </h3>
+
+            <span>
+              <%= number_to_currency(order_product.product.price, precision: 0) %> each
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <strong>
+          <%= number_to_currency(order_product.quantity * order_product.product.price, precision: 0) %>
+        </strong>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+
+  <footer class="sell-order-suborder-footer">
+
+    <span>
+      Subtotal
+    </span>
+
+    <strong>
+      <%= number_to_currency(order_products.sum { |order_product| order_product.quantity * order_product.product.price }, precision: 0) %>
+    </strong>
+
+  </footer>
+
+<% end %>

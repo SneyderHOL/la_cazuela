@@ -24,7 +24,7 @@
 FactoryBot.define do
   factory :sell_order do
     allocation { nil }
-    payment_type { :transfer }
+    payment_type { nil }
     total { nil }
     cash_pay { nil }
     cash_change { nil }
@@ -94,7 +94,15 @@ FactoryBot.define do
     end
 
     trait :with_allocation do
-      association :allocation
+      association :allocation, :with_active_on
+    end
+
+    trait :with_delivery_allocation do
+      association :allocation, :as_delivery, :with_active_on
+    end
+
+    trait :with_takeout_allocation do
+      association :allocation, :as_takeout, :with_active_on
     end
 
     trait :with_associations do

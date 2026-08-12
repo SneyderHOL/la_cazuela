@@ -1,0 +1,135 @@
+<% if current_sales.empty? %>
+  <section class="sell-orders-empty">
+
+    <div class="sell-orders-empty-icon">
+
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 2h12"></path>
+        <path d="M6 22h12"></path>
+        <path d="M8 2v5"></path>
+        <path d="M16 2v5"></path>
+        <path d="M8 17v5"></path>
+        <path d="M16 17v5"></path>
+
+        <path d="M8 7h8v3a4 4 0 0 1-8 0V7z"></path>
+
+        <path d="M10 13h4"></path>
+
+      </svg>
+
+    </div>
+
+    <h3>
+      No open sell orders
+    </h3>
+
+    <p>
+      There are currently no active sales requiring attention.
+    </p>
+
+  </section>
+
+<% else %>
+
+  <table class="sell-orders-table">
+
+    <thead>
+
+      <tr>
+
+        <th>
+          Sell Order
+        </th>
+
+        <th>
+          Allocation
+        </th>
+
+        <th>
+          Products
+        </th>
+
+        <th>
+          Total
+        </th>
+
+        <th>
+          Payment
+        </th>
+
+        <th>
+          Status
+        </th>
+
+        <th>
+          Action
+        </th>
+
+      </tr>
+
+    </thead>
+
+
+    <tbody>
+
+      <% current_sales.each do |sale| %>
+        <tr>
+
+          <td>
+
+            <div class="sell-order-number">
+              #<%= sale.id %>
+            </div>
+
+            <span class="sell-order-date">
+              <%= sale.created_at.strftime("%A, %I:%M %p") %>
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <span class="allocation-name">
+              <%= sale.allocation.name %>
+            </span>
+
+          </td>
+
+
+          <%= render 'dashboard/sell_orders/counts_table_data', sell_order_counts: sell_orders_counting_helper(sale) %>
+
+
+          <td>
+
+            <span class="payment-<%= sale.payment_type.nil? ? 'not-' : '' %>selected">
+              <%= sale.payment_type || "Not selected" %>
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <span class="sell-order-status <%= sale.status.dasherize %>">
+              <%= sale.status.humanize %>
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <%= link_to "View", dashboard_sell_order_path(sale.id), class: "sell-order-view-button" %>
+
+          </td>
+
+        </tr>
+
+      <% end %>
+
+    </tbody>
+
+  </table>
+  
+<% end %>

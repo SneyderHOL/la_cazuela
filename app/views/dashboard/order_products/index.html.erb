@@ -1,0 +1,102 @@
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/preparations", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+<div class="dashboard-content">
+
+  <!-- Page Header -->
+  <section class="dashboard-page-header">
+
+    <div>
+
+      <span class="dashboard-eyebrow">
+        Kitchen
+      </span>
+
+      <h1>
+        Preparations
+      </h1>
+
+      <p>
+        Manage products that are currently waiting to be prepared.
+      </p>
+
+    </div>
+
+    <div class="dashboard-header-actions">
+
+      <%= button_to dashboard_preparations_path, params: @status_filter_param, method: :get, class: "dashboard-secondary-button", id: "refresh-preparations" do %>
+
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 11a8 8 0 0 0-14.9-3"></path>
+          <path d="M4 4v4h4"></path>
+          <path d="M4 13a8 8 0 0 0 14.9 3"></path>
+          <path d="M20 20v-4h-4"></path>
+        </svg>
+
+        Refresh
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+
+  <!-- Preparation Summary -->
+  <section class="preparation-summary" aria-label="Preparation summary">
+
+    <%= button_to dashboard_preparations_path, method: :get, class: class_names("preparation-filter", active: params[:status].nil?), data: { status: "all" } do %>
+      <span>All</span>
+      <strong><%= @current_preparations_counting.values.sum %></strong>
+    <% end %>
+
+    <%= button_to dashboard_preparations_path, params: { status: "requested" }, method: :get, class: class_names("preparation-filter", active: params[:status] == "requested"), data: { status: "requested" } do %>
+      <span>Requested</span>
+      <strong><%= @current_preparations_counting["requested"] || 0 %></strong>
+    <% end %>
+
+    <%= button_to dashboard_preparations_path, params: { status: "prepare" }, method: :get, class: class_names("preparation-filter", active: params[:status] == "prepare"), data: { status: "prepare" } do %>
+      <span>Prepare</span>
+      <strong><%= @current_preparations_counting["prepare"] || 0 %></strong>
+    <% end %>
+
+    <%= button_to dashboard_preparations_path, params: { status: "preparing" }, method: :get, class: class_names("preparation-filter", active: params[:status] == "preparing"), data: { status: "preparing" } do %>
+      <span>Preparing</span>
+      <strong><%= @current_preparations_counting["preparing"] || 0 %></strong>
+    <% end %>
+
+
+    <%= button_to dashboard_preparations_path, params: { status: "completed" }, method: :get, class: class_names("preparation-filter", active: params[:status] == "completed"), data: { status: "completed" } do %>
+      <span>Completed</span>
+      <strong><%= @current_preparations_counting["completed"] || 0 %></strong>
+    <% end %>
+
+  </section>
+
+
+  <!-- Preparation Queue -->
+  <section class="preparation-queue">
+
+    <%= render "layouts/flash" %>
+
+    <% if @param_status.nil? || @param_status == :requested %>
+      <!-- Requested -->
+      <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.requested, status: "requested" %>
+    <% end %>
+
+    <% if @param_status.nil? || @param_status == %i[ prepare preparing ] %>
+      <!-- Preparing -->
+      <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.preparing, status: "preparing" %>
+
+      <!-- Prepare -->
+      <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.prepare, status: "prepare" %>
+    <% end %>
+
+    <% if @param_status.nil? || @param_status == :completed %>
+      <!-- Completed -->
+      <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.completed, status: "completed" %>
+    <% end %>
+
+  </section>
+
+</div>

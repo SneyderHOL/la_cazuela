@@ -1,0 +1,13 @@
+<% if status_reference == "prepare" %>
+
+  <%= button_to cook_dashboard_preparation_path(id), params: @status_filter_param, class: "preparation-action-button" do %>
+    Start Preparation
+  <% end %>
+
+<% elsif status_reference == "preparing" %>
+
+  <%= button_to complete_dashboard_preparation_path(id), params: @status_filter_param, class: "preparation-action-button complete" do %>
+    Mark Completed
+  <% end %>
+
+<% end %>
