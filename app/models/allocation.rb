@@ -21,7 +21,7 @@ class Allocation < ApplicationRecord
 
   has_many :sell_orders, dependent: :restrict_with_error
 
-  enum :kind, { desk: 0, delivery: 1 }
+  enum :kind, { desk: 0, delivery: 1, takeout: 2 }
 
   validates :name, :kind, :status, presence: true
   validates :name, uniqueness: true

@@ -47,7 +47,7 @@ RSpec.describe Allocation, type: :model do
   describe "validations" do
     it do
       expect(allocation).to define_enum_for(:kind).with_values({
-        desk: 0, delivery: 1
+        desk: 0, delivery: 1, takeout: 2
       }).backed_by_column_of_type(:integer)
     end
 

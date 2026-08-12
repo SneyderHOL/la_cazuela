@@ -25,12 +25,12 @@ FactoryBot.define do
       active { true }
     end
 
-    trait :as_desk do
-      kind { :desk }
-    end
-
     trait :as_delivery do
       kind { :delivery }
+    end
+
+    trait :as_takeout do
+      kind { :takeout }
     end
   end
 end
