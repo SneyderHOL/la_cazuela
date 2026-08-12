@@ -1,0 +1,71 @@
+<!-- Takeout card -->
+<article class="takeout-allocation-card">
+
+  <div class="takeout-allocation-main">
+
+    <div class="takeout-allocation-icon">
+
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <!-- To-go box -->
+        <path d="M4 8h16"></path>
+        <path d="M5 8l1 11h12l1-11"></path>
+        <path d="M7 8l2-4h6l2 4"></path>
+        <path d="M9 12h6"></path>
+        <path d="M12 12v3"></path>
+      </svg>
+
+    </div>
+
+
+    <div class="takeout-allocation-element">
+
+      <div class="takeout-allocation-title">
+
+        <h3>
+          <%= takeout.name.humanize %>
+        </h3>
+
+        <span class="allocation-status busy">
+          Pending Orders
+        </span>
+
+      </div>
+
+      <div class="takeout-allocation-suborders">
+
+        <% @takeouts[takeout.id].each do |sell_order| %>
+
+          <div class="takeout-allocation-details">
+            <p>
+              Sell Order #<%= sell_order.id %>
+            </p>
+
+            <div>
+
+              <% sell_order.orders.each do |order| %>
+
+                <%= link_to dashboard_order_path(order.id), class: "dashboard-secondary-button" do %>
+                  View Order #<%= order.id %>
+
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h14"></path>
+                    <path d="M13 6l6 6-6 6"></path>
+                  </svg>
+
+                <% end %>
+
+              <% end %>
+
+            </div>
+
+          </div>
+
+        <% end %>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</article>

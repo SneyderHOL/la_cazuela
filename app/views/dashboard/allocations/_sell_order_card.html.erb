@@ -1,0 +1,81 @@
+<article class="allocation-order-card">
+
+  <header class="allocation-order-header">
+
+    <div>
+
+      <span class="allocation-order-label"> Sell Order </span>
+
+      <h3>#<%= sell_order.id %></h3>
+
+    </div>
+
+    <span class="sell-order-status <%= sell_order.status.dasherize %>">
+      <%= sell_order.status.humanize %>
+    </span>
+
+  </header>
+
+  <% sell_order.orders.each do |order| %>
+
+    <div class="allocation-suborder">
+
+      <div class="allocation-suborder-header">
+
+        <span> Order #<%= order.id %> </span>
+
+        <span class="order-status <%= order.status.dasherize %>"> <%= order.status.humanize %> </span>
+
+      </div>
+
+      <% if order.order_products.any? %>
+
+        <div class="allocation-products">
+
+          <% order.order_products.each do |order_product| %>
+
+            <div class="allocation-product-row">
+
+              <div class="allocation-product-info">
+
+                <strong> <%= order_product.product.name %> </strong>
+
+              </div>
+
+              <span class="allocation-product-quantity"> × <%= order_product.quantity %> </span>
+
+              <span class="order-product-status <%= order_product.status.dasherize %>">
+                <%= order_product.status.humanize %>
+              </span>
+
+            </div>
+
+          <% end %>
+
+        </div>
+
+      <% else %>
+
+        <div class="allocation-products-empty">No products have been added to this order.</div>
+
+      <% end %>
+
+    </div>
+
+  <% end %>
+
+  <footer class="allocation-order-footer">
+
+    <%= link_to dashboard_sell_order_path(sell_order.id), class: "allocation-card-link" do %>
+      View Sell Order
+
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 12h14"></path>
+        <path d="M13 6l6 6-6 6"></path>
+      </svg>
+
+    <% end %>
+
+  </footer>
+
+</article>

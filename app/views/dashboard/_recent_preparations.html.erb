@@ -1,0 +1,53 @@
+<% if recent_preparations.empty? %>
+
+  <div class="dashboard-empty-state">
+
+    <div class="empty-state-icon" aria-hidden="true">
+
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" >
+        <path d="M12 3v2"></path>
+        <path d="M5.6 5.6l1.4 1.4"></path>
+        <path d="M3 12h2"></path>
+        <path d="M18.4 5.6L17 7"></path>
+        <path d="M21 12h-2"></path>
+        <path d="M7 16a5 5 0 0 1 10 0"></path>
+        <path d="M6 19h12"></path>
+        <path d="M9 22h6"></path>
+      </svg>
+
+    </div>
+
+    <div class="empty-state-content">
+      <h3> Kitchen is clear </h3>
+      <p> There are no products waiting for preparation. </p>
+    </div>
+
+  </div>
+
+<% else %>
+
+  <% recent_preparations.each do |preparation| %>
+
+    <article class="preparation-row">
+
+      <div class="preparation-info">
+
+        <strong>
+          <%= preparation.product.name %>
+        </strong>
+
+        <span>
+          <%= preparation.order.sell_order.allocation.name %> · ×<%= preparation.quantity %>
+        </span>
+
+      </div>
+
+      <span class="status-badge <%= preparation.status.dasherize %>">
+        <%= preparation.status.humanize %>
+      </span>
+
+    </article>
+
+  <% end %>
+
+<% end %>

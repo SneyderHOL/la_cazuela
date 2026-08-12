@@ -48,3 +48,29 @@ RSpec.shared_examples "inactive scoping" do |resource, traits = nil|
     it { expect(scope_result.last).to eql(inactive_resources.last) }
   end
 end
+
+RSpec.shared_examples "current_sales result for sell_orders" do
+  it "retrieves the corresponding sell_orders" do
+    specific_date = saturday + 3.hours
+
+    travel_to specific_date do
+      expect(described_class.current_sales(status, kinds).count).to eq(3)
+    end
+  end
+
+  it "retrieves the corresponding sell_orders status" do
+    specific_date = saturday + 3.hours
+
+    travel_to specific_date do
+      expect(described_class.current_sales(status, kinds).pluck(:status).uniq).to eq([ status.to_s ])
+    end
+  end
+
+  it "retrieves the corresponding sell_orders creation day" do
+    specific_date = saturday + 3.hours
+
+    travel_to specific_date do
+      expect(described_class.current_sales(status, kinds).pluck(:created_at).map(&:day).uniq).to eq([ saturday.day ])
+    end
+  end
+end

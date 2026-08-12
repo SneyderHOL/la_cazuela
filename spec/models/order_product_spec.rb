@@ -162,6 +162,22 @@ RSpec.describe OrderProduct, type: :model do
   end
 
   describe "status transitions" do
+    describe "when cook is executed with requested" do
+      it "raises an error" do
+        expect { order_product_object.cook }.to raise_error(
+          AASM::InvalidTransition, "Event 'cook' cannot transition from 'requested'."
+        )
+      end
+    end
+
+    describe "when complete is executed with requested" do
+      it "raises an error" do
+        expect { order_product_object.complete }.to raise_error(
+          AASM::InvalidTransition, "Event 'complete' cannot transition from 'requested'."
+        )
+      end
+    end
+
     describe "when cook is executed with prepare" do
       before { order_product_object.status = 'prepare' }
 
@@ -177,6 +193,134 @@ RSpec.describe OrderProduct, type: :model do
       it do
         expect { order_product_object.complete }.to change(
           order_product_object, :status).from("preparing").to("completed")
+      end
+    end
+  end
+
+  describe "scopes" do
+    context "with current_preparations" do
+      include_context "with orders and order_products for scopes"
+
+      it "retrieves the corresponding order_products" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.count).to eq(12)
+        end
+      end
+
+      it "includes the corresponding order_products status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.pluck(:status)).to include("requested", "prepare", "preparing", "completed")
+        end
+      end
+
+      it "retrieves the corresponding order_products creation day" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.pluck(:created_at).map(&:day).uniq).to eq([ saturday.day ])
+        end
+      end
+
+      it "retrieves the corresponding requested order_products" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.requested.count).to eq(2)
+        end
+      end
+
+      it "includes the corresponding requested order_products status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.requested.pluck(:status)).to include("requested")
+        end
+      end
+
+      it "retrieves the corresponding prepare order_products" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.prepare.count).to eq(2)
+        end
+      end
+
+      it "includes the corresponding prepare order_products status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.prepare.pluck(:status)).to include("prepare")
+        end
+      end
+
+      it "retrieves the corresponding preparing order_products" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.preparing.count).to eq(2)
+        end
+      end
+
+      it "includes the corresponding preparing order_products status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.preparing.pluck(:status)).to include("preparing")
+        end
+      end
+
+      it "retrieves the corresponding completed order_products" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.completed.count).to eq(6)
+        end
+      end
+
+      it "includes the corresponding completed order_products status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations.completed.pluck(:status)).to include("completed")
+        end
+      end
+    end
+
+    context "with current_preparations_counting" do
+      include_context "with orders and order_products for scopes"
+
+      it "retrieves the corresponding order_products count" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations_counting).to eq({ "requested" => 2, "prepare" => 2, "preparing" => 2, "completed" => 6 })
+        end
+      end
+    end
+
+    context "with current_preparations_with_sell_orders" do
+      let(:statuses) { %i[ requested prepare preparing ] }
+
+      include_context "with orders and order_products for scopes"
+
+      it "retrieves the corresponding order_products" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations_with_sell_orders(statuses).count).to eq(6)
+        end
+      end
+
+      it "includes the corresponding order_products status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_preparations_with_sell_orders(statuses).pluck(:status).uniq).to match_array(statuses.map(&:to_s))
+        end
       end
     end
   end

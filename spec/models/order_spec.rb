@@ -135,6 +135,72 @@ RSpec.describe Order, type: :model do
     end
   end
 
+  describe "scopes" do
+    context "with current_open" do
+      include_context "with orders for scopes"
+
+      it "retrieves the corresponding orders" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_open.count).to eq(2)
+        end
+      end
+
+      it "includes the corresponding orders status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_open.pluck(:status)).to include("opened", "processing")
+        end
+      end
+
+      it "does not includes the corresponding orders status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_open.pluck(:status)).not_to include("packed", "completed")
+        end
+      end
+
+      it "retrieves the corresponding orders creation day" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_open.pluck(:created_at).map(&:day).uniq).to eq([ saturday.day ])
+        end
+      end
+    end
+
+    context "with recent" do
+      include_context "with orders for scopes"
+
+      it "retrieves the corresponding orders" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.recent.count).to eq(4)
+        end
+      end
+
+      it "includes the corresponding orders status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.recent.pluck(:status)).to include("opened", "processing", "packed", "completed")
+        end
+      end
+
+      it "retrieves the corresponding orders creation day" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.recent.pluck(:created_at).map(&:day).uniq).to eq([ saturday.day ])
+        end
+      end
+    end
+  end
+
   describe "#before_destroy callback" do
     context "when the order does not have order_products associations and is opened" do
       before { order.save }

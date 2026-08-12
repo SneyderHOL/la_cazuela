@@ -1,8 +1,38 @@
 Rails.application.routes.draw do
   devise_for :users, only: :sessions
+
   scope module: "admin" do
     authenticate :user, ->(user) { user.admin? } do
       mount_avo
+    end
+  end
+
+  scope :dashboard do
+    get "/", to: "dashboard#index", as: :dashboard
+  end
+
+  namespace :dashboard do
+    resources :allocations, only: %i[ index show ] do
+      member do
+        post "free"
+        post "clean"
+        post "reserve"
+      end
+    end
+    resources :orders, only: %i[ index show ]
+    resources :sell_orders, only: %i[ index show ] do
+      member do
+        post "invoice"
+        post "deliver"
+        post "close"
+        post "payment"
+      end
+    end
+    resources :order_products, only: :index, as: :preparations, path: :preparations do
+      member do
+        post "cook"
+        post "complete"
+      end
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -22,9 +52,4 @@ Rails.application.routes.draw do
   get "contact", to: "pages#contact", as: :contact
   get "location", to: "pages#location", as: :location
   get "menu", to: "pages#menu", as: :menu
-
-  # scope module: "app" do
-  #   get "dashboard", to: "dashboards#index"
-  #   resources :allocations
-  # end
 end
