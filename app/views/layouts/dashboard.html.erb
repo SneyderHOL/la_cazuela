@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <title><%= content_for(:title) || "Dashboard La Cazuela" %></title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "dashboard", "data-turbo-track": "reload", as: "style" %>
+
+    <!-- This will render page-specific styles if they exist -->
+    <%= yield :dashboard_stylesheets %>
+    <%= javascript_importmap_tags %>
+
+  </head>
+
+  <body class="dashboard-body">
+    <div class="dashboard-layout">
+
+      <%= render "layouts/dashboard_sidebar" %>
+      <main class="dashboard-main">
+        <%= render "layouts/dashboard_header" %>
+        <%= yield %>
+      </main>
+
+      
+    </div>
+    <%= render "layouts/dashboard_backdrop" %>
+
+  </body>
+  
+</html>

@@ -1,0 +1,1455 @@
+/* =========================================================
+   SELL ORDERS FILTERS
+========================================================= */
+
+.sell-orders-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+/* Filter group */
+
+.sell-orders-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Label */
+
+.sell-orders-filter-label {
+  width: 75px;
+  flex-shrink: 0;
+  color: var(--dashboard-muted);
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* Filter options */
+
+.sell-orders-filter-options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Individual filter */
+
+.sell-order-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 8px;
+  background: var(--dashboard-surface);
+  color: var(--dashboard-muted);
+  font-size: .63rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    color .18s ease;
+}
+
+/* Count */
+
+.sell-order-filter strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #f1f3f4;
+  color: var(--dashboard-text);
+  font-size: .55rem;
+}
+
+/* Hover */
+
+.sell-order-filter:hover {
+  border-color: var(--dashboard-primary);
+  color: var(--dashboard-primary);
+}
+
+/* Active */
+
+.sell-order-filter.active {
+  border-color: var(--dashboard-primary);
+  background: #f1f8f7;
+  color: var(--dashboard-primary);
+}
+
+/* Active count */
+
+.sell-order-filter.active strong {
+  background: var(--dashboard-primary);
+  color: #ffffff;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .sell-orders-filter-group {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sell-orders-filter-label {
+    width: auto;
+  }
+
+  .sell-orders-filter-options {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   TABLE CONTAINER
+========================================================= */
+
+.sell-orders-container {
+  overflow: hidden;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+  background: var(--dashboard-surface);
+}
+
+.sell-orders-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.sell-orders-table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+}
+
+.sell-orders-table th {
+  height: 48px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--dashboard-border);
+  background: #fafbfb;
+  color: var(--dashboard-muted);
+  font-size: .59rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.sell-orders-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #f0f1f2;
+  color: var(--dashboard-text);
+  font-size: .68rem;
+  vertical-align: middle;
+}
+
+.sell-orders-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.sell-orders-table tbody tr {
+  transition: background .15s ease;
+}
+
+.sell-orders-table tbody tr:hover {
+  background: #fafcfc;
+}
+
+/* =========================================================
+   ORDER INFORMATION
+========================================================= */
+
+.sell-order-number {
+  color: var(--dashboard-heading);
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.sell-order-date {
+  display: block;
+  margin-top: 4px;
+  color: var(--dashboard-muted);
+  font-size: .57rem;
+}
+
+.allocation-name {
+  color: var(--dashboard-text);
+  font-weight: 600;
+}
+
+.products-count {
+  color: var(--dashboard-muted);
+}
+
+.sell-order-total {
+  color: var(--dashboard-heading);
+  font-size: .72rem;
+}
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+.payment-selected {
+  color: var(--dashboard-success);
+  font-size: .65rem;
+  font-weight: 650;
+}
+
+.payment-not-selected {
+  color: var(--dashboard-muted);
+  font-size: .62rem;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.sell-order-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: .56rem;
+  font-weight: 700;
+}
+
+.sell-order-status.opened {
+  background: #fdf1e4;
+  color: var(--status-busy);
+}
+
+.sell-order-status.packed {
+  background: #eee9fa;
+  color: var(--status-on-hold);
+}
+
+.sell-order-status.invoicing {
+  background: #eeeaf7;
+  color: var(--dashboard-info);
+}
+
+.sell-order-status.delivering {
+  background: #e8f5f3;
+  color: var(--dashboard-primary);
+}
+
+.sell-order-status.closed {
+  background: #eaf5ee;
+  color: var(--dashboard-success);
+}
+
+/* =========================================================
+   VIEW BUTTON
+========================================================= */
+
+.sell-order-view-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 7px;
+  color: var(--dashboard-primary);
+  font-size: .62rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition:
+    background .18s ease,
+    border-color .18s ease;
+}
+
+.sell-order-view-button:hover {
+  border-color: var(--dashboard-primary);
+  background: #f1f8f7;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.sell-orders-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.sell-orders-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: #eef6f5;
+  color: var(--dashboard-primary);
+}
+
+.sell-orders-empty-icon .icon {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sell-orders-empty h3 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: .85rem;
+}
+
+.sell-orders-empty p {
+  max-width: 320px;
+  margin: 7px 0 0;
+  color: var(--dashboard-muted);
+  font-size: .67rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+  .sell-orders-filter-group {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sell-orders-filter-label {
+    width: auto;
+  }
+
+  .sell-orders-filter-options {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   SHOW VIEW
+========================================================= */
+
+/* =========================================================
+   SELL ORDER DETAIL / SHOW VIEW
+========================================================= */
+
+.sell-order-detail-page {
+  max-width: 1400px;
+  margin: 16px auto;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.sell-order-detail-header {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.sell-order-header-left {
+  width: 100%;
+}
+
+
+/* Back link */
+
+.dashboard-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 14px;
+  color: var(--dashboard-muted);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    color 0.18s ease;
+}
+
+.dashboard-back-link:hover {
+  color: var(--dashboard-primary);
+}
+
+.dashboard-back-link .icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* Heading */
+
+.sell-order-heading {
+  display: flex;
+  margin-top: 16px;
+  align-items: center;
+  gap: 12px;
+}
+
+.sell-order-heading h1 {
+  margin: 3px 0 0;
+  color: var(--dashboard-heading);
+  font-size: 1.45rem;
+  font-weight: 750;
+  line-height: 1.15;
+}
+
+.sell-order-detail-header>p,
+.sell-order-header-left>p {
+  margin: 7px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 0.64rem;
+}
+
+
+/* Eyebrow */
+
+.dashboard-eyebrow {
+  display: block;
+  color: var(--dashboard-muted);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   SELL ORDER STATUS
+========================================================= */
+
+.sell-order-status,
+.order-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 0.54rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+
+/* Sell Order statuses */
+
+.sell-order-status.opened,
+.order-status.opened {
+  background: color-mix(in srgb,
+      var(--dashboard-info) 12%,
+      transparent);
+  color: var(--dashboard-info);
+}
+
+.sell-order-status.packed,
+.order-status.packed {
+  background: color-mix(in srgb,
+      var(--dashboard-warning) 12%,
+      transparent);
+  color: var(--dashboard-warning);
+}
+
+.sell-order-status.invoicing,
+.order-status.invoicing {
+  background: color-mix(in srgb,
+      var(--dashboard-primary) 12%,
+      transparent);
+  color: var(--dashboard-primary);
+}
+
+.sell-order-status.delivering,
+.order-status.delivering {
+  background: color-mix(in srgb,
+      var(--dashboard-info) 12%,
+      transparent);
+  color: var(--dashboard-info);
+}
+
+.sell-order-status.closed,
+.order-status.completed {
+  background: color-mix(in srgb,
+      var(--dashboard-success) 12%,
+      transparent);
+  color: var(--dashboard-success);
+}
+
+
+/* =========================================================
+   ORDERS SECTION
+========================================================= */
+
+.sell-order-orders {
+  width: 100%;
+  margin-top: 16px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+  background: var(--dashboard-surface);
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.sell-order-orders .dashboard-card-header,
+.sell-order-checkout-card .dashboard-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.sell-order-orders .dashboard-card-header h2,
+.sell-order-checkout-card .dashboard-card-header h2 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.sell-order-orders .dashboard-card-header p,
+.sell-order-checkout-card .dashboard-card-header p {
+  margin: 5px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 0.61rem;
+}
+
+.sell-order-item-count {
+  color: var(--dashboard-muted);
+  font-size: 0.59rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   SUBORDER LIST
+========================================================= */
+
+.sell-order-order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+
+/* =========================================================
+   SUBORDER CARD
+========================================================= */
+
+.sell-order-suborder {
+  border: 1px solid var(--dashboard-border);
+  border-radius: calc(var(--dashboard-radius) - 2px);
+  background: var(--dashboard-surface);
+  overflow: hidden;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.sell-order-suborder:hover {
+  border-color: color-mix(in srgb,
+      var(--dashboard-primary) 30%,
+      var(--dashboard-border));
+}
+
+
+/* =========================================================
+   SUBORDER HEADER
+========================================================= */
+
+.sell-order-suborder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 17px;
+  background: #fafafa;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+
+/* Order number */
+
+.sell-order-suborder-number {
+  display: block;
+  color: var(--dashboard-heading);
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+
+/* Date */
+
+.sell-order-suborder-date {
+  display: block;
+  margin-top: 4px;
+  color: var(--dashboard-muted);
+  font-size: 0.55rem;
+}
+
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+.sell-order-products {
+  padding: 0 17px;
+}
+
+
+/* Product row */
+
+.sell-order-product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f1f2;
+}
+
+.sell-order-product:last-child {
+  border-bottom: 0;
+}
+
+
+/* Product information */
+
+.sell-order-product-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  min-width: 0;
+}
+
+
+/* Quantity */
+
+.sell-order-product-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 34px;
+  height: 29px;
+  border-radius: 7px;
+  background: #f1f8f7;
+  color: var(--dashboard-primary);
+  font-size: 0.59rem;
+  font-weight: 700;
+}
+
+
+/* Product name */
+
+.sell-order-product h3 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: 0.66rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+
+/* Unit price */
+
+.sell-order-product-info div>span {
+  display: block;
+  margin-top: 4px;
+  color: var(--dashboard-muted);
+  font-size: 0.55rem;
+}
+
+
+/* Product subtotal */
+
+.sell-order-product>strong {
+  flex: 0 0 auto;
+  color: var(--dashboard-heading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PRODUCT NOTE
+========================================================= */
+
+/* .sell-order-item-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  color: var(--dashboard-warning);
+  font-size: 0.55rem;
+}
+
+.sell-order-item-note .icon {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+} */
+
+
+/* =========================================================
+   SUBORDER FOOTER
+========================================================= */
+
+.sell-order-suborder-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  padding: 13px 17px;
+  background: #fafafa;
+  border-top: 1px solid var(--dashboard-border);
+}
+
+.sell-order-suborder-footer span {
+  color: var(--dashboard-muted);
+  font-size: 0.57rem;
+  font-weight: 600;
+}
+
+.sell-order-suborder-footer strong {
+  color: var(--dashboard-heading);
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
+
+/* =========================================================
+   PRE-INVOICING ACTION
+========================================================= */
+
+.sell-order-action-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+  background: var(--dashboard-surface);
+}
+
+
+/* Action heading */
+
+.sell-order-action-card h2 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+
+/* Action description */
+
+.sell-order-action-card p {
+  margin: 5px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 0.59rem;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   CHECKOUT CARD
+========================================================= */
+
+.sell-order-checkout-card {
+  margin-top: 16px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+  background: var(--dashboard-surface);
+  overflow: hidden;
+}
+
+
+/* Checkout body */
+
+.sell-order-checkout-body {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.8fr) minmax(300px, 1.2fr);
+  gap: 28px;
+  padding: 22px;
+}
+
+
+/* =========================================================
+   FINAL TOTAL
+========================================================= */
+
+.sell-order-final-total {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 120px;
+  padding: 20px;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.sell-order-final-total span {
+  color: var(--dashboard-muted);
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sell-order-final-total strong {
+  margin-top: 8px;
+  color: var(--dashboard-heading);
+  font-size: 1.65rem;
+  font-weight: 750;
+  line-height: 1;
+}
+
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+.sell-order-payment {
+  padding: 0;
+}
+
+.sell-order-payment h3 {
+  margin: 0 0 12px;
+  color: var(--dashboard-heading);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+
+/* Payment options */
+
+.payment-options {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+
+/* Payment option */
+
+.payment-option {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.payment-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* Payment content */
+
+.payment-option-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 75px;
+  padding: 8px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 8px;
+  background: var(--dashboard-surface);
+  color: var(--dashboard-muted);
+  font-size: 0.56rem;
+  font-weight: 650;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.payment-option-content .icon {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* Hover */
+
+.payment-option:hover .payment-option-content {
+  border-color: var(--dashboard-primary);
+  color: var(--dashboard-primary);
+}
+
+
+/* Selected */
+
+.payment-option input:checked+.payment-option-content {
+  border-color: var(--dashboard-primary);
+  background: #f1f8f7;
+  color: var(--dashboard-primary);
+}
+
+
+/* Keyboard focus */
+
+.payment-option input:focus-visible+.payment-option-content {
+  outline: 2px solid var(--dashboard-primary);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   CASH PAYMENT
+========================================================= */
+
+.cash-payment-fields {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--dashboard-border);
+}
+
+
+.dashboard-form-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--dashboard-text);
+  font-size: 0.59rem;
+  font-weight: 650;
+}
+
+.sell-order-payment-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.sell-order-payment-actions .dashboard-primary-button {
+  min-width: 150px;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+
+  .sell-order-payment-actions {
+    justify-content: stretch;
+  }
+
+  .sell-order-payment-actions .dashboard-primary-button {
+    width: 100%;
+  }
+
+}
+
+/* Cash input */
+
+.cash-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 7px;
+  background: var(--dashboard-surface);
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.cash-input-wrapper:focus-within {
+  border-color: var(--dashboard-primary);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb,
+      var(--dashboard-primary) 10%,
+      transparent);
+}
+
+.cash-input-wrapper>span {
+  color: var(--dashboard-muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.cash-input-wrapper input {
+  width: 100%;
+  height: 100%;
+  padding: 0 7px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--dashboard-heading);
+  font-size: 0.67rem;
+}
+
+
+/* Change */
+
+.cash-change {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: var(--dashboard-muted);
+  font-size: 0.59rem;
+}
+
+.cash-change strong {
+  color: var(--dashboard-success);
+  font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   PAYMENT SAVED STATE
+========================================================= */
+
+.payment-saved {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 16px;
+  padding: 12px 13px;
+  border: 1px solid color-mix(in srgb,
+      var(--dashboard-success) 20%,
+      var(--dashboard-border));
+  border-radius: 8px;
+  background: color-mix(in srgb,
+      var(--dashboard-success) 7%,
+      var(--dashboard-surface));
+  color: var(--dashboard-success);
+  font-size: 0.59rem;
+  font-weight: 650;
+}
+
+.payment-saved .icon {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.sell-order-action-card .dashboard-primary-button {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   EMPTY ORDERS STATE
+========================================================= */
+
+.sell-order-orders-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  padding: 30px;
+  text-align: center;
+}
+
+.sell-order-orders-empty .icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 12px;
+  color: var(--dashboard-muted);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sell-order-orders-empty h3 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.sell-order-orders-empty p {
+  max-width: 350px;
+  margin: 6px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 0.59rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SELL ORDER EMPTY STATE
+========================================================= */
+
+.sell-order-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+  padding: 40px 24px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+  background: var(--dashboard-surface);
+  text-align: center;
+}
+
+/* =========================================================
+   EMPTY PREPARATION QUEUE
+========================================================= */
+
+.sell-order-products-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  padding: 30px;
+  text-align: center;
+}
+
+.sell-order-products-empty-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: #eef6f5;
+  color: var(--dashboard-primary);
+}
+
+.sell-order-products-empty-state h3 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: .78rem;
+}
+
+.sell-order-products-empty-state p {
+  margin: 6px 0 0;
+  color: var(--dashboard-muted);
+  font-size: .64rem;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.sell-order-empty-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: color-mix(in srgb,
+      var(--dashboard-muted) 10%,
+      transparent);
+  color: var(--dashboard-muted);
+}
+
+.sell-order-empty-state-icon .icon {
+  width: 29px;
+  height: 29px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.sell-order-empty-state-content h2 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.sell-order-empty-state-content p {
+  max-width: 390px;
+  margin: 8px auto 0;
+  color: var(--dashboard-muted);
+  font-size: 0.61rem;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   ACTION
+========================================================= */
+
+.sell-order-empty-state-actions {
+  margin-top: 22px;
+}
+
+.sell-order-empty-state-actions .dashboard-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 15px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 7px;
+  background: var(--dashboard-surface);
+  color: var(--dashboard-text);
+  font-size: 0.59rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.sell-order-empty-state-actions .dashboard-secondary-button:hover {
+  border-color: var(--dashboard-primary);
+  background: color-mix(in srgb,
+      var(--dashboard-primary) 6%,
+      var(--dashboard-surface));
+  color: var(--dashboard-primary);
+}
+
+.sell-order-empty-state-actions .dashboard-secondary-button .icon {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+  .sell-order-empty-state {
+    min-height: 350px;
+    padding: 30px 20px;
+  }
+
+  .sell-order-empty-state-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 15px;
+  }
+
+  .sell-order-empty-state-icon .icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .sell-order-empty-state-content p {
+    max-width: 300px;
+  }
+
+  .sell-order-empty-state-actions {
+    width: 100%;
+  }
+
+  .sell-order-empty-state-actions .dashboard-secondary-button {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .sell-order-checkout-body {
+    grid-template-columns: 1fr;
+  }
+  .sell-order-final-total {
+    min-height: auto;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+  .sell-order-detail-header {
+    margin-bottom: 18px;
+  }
+
+
+  .sell-order-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+
+  .sell-order-heading h1 {
+    font-size: 1.25rem;
+  }
+
+
+  .sell-order-orders .dashboard-card-header,
+  .sell-order-checkout-card .dashboard-card-header {
+    padding: 16px;
+  }
+
+
+  .sell-order-order-list {
+    padding: 10px;
+  }
+
+
+  .sell-order-suborder-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+    padding: 13px;
+  }
+
+
+  .sell-order-products {
+    padding: 0 13px;
+  }
+
+
+  .sell-order-product {
+    align-items: flex-start;
+  }
+
+
+  .sell-order-product-info {
+    gap: 9px;
+  }
+
+
+  .sell-order-product>strong {
+    font-size: 0.61rem;
+  }
+
+
+  .sell-order-suborder-footer {
+    padding: 12px 13px;
+  }
+
+
+  .sell-order-action-card {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+
+
+  .sell-order-action-card .dashboard-primary-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+
+  .sell-order-checkout-body {
+    gap: 20px;
+    padding: 16px;
+  }
+
+
+  .sell-order-final-total {
+    padding: 17px;
+  }
+
+
+  .sell-order-final-total strong {
+    font-size: 1.4rem;
+  }
+
+
+  .payment-options {
+    grid-template-columns: 1fr;
+  }
+
+
+  .payment-option-content {
+    flex-direction: row;
+    justify-content: flex-start;
+    min-height: 48px;
+    padding: 10px 13px;
+  }
+}

@@ -28,6 +28,16 @@ class Order < ApplicationRecord
 
   before_destroy :check_status
 
+  scope :current_open, -> {
+    where(created_at: Time.zone.today.beginning_of_day..Time.current,
+          status: %i[ opened processing ])
+  }
+  scope :recent, -> {
+    includes(:order_products, sell_order: :allocation)
+      .where(created_at: Time.zone.today.beginning_of_day..Time.current)
+      .order(created_at: :desc)
+  }
+
   private
 
   def ready_to_cook_order_products

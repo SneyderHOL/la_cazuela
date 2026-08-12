@@ -1,0 +1,16 @@
+<td>
+
+  <span class="products-count">
+    <%= sell_order_counts[:items] %> items
+  </span>
+
+</td>
+
+
+<td>
+
+  <strong class="sell-order-total">
+    <%= number_to_currency(sell_order_counts[:total], precision: 0) %>
+  </strong>
+
+</td>

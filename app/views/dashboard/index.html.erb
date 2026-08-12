@@ -1,0 +1,554 @@
+<!-- =========================================
+      DASHBOARD CONTENT
+========================================== -->
+
+<div class="dashboard-content">
+
+  <!-- Welcome -->
+
+  <section class="dashboard-welcome" data-controller="current-time">
+
+    <div>
+
+      <p class="eyebrow" data-current-time-target="date">
+        -, - -
+      </p>
+
+      <h2 data-current-time-target="greeting">
+        - -
+      </h2>
+
+      <p>
+        Here's what's happening at
+        La Cazuela right now.
+      </p>
+
+    </div>
+
+    <div class="current-time" id="currentTime" data-current-time-target="time">
+      --:--
+    </div>
+
+  </section>
+
+
+  <!-- =====================================
+        SUMMARY CARDS
+  ====================================== -->
+
+  <section class="summary-grid">
+
+    <article class="summary-card">
+
+      <div class="summary-card-header">
+
+        <span class="summary-icon orders-icon">
+          ◫
+        </span>
+
+        <span class="status-indicator neutral">
+        </span>
+
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Open Orders
+        </span>
+
+        <strong class="summary-value" id="openOrdersCount">
+          <%= @opened_orders_count %>
+        </strong>
+
+      </div>
+
+      <%= link_to dashboard_orders_path do %>
+        View orders →
+      <% end %>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <div class="summary-card-header">
+
+        <span class="summary-icon preparing-icon">
+          ♨
+        </span>
+
+        <span class="status-indicator warning">
+        </span>
+
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Preparing
+        </span>
+
+        <strong class="summary-value" id="preparingCount">
+          <%= @preparing_order_products_count %>
+        </strong>
+
+      </div>
+
+      <%= link_to dashboard_preparations_path(status: "preparing") do %>
+        View preparation →
+      <% end %>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <div class="summary-card-header">
+
+        <span class="summary-icon ready-icon">
+          ✓
+        </span>
+
+        <span class="status-indicator success">
+        </span>
+
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Ready
+        </span>
+
+        <strong class="summary-value" id="readyCount">
+          <%= @completed_order_products_count %>
+        </strong>
+
+      </div>
+
+      <%= link_to dashboard_preparations_path(status: "completed") do %>
+        View ready items →
+      <% end %>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <div class="summary-card-header">
+
+        <span class="summary-icon delivery-icon">
+          ↗
+        </span>
+
+        <span class="status-indicator danger">
+        </span>
+
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Pending Delivery
+        </span>
+
+        <strong class="summary-value" id="deliveryCount">
+          <%= @pending_delivering_sell_orders_count %>
+        </strong>
+
+      </div>
+
+      <%= link_to dashboard_sell_orders_path(kind: "delivery") do %>
+        View sell orders →
+      <% end %>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================
+        ALLOCATION OVERVIEW
+  ====================================== -->
+
+  <section class="dashboard-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span class="section-label">
+          Restaurant Floor
+        </span>
+
+        <h2>
+          Table Status
+        </h2>
+
+      </div>
+
+      <%= link_to dashboard_allocations_path, class: "section-link" do %>
+        View all allocations →
+      <% end %>
+
+    </div>
+
+
+    <div class="allocation-overview">
+
+
+      <div class="allocation-summary">
+
+        <div class="allocation-stat">
+
+          <span class="allocation-dot available">
+          </span>
+
+          <div>
+
+            <strong id="availableTables">
+              <%= @desk_allocations.empty? ? 0 : @desk_allocations.available.count %>
+            </strong>
+
+            <span>
+              Available
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="allocation-stat">
+
+          <span class="allocation-dot busy">
+          </span>
+
+          <div>
+
+            <strong id="busyTables">
+              <%= @desk_allocations.empty? ? 0 : @desk_allocations.busy.count %>
+            </strong>
+
+            <span>
+              Busy
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="allocation-stat">
+
+          <span class="allocation-dot on-hold">
+          </span>
+
+          <div>
+
+            <strong id="holdTables">
+              <%= @desk_allocations.empty? ? 0 : @desk_allocations.on_hold.count %>
+            </strong>
+
+            <span>
+              On Hold
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="allocation-stat">
+
+          <span class="allocation-dot cleaning">
+          </span>
+
+          <div>
+
+            <strong id="cleaningTables">
+              <%= @desk_allocations.empty? ? 0 : @desk_allocations.cleaning.count %>
+            </strong>
+
+            <span>
+              Cleaning
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Table preview -->
+
+      <%= render 'dashboard/allocation_status', allocations: @desk_allocations %>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================
+        LOWER DASHBOARD GRID
+  ====================================== -->
+
+  <div class="dashboard-columns">
+
+
+    <!-- Recent Orders -->
+
+    <section class="dashboard-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-label">
+            Activity
+          </span>
+
+          <h2>
+            Recent Orders
+          </h2>
+
+        </div>
+
+        <%= link_to dashboard_orders_path do %>
+          View all
+        <% end %>
+
+      </div>
+
+
+      <div class="orders-list">
+
+        <%= render 'dashboard/recent_orders', recent_orders: @recent_orders %>
+
+      </div>
+
+    </section>
+
+
+    <!-- Preparation -->
+
+    <section class="dashboard-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-label">
+            Kitchen
+          </span>
+
+          <h2>
+            Preparation
+          </h2>
+
+        </div>
+
+        <%= link_to dashboard_preparations_path do %>
+          Open kitchen
+        <% end %>
+
+      </div>
+
+
+      <div class="preparation-list">
+
+        <%= render 'dashboard/recent_preparations', recent_preparations: @recent_preparations %>
+
+      </div>
+
+    </section>
+
+    <!-- Unclosed Orders -->
+
+    <section class="dashboard-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-label">
+            Unclosed
+          </span>
+
+          <h2>
+            Pending Sell Orders
+          </h2>
+
+        </div>
+
+        <%= link_to dashboard_sell_orders_path do %>
+          View all
+        <% end %>
+
+      </div>
+
+
+      <div class="orders-list">
+
+        <%= render 'dashboard/unclosed_sell_orders', unclosed_sell_orders: @unclosed_sell_orders %>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- =====================================
+        QUICK ACTIONS
+  ====================================== -->
+
+  <section class="quick-actions">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span class="section-label">
+          Shortcuts
+        </span>
+
+        <h2>
+          Quick Actions
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div class="quick-action-grid">
+
+      <%= link_to dashboard_orders_path, class: "quick-action" do %>
+
+        <!-- Plus icon -->
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" >
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+
+        <div>
+
+          <strong>
+            New Order
+          </strong>
+
+          <span>
+            Start an order for a table
+          </span>
+
+        </div>
+
+        <!-- Arrow icon -->
+        <svg class="icon icon-small" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="M13 6l6 6-6 6"></path>
+        </svg>
+
+      <% end %>
+
+
+      <%= link_to dashboard_allocations_path, class: "quick-action" do %>
+
+        <!-- Table icon -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="7" rx="1"></rect>
+          <path d="M6 11v8"></path>
+          <path d="M18 11v8"></path>
+          <path d="M3 8h18"></path>
+        </svg>
+
+        <div>
+
+          <strong>
+            Manage Tables
+          </strong>
+
+          <span>
+            View restaurant allocations
+          </span>
+
+        </div>
+
+        <!-- Arrow icon -->
+        <svg class="icon icon-small" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="M13 6l6 6-6 6"></path>
+        </svg>
+
+      <% end %>
+
+
+      <%= link_to dashboard_preparations_path, class: "quick-action" do %>
+
+        <!-- Chef / preparation icon -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 10h12"></path>
+          <path d="M7 10a4 4 0 0 1 0-8 4 4 0 0 1 3.5 2 4 4 0 0 1 7.5 2 4 4 0 0 1-1 8"></path>
+          <path d="M7 10v8"></path>
+          <path d="M17 10v8"></path>
+          <path d="M7 18h10"></path>
+          <path d="M9 22h6"></path>
+        </svg>
+
+        <div>
+
+          <strong>
+            Kitchen
+          </strong>
+
+          <span>
+            Manage preparation status
+          </span>
+
+        </div>
+
+        <!-- Arrow icon -->
+        <svg class="icon icon-small" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="M13 6l6 6-6 6"></path>
+        </svg>
+
+      <% end %>
+
+
+      <%= link_to dashboard_sell_orders_path, class: "quick-action" do %>
+
+        <!-- Dollar icon -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2v20"></path>
+          <path d="M17 6.5c0-1.7-2.2-3-5-3s-5 1.3-5 3 2.2 3 5 3 5 1.3 5 3-2.2 3-5 3-5-1.3-5-3"></path>
+        </svg>
+
+        <div>
+
+          <strong>
+            Payments
+          </strong>
+
+          <span>
+            Manage open sell orders
+          </span>
+
+        </div>
+
+        <!-- Arrow icon -->
+        <svg class="icon icon-small" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="M13 6l6 6-6 6"></path>
+        </svg>
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+</div>

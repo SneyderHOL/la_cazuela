@@ -1,0 +1,92 @@
+<!-- Table card -->
+<article class="allocation-card">
+
+  <div class="allocation-card-header">
+
+    <span class="allocation-kind">
+      Table
+    </span>
+
+    <span class="allocation-status <%= desk.status.dasherize %>">
+      <%= desk.status.humanize %>
+    </span>
+
+  </div>
+
+
+  <div class="allocation-card-body">
+
+    <h3>
+      <%= desk.name.humanize %>
+    </h3>
+
+    <p>
+      <% if desk.available? %>
+        Ready for guests
+      <% elsif desk.busy? %>
+        Sell Order #<%= @desks[desk.id].first ? @desks[desk.id].first.id : "-" %>
+      <% elsif desk.on_hold? %>
+        Temporarily reserved
+      <% elsif desk.cleaning? %>
+        Preparing for next guest
+      <% end %>
+    </p>
+
+  </div>
+
+  <footer class="allocation-card-footer">
+    <% if desk.available? %>
+
+      <span>
+        Available
+      </span>
+
+    <% elsif desk.busy? %>
+
+      <span>
+        <%= @desks[desk.id].first ? time_ago_in_words(@desks[desk.id].first.created_at) : "-" %>
+      </span>
+
+      <div class="allocation-card-suborder-links">
+
+        <% if @desks[desk.id].first %>
+
+          <% @desks[desk.id].first.orders.each do |order| %>
+
+            <div class="allocation-card-suborder-link">
+
+              <%= link_to dashboard_order_path(order.id), class: "allocation-card-link" do %>
+                View Order #<%= order.id %>
+
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h14"></path>
+                  <path d="M13 6l6 6-6 6"></path>
+                </svg>
+
+              <% end %>
+
+            </div>
+
+          <% end %>
+
+        <% end %>
+
+      </div>
+
+    <% elsif desk.on_hold? %>
+
+      <span>
+        On hold
+      </span>
+
+    <% else %>
+
+      <span>
+        Cleaning
+      </span>
+
+    <% end %>
+
+  </footer>
+
+</article>

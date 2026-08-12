@@ -39,6 +39,16 @@ class OrderProduct < ApplicationRecord
 
   before_create :add_recipe
 
+  scope :current_preparations, -> {
+    where(created_at: Time.zone.today.beginning_of_day..Time.current)
+  }
+  scope :current_preparations_with_sell_orders, ->(statuses) {
+    includes(:product, order: { sell_order: :allocation })
+      .where(created_at: Time.zone.today.beginning_of_day..Time.current,
+             status: statuses)
+  }
+  scope :current_preparations_counting, -> { current_preparations.group(:status).count }
+
   private
 
   def ingredient_availability

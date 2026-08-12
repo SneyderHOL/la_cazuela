@@ -1,0 +1,285 @@
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/allocations", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+
+<div class="dashboard-content allocation-show-page">
+  <!-- =====================================================
+        PAGE HEADER
+  ====================================================== -->
+
+  <section class="allocation-show-header">
+
+    <div class="allocation-show-heading">
+
+      <%= link_to dashboard_allocations_path, class: "dashboard-back-link" do %>
+
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 12H5"></path>
+          <path d="M12 19l-7-7 7-7"></path>
+        </svg>
+
+        Allocations
+
+      <% end %>
+
+      <div class="allocation-title-row">
+
+        <div>
+
+          <span class="allocation-kind-label"> <%= @allocation.kind.humanize %> </span>
+
+          <h1><%= @allocation.name %></h1>
+
+        </div>
+
+        <span class="allocation-status <%= @allocation.status.dasherize %>">
+          <%= @allocation.status.humanize %>
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <%= render "layouts/flash" %>
+
+  <% if @allocation.desk? %>
+
+    <!-- =================================================
+          TABLE — AVAILABLE
+    ================================================== -->
+
+    <% if @allocation.available? %>
+
+      <section class="allocation-state-card">
+
+        <div class="allocation-state-icon">
+
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 10h16"></path>
+            <path d="M6 10V6h12v4"></path>
+            <path d="M5 10v8"></path>
+            <path d="M19 10v8"></path>
+            <path d="M4 18h16"></path>
+          </svg>
+
+        </div>
+
+        <div class="allocation-state-content">
+
+          <h2>Table is available</h2>
+
+          <p>This table is ready to receive a new order.</p>
+
+        </div>
+
+        <div class="allocation-state-actions">
+
+          <%= link_to dashboard_orders_path, class: "dashboard-primary-button" do %>
+            Take Order
+          <% end %>
+
+        </div>
+
+      </section>
+
+      <section class="allocation-actions-card">
+
+        <h2>Table Actions</h2>
+
+        <div class="allocation-actions">
+
+          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-reserve" do %>
+            Put On Hold
+          <% end %>
+
+          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-clean" do %>
+            Put To Clean
+          <% end %>
+
+        </div>
+
+      </section>
+
+    <% elsif @allocation.busy? %>
+
+      <!-- =============================================
+            TABLE — BUSY
+      ============================================== -->
+
+      <section class="allocation-orders-section">
+
+        <header class="allocation-section-header">
+
+          <div>
+
+            <h2>Current Orders</h2>
+
+            <p>Orders currently associated with this table.</p>
+
+          </div>
+
+          <span class="allocation-section-count">
+            <%= @suborders_count %> <%= "order".pluralize(@suborders_count) %>
+          </span>
+
+        </header>
+
+        <% if @sell_orders.any? %>
+
+          <div class="allocation-orders">
+
+            <% @sell_orders.each do |sell_order| %>
+
+              <%= render "dashboard/allocations/sell_order_card", sell_order: sell_order %>
+
+            <% end %>
+
+          </div>
+
+        <% else %>
+
+          <div class="allocation-orders-empty">
+
+            <h3>No active orders</h3>
+
+            <p>This table is marked as busy but has no active orders.</p>
+
+          </div>
+
+        <% end %>
+
+      </section>
+
+    <% elsif @allocation.on_hold? %>
+
+      <!-- =============================================
+          TABLE — ON HOLD
+      ============================================== -->
+
+      <section class="allocation-state-card">
+
+        <div class="allocation-state-icon">
+
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="4" width="14" height="16" rx="2"></rect>
+
+            <path d="M10 9v6"></path>
+            <path d="M14 9v6"></path>
+          </svg>
+
+        </div>
+
+        <div class="allocation-state-content">
+
+          <h2>Table is reserved</h2>
+
+          <p>This table is temporarily unavailable.</p>
+
+        </div>
+
+        <div class="allocation-state-actions">
+
+          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-primary-button", id: "put-free" do %>
+            Make Available
+          <% end %>
+
+        </div>
+
+      </section>
+
+    <% elsif @allocation.cleaning? %>
+
+      <!-- =============================================
+          TABLE — CLEANING
+      ============================================== -->
+
+      <section class="allocation-state-card">
+
+        <div class="allocation-state-icon">
+
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 17h16"></path>
+            <path d="M6 17l1-8h10l1 8"></path>
+            <path d="M9 9V6"></path>
+            <path d="M15 9V6"></path>
+            <path d="M8 6h8"></path>
+          </svg>
+
+        </div>
+
+        <div class="allocation-state-content">
+
+          <h2>Table is being cleaned</h2>
+
+          <p>The table can be made available when cleaning is complete.</p>
+
+        </div>
+
+        <div class="allocation-state-actions">
+
+          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-primary-button", id: "put-free" do %>
+            Make Available
+          <% end %>
+
+          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-reserve" do %>
+            Put On Hold
+          <% end %>
+
+        </div>
+
+      </section>
+
+    <% end %>
+
+  <% elsif @allocation.kind.in?(["delivery", "takeout"]) %>
+
+    <!-- =================================================
+        DELIVERY / TAKEOUT
+    ================================================== -->
+
+    <section class="allocation-orders-section">
+
+      <header class="allocation-section-header">
+
+        <div>
+
+          <h2>Orders</h2>
+
+          <p>Orders associated with this <%= @allocation.kind %> allocation.</p>
+        </div>
+
+        <span class="allocation-section-count">
+          <%= @suborders_count %> <%= "order".pluralize(@suborders_count) %>
+        </span>
+
+      </header>
+
+      <% if @sell_orders.any? %>
+
+        <div class="allocation-orders">
+
+          <% @sell_orders.each do |sell_order| %>
+
+            <%= render "dashboard/allocations/sell_order_card", sell_order: sell_order %>
+
+          <% end %>
+
+        </div>
+
+      <% else %>
+
+        <div class="allocation-orders-empty">
+          <h3>No orders found</h3>
+
+          <p>There are currently no orders associated with this allocation.</p>
+        </div>
+
+      <% end %>
+
+    </section>
+
+  <% end %>
+
+</div>

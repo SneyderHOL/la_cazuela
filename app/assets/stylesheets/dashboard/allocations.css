@@ -1,0 +1,1670 @@
+/* =========================================================
+   ALLOCATION PAGE
+========================================================= */
+
+.allocation-page {
+  /* width: 100%; */
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.allocation-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   TYPE FILTER
+========================================================= */
+
+form.button_to button.allocation-filter {
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.allocation-type-filter {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 8px;
+  background: var(--dashboard-surface);
+}
+
+
+.allocation-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 13px;
+  /* border: 1px solid var(--dashboard-border); */
+  background: var(--dashboard-surface);
+  color: var(--dashboard-muted);
+  font-size: 0.58rem;
+  font-weight: 600;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+
+.allocation-filter:hover {
+  color: var(--dashboard-primary);
+}
+
+
+.allocation-filter.active {
+  border-color: var(--dashboard-primary);
+  background: var(--dashboard-primary);
+  color: #fff;
+  /* border: 1px solid var(--dashboard-border); */
+  border-radius: 6px;
+}
+
+
+/* =========================================================
+   STATUS FILTER
+========================================================= */
+
+.allocation-status-filter select {
+  min-height: 38px;
+  padding: 0 32px 0 11px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 7px;
+  background: var(--dashboard-surface);
+  color: var(--dashboard-text);
+  font-family: inherit;
+  font-size: 0.58rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.allocations-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  padding: 40px 24px;
+  text-align: center;
+  overflow: hidden;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+  background: var(--dashboard-surface);
+}
+
+.allocations-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: #eef6f5;
+  color: var(--dashboard-primary);
+}
+
+.allocations-empty-icon .icon {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.allocations-empty h3 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: .85rem;
+}
+
+.allocations-empty p {
+  max-width: 320px;
+  margin: 7px 0 0;
+  color: var(--dashboard-muted);
+  font-size: .67rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.allocation-section {
+  margin-bottom: 28px;
+}
+
+
+.allocation-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 13px;
+}
+
+
+.allocation-section-header h2 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+
+.allocation-section-header p {
+  margin: 4px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 0.59rem;
+}
+
+
+.allocation-section-count {
+  color: var(--dashboard-muted);
+  font-size: 0.57rem;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   TABLE GRID
+========================================================= */
+
+.allocation-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+
+/* =========================================================
+   ALLOCATION CARD
+========================================================= */
+
+.allocation-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 160px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+  background: var(--dashboard-surface);
+  overflow: hidden;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+
+.allocation-card:hover {
+  border-color: color-mix(in srgb,
+      var(--dashboard-primary) 30%,
+      var(--dashboard-border));
+  box-shadow:
+    0 5px 16px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.allocation-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+
+.allocation-kind {
+  color: var(--dashboard-muted);
+  font-size: 0.51rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.allocation-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.5rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* Available */
+
+.allocation-status.available {
+  background: color-mix(in srgb,
+      var(--dashboard-success) 11%,
+      transparent);
+  color: var(--dashboard-success);
+}
+
+
+/* Busy */
+
+.allocation-status.busy {
+  background: color-mix(in srgb,
+      var(--dashboard-info) 11%,
+      transparent);
+  color: var(--dashboard-info);
+}
+
+
+/* On hold */
+
+.allocation-status.on-hold {
+  background: color-mix(in srgb,
+      var(--dashboard-warning) 12%,
+      transparent);
+  color: var(--dashboard-warning);
+}
+
+
+/* Cleaning */
+
+.allocation-status.cleaning {
+  background: color-mix(in srgb,
+      var(--dashboard-muted) 11%,
+      transparent);
+  color: var(--dashboard-muted);
+}
+
+
+/* =========================================================
+   CARD BODY
+========================================================= */
+
+.allocation-card-body {
+  flex: 1;
+  padding: 17px 14px;
+}
+
+
+.allocation-card-body h3 {
+  margin: 0;
+  color: var(--dashboard-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+
+.allocation-card-body p {
+  margin: 5px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 0.57rem;
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   CARD FOOTER
+========================================================= */
+
+.allocation-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* gap: 10px; */
+  padding: 11px 14px;
+  border-top: 1px solid var(--dashboard-border);
+  color: var(--dashboard-muted);
+  font-size: 0.53rem;
+}
+
+/* .allocation-card-suborder-link {
+  align-items: center;
+  justify-content: space-evenly;
+} */
+
+
+.allocation-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--dashboard-primary);
+  font-size: 0.54rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+
+.allocation-card-link:hover {
+  text-decoration: underline;
+}
+
+
+.allocation-card-link .icon {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   DELIVERY ALLOCATION
+========================================================= */
+.takeout-allocation-list,
+.delivery-allocation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.takeout-allocation-card,
+.delivery-allocation-card {
+  display: grid;
+  grid-template-columns:
+    minmax(250px, 1fr) auto auto;
+  align-items: center;
+  gap: 25px;
+  padding: 15px 17px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+  background: var(--dashboard-surface);
+}
+
+
+/* Main */
+.takeout-allocation-main,
+.delivery-allocation-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.takeout-allocation-icon,
+.delivery-allocation-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: color-mix(in srgb,
+      var(--dashboard-info) 9%,
+      transparent);
+  color: var(--dashboard-info);
+}
+
+.takeout-allocation-icon .icon,
+.delivery-allocation-icon .icon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Title */
+.takeout-allocation-title,
+.delivery-allocation-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.takeout-allocation-title h3,
+.delivery-allocation-title h3{
+  color: var(--dashboard-heading);
+}
+
+.takeout-allocation-main p,
+.delivery-allocation-main p {
+  margin: 4px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 0.56rem;
+}
+
+/* suborders */
+.takeout-allocation-suborders,
+.delivery-allocation-suborders {
+  display: flex;
+}
+
+/* Details */
+.takeout-allocation-details,
+.delivery-allocation-details {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+  margin-left: 5px;
+}
+
+.takeout-allocation-details span,
+.delivery-allocation-details span {
+  color: var(--dashboard-muted);
+  font-size: 0.55rem;
+}
+
+.takeout-allocation-details strong,
+.delivery-allocation-details strong {
+  color: var(--dashboard-heading);
+  font-size: 0.65rem;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+  .allocation-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .takeout-allocation-card,
+  .delivery-allocation-card {
+    grid-template-columns:
+      1fr auto;
+  }
+
+  .takeout-allocation-card .dashboard-secondary-button,
+  .delivery-allocation-card .dashboard-secondary-button {
+    grid-column: 1 / -1;
+    justify-self: flex-start;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .allocation-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+
+  .allocation-type-filter {
+    width: 100%;
+  }
+
+
+  .allocation-filter {
+    flex: 1;
+  }
+
+
+  .allocation-status-filter select {
+    width: 100%;
+  }
+
+
+  .allocation-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .allocation-card {
+    min-height: 145px;
+  }
+
+
+  .allocation-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .takeout-allocation-card,
+  .delivery-allocation-card {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .takeout-allocation-card .dashboard-secondary-button,
+  .delivery-allocation-card .dashboard-secondary-button {
+    width: 100%;
+  }
+
+  .takeout-allocation-details,
+  .delivery-allocation-details {
+    justify-content: space-between;
+    padding-left: 32px;
+  }
+
+  .takeout-allocation-suborders,
+  .delivery-allocation-suborders {
+    display: block;
+  }
+}
+
+/* =========================================================
+   ALLOCATION SHOW VIEW
+========================================================= */
+
+.allocation-show-page {
+  /* width: 100%; */
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.allocation-show-header {
+  margin-bottom: 24px;
+}
+
+.allocation-show-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+
+/* =========================================================
+   BACK LINK
+========================================================= */
+
+.dashboard-back-link {
+  display: inline-flex;
+  align-items: center;
+
+  width: fit-content;
+
+  gap: 6px;
+
+  color: var(--dashboard-muted);
+
+  font-size: 0.57rem;
+  font-weight: 650;
+
+  text-decoration: none;
+
+  transition:
+    color 0.18s ease;
+}
+
+.dashboard-back-link:hover {
+  color: var(--dashboard-primary);
+}
+
+.dashboard-back-link .icon {
+  width: 14px;
+  height: 14px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.8;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   TITLE ROW
+========================================================= */
+
+.allocation-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.allocation-kind-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--dashboard-muted);
+
+  font-size: 0.51rem;
+  font-weight: 700;
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.allocation-title-row h1 {
+  margin: 0;
+
+  color: var(--dashboard-heading);
+
+  font-size: 1.35rem;
+  font-weight: 750;
+
+  line-height: 1.2;
+}
+
+
+/* =========================================================
+   ALLOCATION STATUS
+========================================================= */
+
+.allocation-title-row .allocation-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+
+  padding: 0 11px;
+
+  border-radius: 999px;
+
+  font-size: 0.53rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* Available */
+
+.allocation-status.available {
+  background: color-mix(in srgb,
+      var(--dashboard-success) 11%,
+      transparent);
+
+  color: var(--dashboard-success);
+}
+
+
+/* Busy */
+
+.allocation-status.busy {
+  background: color-mix(in srgb,
+      var(--dashboard-info) 11%,
+      transparent);
+
+  color: var(--dashboard-info);
+}
+
+
+/* On hold */
+
+.allocation-status.on-hold {
+  background: color-mix(in srgb,
+      var(--dashboard-warning) 12%,
+      transparent);
+
+  color: var(--dashboard-warning);
+}
+
+
+/* Cleaning */
+
+.allocation-status.cleaning {
+  background: color-mix(in srgb,
+      var(--dashboard-muted) 11%,
+      transparent);
+
+  color: var(--dashboard-muted);
+}
+
+
+/* =========================================================
+   STATE CARD
+========================================================= */
+
+.allocation-state-card {
+  display: flex;
+  align-items: center;
+
+  gap: 17px;
+
+  padding: 22px;
+
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+
+  background: var(--dashboard-surface);
+
+  margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   STATE ICON
+========================================================= */
+
+.allocation-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  flex: 0 0 52px;
+
+  border-radius: 12px;
+
+  background: color-mix(in srgb,
+      var(--dashboard-primary) 8%,
+      transparent);
+
+  color: var(--dashboard-primary);
+}
+
+.allocation-state-icon .icon {
+  width: 24px;
+  height: 24px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.6;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   STATE CONTENT
+========================================================= */
+
+.allocation-state-content {
+  flex: 1;
+}
+
+.allocation-state-content h2 {
+  margin: 0;
+
+  color: var(--dashboard-heading);
+
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.allocation-state-content p {
+  margin: 5px 0 0;
+
+  color: var(--dashboard-muted);
+
+  font-size: 0.57rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   STATE ACTIONS
+========================================================= */
+
+.allocation-state-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+}
+
+
+/* =========================================================
+   TABLE ACTIONS CARD
+========================================================= */
+
+.allocation-actions-card {
+  padding: 18px 20px;
+
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+
+  background: var(--dashboard-surface);
+}
+
+.allocation-actions-card h2 {
+  margin: 0 0 13px;
+
+  color: var(--dashboard-heading);
+
+  font-size: 0.69rem;
+  font-weight: 700;
+}
+
+.allocation-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+}
+
+
+/* =========================================================
+   ORDERS SECTION
+========================================================= */
+
+.allocation-orders-section {
+  margin-bottom: 28px;
+}
+
+.allocation-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 14px;
+}
+
+.allocation-section-header h2 {
+  margin: 0;
+
+  color: var(--dashboard-heading);
+
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.allocation-section-header p {
+  margin: 4px 0 0;
+
+  color: var(--dashboard-muted);
+
+  font-size: 0.57rem;
+
+  line-height: 1.45;
+}
+
+.allocation-section-count {
+  color: var(--dashboard-muted);
+
+  font-size: 0.56rem;
+  font-weight: 650;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   ORDERS LIST
+========================================================= */
+
+.allocation-orders {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+/* =========================================================
+   ORDER CARD
+========================================================= */
+
+.allocation-order-card {
+  overflow: hidden;
+
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+
+  background: var(--dashboard-surface);
+}
+
+
+/* =========================================================
+   ORDER HEADER
+========================================================= */
+
+.allocation-order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 16px 18px;
+
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.allocation-order-label {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: var(--dashboard-muted);
+
+  font-size: 0.49rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.allocation-order-header h3 {
+  margin: 0;
+
+  color: var(--dashboard-heading);
+
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   SELL ORDER STATUS
+========================================================= */
+
+.sell-order-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 23px;
+
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  font-size: 0.5rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.sell-order-status.opened {
+  background: color-mix(in srgb,
+      var(--dashboard-info) 10%,
+      transparent);
+
+  color: var(--dashboard-info);
+}
+
+.sell-order-status.packed {
+  background: color-mix(in srgb,
+      var(--dashboard-success) 10%,
+      transparent);
+
+  color: var(--dashboard-success);
+}
+
+.sell-order-status.invoicing {
+  background: color-mix(in srgb,
+      var(--dashboard-warning) 11%,
+      transparent);
+
+  color: var(--dashboard-warning);
+}
+
+.sell-order-status.delivering {
+  background: color-mix(in srgb,
+      var(--dashboard-primary) 10%,
+      transparent);
+
+  color: var(--dashboard-primary);
+}
+
+.sell-order-status.closed {
+  background: color-mix(in srgb,
+      var(--dashboard-muted) 10%,
+      transparent);
+
+  color: var(--dashboard-muted);
+}
+
+
+/* =========================================================
+   SUBORDER
+========================================================= */
+
+.allocation-suborder {
+  padding: 15px 18px;
+
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.allocation-suborder:last-child {
+  border-bottom: 0;
+}
+
+.allocation-suborder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 10px;
+
+  color: var(--dashboard-text);
+
+  font-size: 0.57rem;
+  font-weight: 650;
+}
+
+
+/* =========================================================
+   ORDER STATUS
+========================================================= */
+
+.order-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 21px;
+
+  padding: 0 8px;
+
+  border-radius: 999px;
+
+  font-size: 0.48rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.order-status.opened {
+  background: color-mix(in srgb,
+      var(--dashboard-info) 9%,
+      transparent);
+
+  color: var(--dashboard-info);
+}
+
+.order-status.processing {
+  background: color-mix(in srgb,
+      var(--dashboard-warning) 10%,
+      transparent);
+
+  color: var(--dashboard-warning);
+}
+
+.order-status.packed {
+  background: color-mix(in srgb,
+      var(--dashboard-success) 10%,
+      transparent);
+
+  color: var(--dashboard-success);
+}
+
+.order-status.completed {
+  background: color-mix(in srgb,
+      var(--dashboard-success) 10%,
+      transparent);
+
+  color: var(--dashboard-success);
+}
+
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+.allocation-products {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid var(--dashboard-border);
+  border-radius: 7px;
+
+  overflow: hidden;
+}
+
+.allocation-product-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) 70px 105px;
+
+  align-items: center;
+
+  gap: 15px;
+
+  min-height: 48px;
+
+  padding: 7px 12px;
+
+  border-bottom: 1px solid var(--dashboard-border);
+
+  background: var(--dashboard-surface);
+}
+
+.allocation-product-row:last-child {
+  border-bottom: 0;
+}
+
+.allocation-product-row strong {
+  min-width: 0;
+
+  color: var(--dashboard-text);
+
+  font-size: 0.57rem;
+  font-weight: 650;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PRODUCT QUANTITY
+========================================================= */
+
+.allocation-product-quantity {
+  color: var(--dashboard-muted);
+
+  font-size: 0.56rem;
+  font-weight: 650;
+
+  text-align: center;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   ORDER PRODUCT STATUS
+========================================================= */
+
+.order-product-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  justify-self: end;
+
+  min-height: 22px;
+
+  padding: 0 8px;
+
+  border-radius: 999px;
+
+  font-size: 0.48rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* Requested */
+
+.order-product-status.requested {
+  background: color-mix(in srgb,
+      var(--dashboard-info) 10%,
+      transparent);
+
+  color: var(--dashboard-info);
+}
+
+
+/* Prepare */
+
+.order-product-status.prepare {
+  background: color-mix(in srgb,
+      var(--dashboard-warning) 11%,
+      transparent);
+
+  color: var(--dashboard-warning);
+}
+
+
+/* Preparing */
+
+.order-product-status.preparing {
+  background: color-mix(in srgb,
+      var(--dashboard-primary) 10%,
+      transparent);
+
+  color: var(--dashboard-primary);
+}
+
+
+/* Completed */
+
+.order-product-status.completed {
+  background: color-mix(in srgb,
+      var(--dashboard-success) 10%,
+      transparent);
+
+  color: var(--dashboard-success);
+}
+
+
+/* =========================================================
+   EMPTY PRODUCT STATE
+========================================================= */
+
+.allocation-products-empty {
+  padding: 14px;
+
+  border: 1px dashed var(--dashboard-border);
+  border-radius: 7px;
+
+  color: var(--dashboard-muted);
+
+  font-size: 0.55rem;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   ORDER FOOTER
+========================================================= */
+
+.allocation-order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  padding: 11px 18px;
+
+  border-top: 1px solid var(--dashboard-border);
+}
+
+.allocation-card-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  color: var(--dashboard-primary);
+
+  font-size: 0.55rem;
+  font-weight: 650;
+
+  text-decoration: none;
+
+  transition:
+    color 0.18s ease;
+}
+
+.allocation-card-link:hover {
+  color: color-mix(in srgb,
+      var(--dashboard-primary) 80%,
+      #000);
+
+  text-decoration: underline;
+}
+
+.allocation-card-link .icon {
+  width: 13px;
+  height: 13px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.8;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   EMPTY ORDERS STATE
+========================================================= */
+
+.allocation-orders-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 220px;
+
+  padding: 30px;
+
+  border: 1px dashed var(--dashboard-border);
+  border-radius: var(--dashboard-radius);
+
+  background: var(--dashboard-surface);
+
+  text-align: center;
+}
+
+.allocation-orders-empty h3 {
+  margin: 0;
+
+  color: var(--dashboard-heading);
+
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.allocation-orders-empty p {
+  max-width: 360px;
+
+  margin: 6px 0 0;
+
+  color: var(--dashboard-muted);
+
+  font-size: 0.56rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   SECONDARY BUTTON
+   Included here so the allocation view is self-contained.
+   If already defined globally, keep only the global version.
+========================================================= */
+
+.allocation-show-page .dashboard-secondary-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  min-height: 38px;
+
+  padding: 0 14px;
+
+  border: 1px solid var(--dashboard-border);
+  border-radius: 7px;
+
+  background: var(--dashboard-surface);
+
+  color: var(--dashboard-text);
+
+  font-family: inherit;
+
+  font-size: 0.56rem;
+  font-weight: 650;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.allocation-show-page .dashboard-secondary-button:hover {
+  border-color: var(--dashboard-primary);
+
+  background: color-mix(in srgb,
+      var(--dashboard-primary) 6%,
+      var(--dashboard-surface));
+
+  color: var(--dashboard-primary);
+}
+
+.allocation-show-page .dashboard-secondary-button .icon {
+  width: 14px;
+  height: 14px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.8;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 850px) {
+
+  .allocation-state-card {
+    align-items: flex-start;
+
+    flex-wrap: wrap;
+  }
+
+  .allocation-state-content {
+    min-width: 220px;
+  }
+
+  .allocation-state-actions {
+    width: 100%;
+
+    padding-left: 69px;
+  }
+
+  .allocation-product-row {
+    grid-template-columns:
+      minmax(0, 1fr) 60px 95px;
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .allocation-show-header {
+    margin-bottom: 18px;
+  }
+
+
+  .allocation-title-row {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+
+  .allocation-title-row h1 {
+    font-size: 1.15rem;
+  }
+
+
+  .allocation-title-row .allocation-status {
+    align-self: flex-start;
+  }
+
+
+  .allocation-state-card {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    padding: 18px;
+
+    gap: 13px;
+  }
+
+
+  .allocation-state-icon {
+    width: 46px;
+    height: 46px;
+
+    flex-basis: 46px;
+  }
+
+
+  .allocation-state-icon .icon {
+    width: 21px;
+    height: 21px;
+  }
+
+
+  .allocation-state-actions {
+    width: 100%;
+
+    padding-left: 0;
+
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+
+  .allocation-state-actions .dashboard-primary-button,
+  .allocation-state-actions .dashboard-secondary-button {
+    width: 100%;
+  }
+
+
+  .allocation-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+
+  .allocation-actions .dashboard-secondary-button {
+    width: 100%;
+  }
+
+
+  .allocation-section-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 5px;
+  }
+
+
+  .allocation-order-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+
+  .allocation-product-row {
+    grid-template-columns:
+      minmax(0, 1fr) auto;
+
+    gap: 7px;
+
+    padding: 10px 11px;
+  }
+
+
+  .allocation-product-row strong {
+    grid-column: 1 / -1;
+  }
+
+
+  .allocation-product-quantity {
+    justify-self: start;
+
+    text-align: left;
+  }
+
+
+  .order-product-status {
+    justify-self: end;
+  }
+
+
+  .allocation-order-footer {
+    justify-content: stretch;
+  }
+
+
+  .allocation-order-footer .allocation-card-link {
+    width: 100%;
+
+    justify-content: center;
+
+    min-height: 36px;
+
+    border: 1px solid var(--dashboard-border);
+    border-radius: 6px;
+  }
+
+
+  .allocation-products-empty {
+    padding: 13px 10px;
+  }
+
+}
+
+
+/* =========================================================
+   EXTRA SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .allocation-show-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+
+  .allocation-state-card {
+    padding: 15px;
+  }
+
+
+  .allocation-order-header,
+  .allocation-suborder {
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+
+
+  .allocation-order-footer {
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+
+}

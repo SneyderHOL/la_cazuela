@@ -26,4 +26,14 @@ class Allocation < ApplicationRecord
   validates :name, :kind, :status, presence: true
   validates :name, uniqueness: true
   validates :active, exclusion: [ nil ]
+
+  scope :active_service, ->(kinds, statuses) {
+    where(active: true, kind: kinds, status: statuses)
+  }
+
+  private
+
+  def has_no_current_orders?
+    sell_orders.current_open_sales.empty?
+  end
 end

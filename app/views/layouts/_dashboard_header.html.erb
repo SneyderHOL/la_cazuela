@@ -1,0 +1,38 @@
+<!-- Header -->
+
+<header class="dashboard-header">
+
+  <button type="button" class="mobile-menu-button" id="mobileMenuButton" aria-label="Open navigation"
+    aria-expanded="false" data-controller="mobile-menu-sidebar" data-action="click->mobile-menu-sidebar#click">
+    ☰
+  </button>
+
+
+  <div class="dashboard-header-title">
+
+    <span class="header-section-label">
+      Staff Dashboard
+    </span>
+
+    <h1>Dashboard</h1>
+
+  </div>
+
+
+  <div class="staff-profile">
+
+    <div class="staff-avatar">
+      <%= current_user.nickname ? current_user.nickname[0].upcase : current_user.email[0].upcase %>
+    </div>
+
+    <div class="staff-details">
+
+      <strong><%= current_user.nickname ? current_user.nickname : current_user.email %></strong>
+
+      <span><%= current_user.role %></span>
+
+    </div>
+
+  </div>
+
+</header>

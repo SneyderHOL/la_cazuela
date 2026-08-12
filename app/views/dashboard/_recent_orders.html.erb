@@ -1,0 +1,50 @@
+<% if recent_orders.empty? %>
+
+  <div class="dashboard-empty-state">
+
+    <div class="empty-state-icon" aria-hidden="true">
+
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" >
+        <path d="M6 2h12"></path>
+        <path d="M6 2v4"></path>
+        <path d="M18 2v4"></path>
+        <rect x="4" y="6" width="16" height="15" rx="2" ></rect>
+        <path d="M8 10h8"></path>
+        <path d="M8 14h5"></path>
+      </svg>
+
+    </div>
+
+    <div class="empty-state-content">
+      <h3> No recent orders </h3>
+      <p> There are no orders to display at the moment. </p>
+    </div>
+
+  </div>
+
+<% else %>
+
+  <% recent_orders.each do |order| %>
+    <article class="order-row">
+
+      <div class="order-main">
+
+        <strong>
+          #<%= order.id %>
+        </strong>
+
+        <span>
+          <%= order.sell_order.allocation.name %> · <%= order.order_products.sum(&:quantity) %> items
+        </span>
+
+      </div>
+
+      <span class="status-badge <%= order.status %>">
+        <%= order.status.humanize %>
+      </span>
+
+    </article>
+
+  <% end %>
+
+<% end %>

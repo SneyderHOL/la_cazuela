@@ -1,0 +1,123 @@
+
+<div class="preparation-group">
+
+  <header class="preparation-group-header">
+
+    <div class="preparation-group-title">
+
+      <span class="preparation-status-dot <%= status.dasherize %>"></span>
+
+      <h2>
+        <%= status.humanize %>
+      </h2>
+
+    </div>
+
+    <span class="preparation-group-count">
+      <%= @current_preparations_counting[status] || 0 %>
+    </span>
+
+  </header>
+
+  <% if recent_preparations.empty? %>
+
+    <div class="preparation-empty-state">
+
+      <div class="preparation-empty-state-icon">
+
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 10h12"></path>
+
+          <path d="M7 10a4 4 0 0 1 0-8
+                        4 4 0 0 1 3.5 2
+                        4 4 0 0 1 7.5 2
+                        4 4 0 0 1-1 8"></path>
+
+          <path d="M7 10v8"></path>
+          <path d="M17 10v8"></path>
+          <path d="M7 18h10"></path>
+          <path d="M9 22h6"></path>
+        </svg>
+
+      </div>
+
+      <h3>
+        Kitchen is all caught up
+      </h3>
+
+      <p>
+        There are no products waiting to be prepared.
+      </p>
+
+    </div>
+
+  <% else %>
+    <% recent_preparations.each do |preparation| %>
+
+      <div class="preparation-items">
+
+        <article class="preparation-card">
+
+          <div class="preparation-card-main">
+
+            <div class="preparation-card-number">
+              #<%= preparation.id %>
+            </div>
+
+
+            <div class="preparation-card-info">
+
+              <div class="preparation-card-heading">
+
+                <h3>
+                  <%= preparation.product.name %>
+                </h3>
+
+                <span class="preparation-quantity">
+                  ×<%= preparation.quantity %>
+                </span>
+
+              </div>
+
+
+              <div class="preparation-card-meta">
+
+                <span>
+                  <%= preparation.order.sell_order.allocation.name %>
+                </span>
+
+                <span>
+                  Order #<%= preparation.order.id %>
+                </span>
+
+              </div>
+
+
+              <p class="preparation-note">
+                <%= preparation.note %>
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="preparation-card-action">
+
+            <span class="status-badge <%= preparation.status.dasherize %>">
+              <%= preparation.status.humanize %>
+            </span>
+
+            <%= render 'dashboard/order_products/preparation_button', status_reference: preparation.status, id: preparation.id %>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    <% end %>
+
+  <% end %>
+
+</div>

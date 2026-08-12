@@ -11,12 +11,18 @@ module AllocationAasm
         transitions from: %i[ available on_hold cleaning ], to: :busy
       end
 
+      event :reserve do
+        transitions from: :available, to: :on_hold
+      end
+
       event :clean do
-        transitions from: %i[ available on_hold busy ], to: :cleaning
+        transitions from: %i[ available on_hold ], to: :cleaning
+        transitions from: :busy, to: :cleaning, guard: :has_no_current_orders?
       end
 
       event :free do
-        transitions to: :available
+        transitions from: %i[ available on_hold cleaning ], to: :available
+        transitions from: :busy, to: :available, guard: :has_no_current_orders?
       end
     end
   end
