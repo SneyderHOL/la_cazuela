@@ -58,9 +58,6 @@ RSpec.shared_context "with sell_orders for scopes" do
 
   before do
     create_sell_orders
-    SellOrder.delivering.each do |sell_order|
-      sell_order.allocation.update(kind: :delivery)
-    end
   end
 
 =begin

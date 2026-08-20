@@ -19,20 +19,15 @@ class DashboardController < ApplicationController
 
   private
 
-  def check_valid_status
-    case params[:status]
-    when "opened" then :opened
-    when "packed" then :packed
-    when "invoicing" then :invoicing
-    when "delivering" then :delivering
-    when "closed" then :closed
-    when "requested" then :requested
-    when "prepare", "preparing" then %i[ prepare preparing ]
-    when "completed" then :completed
-    end
-  end
-
   def set_status_filter_param = @status_filter_param = { status: params[:status] }
+
+  def set_kind_filter_param = @kind_filter_param = { kind: params[:kind] }
+
+  def default_statuses = nil
+
+  def default_kinds = %i[ desk delivery takeout ]
+
+  def clear_flash = flash.clear
 
   def get_statuses
     @param_status = check_valid_status
@@ -44,7 +39,21 @@ class DashboardController < ApplicationController
     end
   end
 
-  def clear_flash = flash.clear
+  def get_kinds
+    @param_kind = check_valid_kind
+    if @param_kind
+      set_kind_filter_param
+      @param_kind
+    else
+      default_kinds
+    end
+  end
 
-  def default_statuses = nil
+  def check_valid_kind
+    case params[:kind]
+    when "desk" then :desk
+    when "delivery" then :delivery
+    when "takeout" then :takeout
+    end
+  end
 end

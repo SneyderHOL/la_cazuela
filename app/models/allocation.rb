@@ -33,4 +33,17 @@ class Allocation < ApplicationRecord
   #     .where(sell_orders: { created_at: Time.zone.today.beginning_of_day..Time.current,
   #            status: [:opened, :packed, :invoicing]})
   # }
+  # scope :current_sell_order, -> {
+  #   where(kind: :delivery, active: true)
+  #     .joins(:sell_orders)
+  #     .where(sell_orders: { created_at: Time.zone.today.beginning_of_day..Time.current,
+  #            status: [:opened, :packed, :invoicing]})
+  # }
+  scope :active_service, ->(kinds, statuses) {
+    where(active: true, kind: kinds, status: statuses)
+  }
+
+  def current_sell_order
+    sell_orders.first
+  end
 end

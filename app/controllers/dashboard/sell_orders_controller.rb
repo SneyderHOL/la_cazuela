@@ -63,27 +63,15 @@ module Dashboard
 
     def default_statuses = %i[ opened packed invoicing delivering closed ]
 
-    def get_kinds
-      @param_kind = check_valid_kind
-      if @param_kind
-        set_kind_filter_param
-        @param_kind
-      else
-        default_kinds
+    def check_valid_status
+      case params[:status]
+      when "opened" then :opened
+      when "packed" then :packed
+      when "invoicing" then :invoicing
+      when "delivering" then :delivering
+      when "closed" then :closed
       end
     end
-
-    def check_valid_kind
-      case params[:kind]
-      when "desk" then :desk
-      when "delivery" then :delivery
-      when "takeout" then :takeout
-      end
-    end
-
-    def default_kinds = %i[ desk delivery takeout ]
-
-    def set_kind_filter_param = @kind_filter_param = { kind: params[:kind] }
 
     def set_sell_order
       @sell_order = SellOrder.includes(

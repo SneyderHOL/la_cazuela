@@ -35,5 +35,13 @@ module Dashboard
     def default_statuses = %i[ requested prepare preparing completed ]
 
     def set_preparation = @preparation = OrderProduct.find(params[:id])
+
+    def check_valid_status
+      case params[:status]
+      when "requested" then :requested
+      when "prepare", "preparing" then %i[ prepare preparing ]
+      when "completed" then :completed
+      end
+    end
   end
 end

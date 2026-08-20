@@ -45,7 +45,7 @@
   <!-- Preparation Summary -->
   <section class="preparation-summary" aria-label="Preparation summary">
 
-    <%= button_to dashboard_preparations_path, method: :get, class: class_names("preparation-filter", active: params[:status].nil?), data: { status: "all" } do %>
+    <%= button_to dashboard_preparations_path, method: :get, class: class_names("preparation-filter", active: params[:status].blank?), data: { status: "all" } do %>
       <span>All</span>
       <strong><%= @current_preparations_counting.values.sum %></strong>
     <% end %>
@@ -79,12 +79,12 @@
 
     <%= render "layouts/flash" %>
 
-    <% if @param_status.nil? || @param_status == :requested %>
+    <% if @param_status.blank? || @param_status == :requested %>
       <!-- Requested -->
       <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.requested, status: "requested" %>
     <% end %>
 
-    <% if @param_status.nil? || @param_status == %i[ prepare preparing ] %>
+    <% if @param_status.blank? || @param_status == %i[ prepare preparing ] %>
       <!-- Preparing -->
       <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.preparing, status: "preparing" %>
 
@@ -92,7 +92,7 @@
       <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.prepare, status: "prepare" %>
     <% end %>
 
-    <% if @param_status.nil? || @param_status == :completed %>
+    <% if @param_status.blank? || @param_status == :completed %>
       <!-- Completed -->
       <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.completed, status: "completed" %>
     <% end %>

@@ -1,1 +1,282 @@
-<h1>Allocations page</h1>
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/allocations", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+<div class="dashboard-content">
+
+  <!-- =====================================================
+        PAGE HEADER
+  ====================================================== -->
+
+  <section class="dashboard-page-header">
+
+    <div>
+
+      <span class="dashboard-eyebrow">
+        Restaurant Operations
+      </span>
+
+      <h1>
+        Allocations
+      </h1>
+
+      <p>
+        Manage tables and delivery allocations.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+        FILTERS
+  ====================================================== -->
+
+  <section class="allocation-toolbar">
+
+    <div class="allocation-type-filter" role="tablist" aria-label="Allocation type">
+
+      <%= button_to dashboard_allocations_path, params: status_kind_filter_params_helper(@status_filter_param, nil), method: :get, class: class_names("allocation-filter", active: params[:kind].blank?), data: { kind: "all", filter: "kind" } do %>
+        <span>All</span>
+      <% end %>
+
+      <%= button_to dashboard_allocations_path, params: status_kind_filter_params_helper(@status_filter_param, { kind: "desk" }), method: :get, class: class_names("allocation-filter", active: params[:kind] == "desk"), data: { kind: "desk", filter: "kind" } do %>
+        <span>Tables</span>
+      <% end %>
+
+      <%= button_to dashboard_allocations_path, params: status_kind_filter_params_helper(@status_filter_param, { kind: "delivery" }), method: :get, class: class_names("allocation-filter", active: params[:kind] == "delivery"), data: { kind: "delivery", filter: "kind" } do %>
+        <span>Deliveries</span>
+      <% end %>
+
+      <%= button_to dashboard_allocations_path, params: status_kind_filter_params_helper(@status_filter_param, { kind: "takeout" }), method: :get, class: class_names("allocation-filter", active: params[:kind] == "takeout"), data: { kind: "takeout", filter: "kind" } do %>
+        <span>Takeouts</span>
+      <% end %>
+
+    </div>
+
+    <%= form_with url: dashboard_allocations_path, method: :get, local: true, class: "allocation-status-filter" do |form| %>
+      <%= hidden_field_tag :kind, params[:kind], value: @kind_filter_param ? @kind_filter_param[:kind] : nil %>
+      <%= form.label :status, "Filter by status" %>
+      <%= form.select :status,
+            options_for_select(
+              [
+                ["All statuses", ""],
+                ["Available", "available"],
+                ["Busy", "busy"],
+                ["On hold", "on_hold"],
+                ["Cleaning", "cleaning"]
+              ],
+              params[:status]
+            ),
+            {},
+            class: "form-select",
+            onchange: "this.form.submit();" %>
+    <% end %>
+
+  </section>
+
+  <% if @desks.any? || (@param_kind.blank? || @param_kind == :desk) %>
+    <!-- =====================================================
+          TABLES
+    ====================================================== -->
+
+    <section class="allocation-section">
+
+      <header class="allocation-section-header">
+
+        <div>
+
+          <h2>
+            Tables
+          </h2>
+
+          <p>
+            Current table availability and activity.
+          </p>
+
+        </div>
+
+        <span class="allocation-section-count">
+          <%= @desks.count %> tables
+        </span>
+
+      </header>
+
+
+      <% if @desks.empty? %>
+        <section class="allocations-empty">
+
+          <div class="allocations-empty-icon">
+
+            <svg class="sidebar-icon" viewBox="0 0 24 24" aria-hidden="true" >
+              <rect x="3" y="4" width="18" height="7" rx="1" ></rect>
+              <path d="M6 11v8"></path>
+              <path d="M18 11v8"></path>
+              <path d="M3 8h18"></path>
+            </svg>
+
+          </div>
+
+          <h3>
+            No table allocations
+          </h3>
+
+          <p>
+            There are currently no active tables.
+          </p>
+
+        </section>
+      
+      <% else %>
+
+        <div class="allocation-grid">
+
+          <% @allocations.select(&:desk?).each do |desk| %>
+
+            <%= render 'dashboard/allocations/desk_allocation_card', desk: desk %>
+
+          <% end %>
+
+        </div>
+
+      <% end %>
+
+    </section>
+
+  <% end %>
+
+  <% if @deliveries.any? || (@param_kind.blank? || @param_kind == :delivery) %>
+
+    <!-- =====================================================
+          DELIVERY ALLOCATIONS
+    ====================================================== -->
+
+    <section class="allocation-section delivery-allocation-section">
+
+      <header class="allocation-section-header">
+
+        <div>
+
+          <h2>
+            Delivery Allocations
+          </h2>
+
+          <p>
+            Delivery allocations with active orders.
+          </p>
+
+        </div>
+
+      </header>
+
+      <% if @deliveries.empty? %>
+        <section class="allocations-empty">
+
+          <div class="allocations-empty-icon">
+
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 7h11v10H3z"></path>
+              <path d="M14 10h4l3 3v4h-7z"></path>
+              <circle cx="7" cy="19" r="2"></circle>
+              <circle cx="18" cy="19" r="2"></circle>
+            </svg>
+
+          </div>
+
+          <h3>
+            No delivery allocations
+          </h3>
+
+          <p>
+            There are currently no active deliveries.
+          </p>
+
+        </section>
+      
+      <% else %>
+
+        <div class="delivery-allocation-list">
+
+          <% @allocations.select(&:delivery?).each do |delivery| %>
+
+            <%= render 'dashboard/allocations/delivery_allocation_card', delivery: delivery %>
+
+          <% end %>
+
+        </div>
+
+      <% end %>
+
+    </section>
+
+  <% end %>
+
+  <% if @takeouts.any? || (@param_kind.blank? || @param_kind == :takeout) %>
+
+    <!-- =====================================================
+          TAKEOUT ALLOCATIONS
+    ====================================================== -->
+
+    <section class="allocation-section takeout-allocation-section">
+
+      <header class="allocation-section-header">
+
+        <div>
+
+          <h2>
+            Takeout Allocations
+          </h2>
+
+          <p>
+            Takeout allocations with active orders.
+          </p>
+
+        </div>
+
+      </header>
+
+      <% if @takeouts.empty? %>
+        <section class="allocations-empty">
+
+          <div class="allocations-empty-icon">
+
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <!-- To-go box -->
+              <path d="M4 8h16"></path>
+              <path d="M5 8l1 11h12l1-11"></path>
+              <path d="M7 8l2-4h6l2 4"></path>
+              <path d="M9 12h6"></path>
+              <path d="M12 12v3"></path>
+            </svg>
+
+          </div>
+
+          <h3>
+            No takeout allocations
+          </h3>
+
+          <p>
+            There are currently no active takeouts.
+          </p>
+
+        </section>
+      
+      <% else %>
+
+        <div class="takeout-allocation-list">
+
+          <% @allocations.select(&:takeout?).each do |takeout| %>
+
+            <%= render 'dashboard/allocations/takeout_allocation_card', takeout: takeout %>
+
+          <% end %>
+
+        </div>
+
+      <% end %>
+
+    </section>
+
+  <% end %>
+
+</div>

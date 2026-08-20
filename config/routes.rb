@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   namespace :dashboard do
     resources :allocations, only: :index
-    resources :orders, only: :index
+    resources :orders, only: %i[ index show ]
     resources :sell_orders, only: %i[ index show ] do
       member do
         post "invoice"

@@ -25,7 +25,7 @@
 
     <div class="dashboard-header-actions">
 
-      <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, @kind_filter_param), method: :get, class: "dashboard-secondary-button", id: "refresh-sell-orders" do %>
+      <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper(@status_filter_param, @kind_filter_param), method: :get, class: "dashboard-secondary-button", id: "refresh-sell-orders" do %>
 
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M20 11a8 8 0 0 0-14.9-3"></path>
@@ -54,36 +54,36 @@
       </span>
 
       <div class="sell-orders-filter-options">
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(nil, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status].nil?), data: { status: "all", filter: "status" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper(nil, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status].blank?), data: { status: "all", filter: "status" } do %>
           <span>All</span>
           <strong><%= @current_sales_counting.values.sum %></strong>
         <% end %>
 
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "opened" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "opened"), data: { status: "opened", filter: "status" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper({ status: "opened" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "opened"), data: { status: "opened", filter: "status" } do %>
           <span>Opened</span>
           <strong><%= @current_sales_counting["opened"] || 0 %></strong>
         <% end %>
 
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "packed" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "packed"), data: { status: "packed", filter: "status" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper({ status: "packed" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "packed"), data: { status: "packed", filter: "status" } do %>
           <span>Packed</span>
           <strong><%= @current_sales_counting["packed"] || 0 %></strong>
         <% end %>
 
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "invoicing" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "invoicing"), data: { status: "invoicing", filter: "status" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper({ status: "invoicing" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "invoicing"), data: { status: "invoicing", filter: "status" } do %>
           <span>Invoicing</span>
           <strong><%= @current_sales_counting["invoicing"] || 0 %></strong>
         <% end %>
 
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "delivering" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "delivering"), data: { status: "delivering", filter: "status" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper({ status: "delivering" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "delivering"), data: { status: "delivering", filter: "status" } do %>
           <span>Delivering</span>
           <strong><%= @current_sales_counting["delivering"] || 0 %></strong>
         <% end %>
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper({ status: "closed" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "closed"), data: { status: "closed", filter: "status" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper({ status: "closed" }, @kind_filter_param), method: :get, class: class_names("sell-order-filter", active: params[:status] == "closed"), data: { status: "closed", filter: "status" } do %>
           <span>Closed</span>
           <strong><%= @current_sales_counting["closed"] || 0 %></strong>
         <% end %>
@@ -100,22 +100,22 @@
 
       <div class="sell-orders-filter-options">
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, nil), method: :get, class: class_names("sell-order-filter", active: params[:kind].nil?), data: { kind: "all", filter: "kind" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper(@status_filter_param, nil), method: :get, class: class_names("sell-order-filter", active: params[:kind].blank?), data: { kind: "all", filter: "kind" } do %>
             <span>All</span>
             <strong><%= @current_sales_counting_by_kind.values.sum %></strong>
         <% end %>
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, { kind: "desk" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "desk"), data: { kind: "desk", filter: "kind" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper(@status_filter_param, { kind: "desk" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "desk"), data: { kind: "desk", filter: "kind" } do %>
             <span>Tables</span>
             <strong><%= @current_sales_counting_by_kind["desk"] || 0  %></strong>
         <% end %>
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, { kind: "delivery" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "delivery"), data: { kind: "delivery", filter: "kind" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper(@status_filter_param, { kind: "delivery" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "delivery"), data: { kind: "delivery", filter: "kind" } do %>
             <span>Deliveries</span>
             <strong><%= @current_sales_counting_by_kind["delivery"] || 0  %></strong>
         <% end %>
 
-        <%= button_to dashboard_sell_orders_path, params: sell_orders_filter_params_helper(@status_filter_param, { kind: "takeout" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "takeout"), data: { kind: "takeout", filter: "kind" } do %>
+        <%= button_to dashboard_sell_orders_path, params: status_kind_filter_params_helper(@status_filter_param, { kind: "takeout" }), method: :get, class: class_names("sell-order-filter", active: params[:kind] == "takeout"), data: { kind: "takeout", filter: "kind" } do %>
             <span>Takeout</span>
             <strong><%= @current_sales_counting_by_kind["takeout"] || 0  %></strong>
         <% end %>
@@ -132,7 +132,86 @@
 
     <div class="sell-orders-table-wrapper">
 
-      <%= render 'dashboard/sell_orders/sales_table_rows', current_sales: @current_sales %>
+      <% if @current_sales.empty? %>
+        <section class="sell-orders-empty">
+
+          <div class="sell-orders-empty-icon">
+
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 2h12"></path>
+              <path d="M6 22h12"></path>
+              <path d="M8 2v5"></path>
+              <path d="M16 2v5"></path>
+              <path d="M8 17v5"></path>
+              <path d="M16 17v5"></path>
+
+              <path d="M8 7h8v3a4 4 0 0 1-8 0V7z"></path>
+
+              <path d="M10 13h4"></path>
+
+            </svg>
+
+          </div>
+
+          <h3>
+            No sell orders
+          </h3>
+
+          <p>
+            There are currently no active sales requiring attention.
+          </p>
+
+        </section>
+
+      <% else %>
+
+        <table class="sell-orders-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Sell Order
+              </th>
+
+              <th>
+                Allocation
+              </th>
+
+              <th>
+                Products
+              </th>
+
+              <th>
+                Total
+              </th>
+
+              <th>
+                Payment
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <%= render 'dashboard/sell_orders/sales_table_rows', current_sales: @current_sales %>
+
+          </tbody>
+
+        </table>
+        
+      <% end %>
 
     </div>
 

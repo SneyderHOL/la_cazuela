@@ -10,7 +10,7 @@ module DashboardHelper
     sell_order_counts
   end
 
-  def sell_orders_filter_params_helper(status, kind)
+  def status_kind_filter_params_helper(status, kind)
     return nil if status.nil? && kind.nil?
     return status if status && kind.nil?
     return kind if kind && status.nil?
