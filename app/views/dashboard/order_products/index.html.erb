@@ -77,8 +77,6 @@
   <!-- Preparation Queue -->
   <section class="preparation-queue">
 
-    <%= render "layouts/flash" %>
-
     <% if @param_status.blank? || @param_status == :requested %>
       <!-- Requested -->
       <%= render 'dashboard/order_products/preparation_items', recent_preparations: @recent_preparations.requested, status: "requested" %>

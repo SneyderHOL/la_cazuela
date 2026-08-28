@@ -42,8 +42,6 @@
 
   </section>
 
-  <%= render "layouts/flash" %>
-
   <% if @allocation.desk? %>
 
     <!-- =================================================
@@ -76,8 +74,8 @@
 
         <div class="allocation-state-actions">
 
-          <%= link_to dashboard_orders_path, class: "dashboard-primary-button" do %>
-            Take Order
+          <%= button_to dashboard_allocation_sell_orders_path(@allocation), params: { allocation_id: @allocation.id }, class: "dashboard-primary-button" do %>
+            Take Sell Order
           <% end %>
 
         </div>
@@ -90,11 +88,11 @@
 
         <div class="allocation-actions">
 
-          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-reserve" do %>
+          <%= button_to reserve_dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-reserve" do %>
             Put On Hold
           <% end %>
 
-          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-clean" do %>
+          <%= button_to clean_dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-clean" do %>
             Put To Clean
           <% end %>
 
@@ -181,7 +179,7 @@
 
         <div class="allocation-state-actions">
 
-          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-primary-button", id: "put-free" do %>
+          <%= button_to free_dashboard_allocation_path(@allocation.id), class: "dashboard-primary-button", id: "put-free" do %>
             Make Available
           <% end %>
 
@@ -219,11 +217,11 @@
 
         <div class="allocation-state-actions">
 
-          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-primary-button", id: "put-free" do %>
+          <%= button_to free_dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-free" do %>
             Make Available
           <% end %>
 
-          <%= button_to dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-reserve" do %>
+          <%= button_to reserve_dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-reserve" do %>
             Put On Hold
           <% end %>
 
@@ -240,6 +238,14 @@
     ================================================== -->
 
     <section class="allocation-orders-section">
+
+      <div class="allocation-state-actions">
+
+        <%= button_to dashboard_allocation_sell_orders_path(@allocation), params: { allocation_id: @allocation.id }, class: "dashboard-primary-button" do %>
+          Take Sell Order
+        <% end %>
+
+      </div>
 
       <header class="allocation-section-header">
 

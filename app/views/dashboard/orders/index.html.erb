@@ -1,1 +1,5 @@
-<h1>Orders page</h1>
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/orders", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+
+<h1>Orders</h1>

@@ -18,8 +18,11 @@ Rails.application.routes.draw do
         post "clean"
         post "reserve"
       end
+      resources :sell_orders, only: :create
     end
-    resources :orders, only: %i[ index show ]
+
+    resources :orders, only: %i[ index show new ]
+
     resources :sell_orders, only: %i[ index show ] do
       member do
         post "invoice"
@@ -27,7 +30,9 @@ Rails.application.routes.draw do
         post "close"
         post "payment"
       end
+      resources :orders, only: %i[ new create ]
     end
+
     resources :order_products, only: :index, as: :preparations, path: :preparations do
       member do
         post "cook"

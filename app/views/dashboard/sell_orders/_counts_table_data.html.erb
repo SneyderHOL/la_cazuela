@@ -10,7 +10,7 @@
 <td>
 
   <strong class="sell-order-total">
-    <%= number_to_currency(sell_order_counts[:total], precision: 0) %>
+    <%= currency_helper(sell_order_counts[:total]) %>
   </strong>
 
 </td>

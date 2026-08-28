@@ -17,4 +17,8 @@ module DashboardHelper
 
     status.merge(kind)
   end
+
+  def currency_helper(number)
+    number_to_currency(number, precision: 0, locale: :es, separator: ",", delimiter: ".")
+  end
 end

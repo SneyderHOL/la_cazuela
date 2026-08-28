@@ -12,7 +12,7 @@ module AllocationAasm
       end
 
       event :reserve do
-        transitions from: :available, to: :on_hold
+        transitions from: %i[ available cleaning ], to: :on_hold
       end
 
       event :clean do

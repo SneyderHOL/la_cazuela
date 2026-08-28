@@ -24,7 +24,10 @@ class Order < ApplicationRecord
   has_many :order_products, dependent: :destroy
   has_many :products, through: :order_products
 
+  accepts_nested_attributes_for :order_products
+
   validates :status, presence: true
+  # validate :must_have_products
 
   before_destroy :check_status
 
@@ -56,5 +59,11 @@ class Order < ApplicationRecord
 
   def check_status
     throw :abort unless opened?
+  end
+
+  def must_have_products
+    if order_products.reject(&:marked_for_destruction?).empty?
+      errors.add(:order_products, "must contain at least one product")
+    end
   end
 end

@@ -186,8 +186,9 @@ RSpec.describe Allocation, type: :model do
     context "when reserve is executed with cleaning status" do
       before { allocation.status = 'cleaning' }
 
-      it "raise AASM::InvalidTransition error" do
-        expect { allocation.reserve }.to raise_error(AASM::InvalidTransition)
+      it do
+        expect { allocation.reserve }.to change(
+          allocation, :status).from("cleaning").to("on_hold")
       end
     end
   end
@@ -252,6 +253,35 @@ RSpec.describe Allocation, type: :model do
 
       it "retrieves the corresponding status value for allocations" do
         expect(described_class.active_service(kinds, statuses).pluck(:status).uniq).to contain_exactly("available", "busy", "on_hold", "cleaning")
+      end
+    end
+  end
+
+  describe "#current_open_sell_order" do
+    include_context "with sell_orders for scopes"
+
+    let(:sell_order) { SellOrder.opened.sales_by_date(saturday).first }
+    let(:allocation) { sell_order.allocation }
+
+    before { sell_order }
+
+    context "with sell order" do
+      it "retrieves the corresponding sell_order" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(allocation.current_open_sell_order).to eq(sell_order)
+        end
+      end
+    end
+
+    context "with no sell order" do
+      it "return nil" do
+        specific_date = friday + 3.hours
+
+        travel_to specific_date do
+          expect(allocation.current_open_sell_order).to be_nil
+        end
       end
     end
   end

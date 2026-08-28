@@ -64,7 +64,15 @@
 
   <% end %>
 
-  <footer class="allocation-order-footer">
+  <footer class="allocation-order-footer<%= sell_order.opened? ? " opened" : ""%>">
+
+    <% if sell_order.opened? %>
+
+      <%= link_to new_dashboard_sell_order_order_path(sell_order), params: { sell_order_id: sell_order.id }, class: "dashboard-primary-button" do %>
+        Take Order
+      <% end %>
+
+    <% end %>
 
     <%= link_to dashboard_sell_order_path(sell_order.id), class: "allocation-card-link" do %>
       View Sell Order

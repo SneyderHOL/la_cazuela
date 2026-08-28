@@ -20,6 +20,7 @@ class Allocation < ApplicationRecord
   include ActiveScopeable
 
   has_many :sell_orders, dependent: :restrict_with_error
+  has_many :orders, through: :sell_orders
 
   enum :kind, { desk: 0, delivery: 1, takeout: 2 }
 
@@ -30,6 +31,10 @@ class Allocation < ApplicationRecord
   scope :active_service, ->(kinds, statuses) {
     where(active: true, kind: kinds, status: statuses)
   }
+
+  def current_open_sell_order
+    sell_orders.sales_by_date(Time.zone.today).opened.first
+  end
 
   private
 
