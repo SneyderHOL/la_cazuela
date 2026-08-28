@@ -1,6 +1,7 @@
 module Dashboard
   class SellOrdersController < DashboardController
     before_action :clear_flash, only: :index
+    before_action :set_allocation, only: :create
     before_action :set_sell_order, only: %i[ show invoice deliver close payment ]
 
     def index
@@ -59,6 +60,20 @@ module Dashboard
       render "dashboard/sell_orders/show", status: :bad_request
     end
 
+    def create
+      @sell_order = SellOrder.create(allocation: @allocation)
+      if @sell_order.persisted?
+        @allocation.take!
+        redirect_to new_dashboard_sell_order_order_path(@sell_order)
+      else
+        @sell_orders = @allocation.sell_orders.current_open_sales.order(created_at: :asc)
+        @suborders_count = @sell_orders.sum { |so| so.orders.count }
+
+        flash[:alert] = @sell_order.errors.full_messages.join
+        render "dashboard/allocations/show", status: :bad_request
+      end
+    end
+
     private
 
     def default_statuses = %i[ opened packed invoicing delivering closed ]
@@ -77,6 +92,10 @@ module Dashboard
       @sell_order = SellOrder.includes(
         :allocation, :bill, orders: { order_products: :product }
       ).find(params[:id])
+    end
+
+    def set_allocation
+      @allocation = Allocation.find(params[:allocation_id])
     end
   end
 end

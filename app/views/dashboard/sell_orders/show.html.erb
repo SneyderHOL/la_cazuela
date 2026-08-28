@@ -23,9 +23,6 @@
 
       <% end %>
 
-      <%= render "layouts/flash" %>
-
-
       <div class="sell-order-heading">
 
         <div>
@@ -113,7 +110,7 @@
             </span>
 
             <strong>
-              <%= number_to_currency(@sell_order.total, precision: 0) %>
+              <%= currency_helper(@sell_order.total) %>
             </strong>
 
         </div>
@@ -235,7 +232,7 @@
                 </span>
 
                 <strong id="cash-change-amount">
-                  <%= number_to_currency(@sell_order.cash_change || 0, precision: 0) %>
+                  <%= currency_helper(@sell_order.cash_change || 0) %>
                 </strong>
 
               </div>

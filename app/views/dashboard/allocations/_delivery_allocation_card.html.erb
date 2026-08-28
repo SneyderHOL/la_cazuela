@@ -20,7 +20,9 @@
       <div class="delivery-allocation-title">
 
         <h3>
-          <%= delivery.name.humanize %>
+          <%= link_to dashboard_allocation_path(delivery.id) do %>
+            <%= delivery.name.humanize %>
+          <% end %>
         </h3>
 
         <span class="allocation-status busy">

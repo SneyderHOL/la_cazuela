@@ -22,7 +22,9 @@
       <div class="takeout-allocation-title">
 
         <h3>
-          <%= takeout.name.humanize %>
+          <%= link_to dashboard_allocation_path(takeout.id) do %>
+            <%= takeout.name.humanize %>
+          <% end %>
         </h3>
 
         <span class="allocation-status busy">

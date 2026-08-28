@@ -17,7 +17,9 @@
   <div class="allocation-card-body">
 
     <h3>
-      <%= desk.name.humanize %>
+      <%= link_to dashboard_allocation_path(desk.id) do %>
+        <%= desk.name.humanize %>
+      <% end %>
     </h3>
 
     <p>

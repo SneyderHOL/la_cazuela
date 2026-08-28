@@ -51,7 +51,7 @@
             </h3>
 
             <span>
-              <%= number_to_currency(order_product.product.price, precision: 0) %> each
+              <%= currency_helper(order_product.product.price) %> each
             </span>
 
           </div>
@@ -60,7 +60,7 @@
 
 
         <strong>
-          <%= number_to_currency(order_product.quantity * order_product.product.price, precision: 0) %>
+          <%= currency_helper(order_product.quantity * order_product.product.price) %>
         </strong>
 
       </div>
@@ -77,7 +77,7 @@
     </span>
 
     <strong>
-      <%= number_to_currency(order_products.sum { |order_product| order_product.quantity * order_product.product.price }, precision: 0) %>
+      <%= currency_helper(order_products.sum { |order_product| order_product.quantity * order_product.product.price }) %>
     </strong>
 
   </footer>

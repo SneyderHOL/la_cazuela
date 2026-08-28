@@ -1,0 +1,242 @@
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/orders", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+
+<div class="dashboard-content orders-page" data-controller="taking-order">
+
+  <header class="orders-page-header">
+
+    <div class="orders-page-heading">
+
+      <a href="<%= dashboard_allocation_path(@allocation) %>" class="dashboard-back-link">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 12H5"></path>
+          <path d="M12 19l-7-7 7-7"></path>
+        </svg>
+
+        <%= @allocation.name %>
+      </a>
+
+      <h1>
+        New Order
+      </h1>
+
+      <p>
+        Add products to the current order.
+      </p>
+
+    </div>
+
+    <div class="orders-context-card">
+
+      <span class="orders-context-label">
+        <%= @allocation.kind.humanize %>
+      </span>
+
+      <strong>
+        <%= @allocation.name %>
+      </strong>
+
+    </div>
+
+  </header>
+
+  <%= form_with(model: @order, url: dashboard_sell_order_orders_path(@sell_order), id: "order-form") do |form| %>
+
+    <div class="orders-layout">
+
+      <!-- ==========================================
+           PRODUCTS PANEL
+      =========================================== -->
+
+      <section class="orders-products-panel">
+
+        <header class="orders-panel-header">
+
+          <div>
+            <span class="orders-panel-eyebrow">
+              Menu
+            </span>
+
+            <h2>
+              Products
+            </h2>
+
+            <p>
+              Select products to add to the order.
+            </p>
+          </div>
+
+        </header>
+
+
+        <!-- ========================================
+             CATEGORY FILTER
+        ========================================= -->
+
+        <nav class="orders-category-list" aria-label="Product categories">
+
+          <button type="button" class="orders-category-button active" data-category="all" data-action="click->taking-order#categoryFilter">
+            All
+          </button>
+
+          <% @categories.each do |category| %>
+
+            <button type="button" class="orders-category-button" data-category="<%= category.id %>" data-action="click->taking-order#categoryFilter">
+              <%= category.name %>
+            </button>
+
+          <% end %>
+
+        </nav>
+
+
+        <!-- ========================================
+             PRODUCT GRID
+        ========================================= -->
+
+        <div class="orders-product-grid" id="orders-product-grid" data-taking-order-target="productGrid" data-action="click->taking-order#addProduct">
+
+          <% @products.each do |product| %>
+
+            <article class="orders-product-card" data-category="<%= product.category_id %>" data-product-id="<%= product.id %>" data-product-name="<%= product.name %>" data-product-price="<%= product.price %>">
+
+              <div class="orders-product-content">
+
+                <span class="orders-product-category">
+                  <%= product.category.name %>
+                </span>
+
+                <h3>
+                  <%= product.name %>
+                </h3>
+
+                <% if product.detail.present? %>
+                  <p>
+                    <%= product.detail %>
+                  </p>
+                <% end %>
+
+              </div>
+
+
+              <footer class="orders-product-footer">
+
+                <strong class="orders-product-price">
+                  <%= currency_helper(product.price) %>
+                </strong>
+
+
+                <button type="button" class="orders-add-product" data-product-id="<%= product.id %>">
+                  Add
+                </button>
+
+              </footer>
+
+            </article>
+
+          <% end %>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================================
+          CURRENT ORDER
+      ================================================= -->
+
+      <aside class="orders-current-panel">
+
+        <header class="orders-panel-header">
+
+          <div>
+
+            <span class="orders-panel-eyebrow">
+              Current Order
+            </span>
+
+            <h2>
+              Order Items
+            </h2>
+
+          </div>
+
+        </header>
+
+
+        <div id="current-order-products" class="current-order-products" data-taking-order-target="currentOrder" data-action="click->taking-order#cartActions">
+
+          <div id="orders-empty-state" class="orders-empty-state" data-taking-order-target="emptyState">
+
+            <div class="orders-empty-icon">
+
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 3h12"></path>
+                <path d="M6 7h12"></path>
+                <path d="M7 7v13h10V7"></path>
+                <path d="M9 11h6"></path>
+                <path d="M9 15h6"></path>
+              </svg>
+
+            </div>
+
+            <h3>
+              No products added
+            </h3>
+
+            <p>
+              Select a product to begin the order.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <footer class="current-order-footer">
+
+          <div class="current-order-summary">
+
+            <span>
+              Items
+            </span>
+
+            <strong id="current-order-item-count" data-taking-order-target="itemCountElement">
+              0
+            </strong>
+
+          </div>
+
+          <div class="current-order-summary">
+
+            <span>
+              Subtotal
+            </span>
+
+            <strong id="current-order-total" data-taking-order-target="totalElement">
+              $0
+            </strong>
+
+          </div>
+
+
+          <button type="submit" class="dashboard-primary-button" disabled id="send-order-button" data-taking-order-target="sendButton">
+            Send Order
+          </button>
+
+        </footer>
+
+      </aside>
+
+    </div>
+
+    <!-- ==========================================
+         HIDDEN NESTED FIELDS
+    =========================================== -->
+
+    <div id="order-products-fields" aria-hidden="true" data-taking-order-target="fieldsContainer"></div>
+
+  <% end %>
+
+</div>
