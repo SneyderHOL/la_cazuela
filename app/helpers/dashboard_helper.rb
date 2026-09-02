@@ -21,4 +21,19 @@ module DashboardHelper
   def currency_helper(number)
     number_to_currency(number, precision: 0, locale: :es, separator: ",", delimiter: ".")
   end
+
+  def set_existing_order_json(order)
+    return unless order
+
+    order.order_products.map do |order_product|
+      {
+        orderProductId: order_product.id,
+        productId: order_product.product_id,
+        name: order_product.product.name,
+        price: order_product.product.price,
+        quantity: order_product.quantity,
+        note: order_product.note
+      }
+    end.to_json
+  end
 end

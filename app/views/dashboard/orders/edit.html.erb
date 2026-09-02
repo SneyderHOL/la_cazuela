@@ -10,10 +10,10 @@
     sell_order: @sell_order,
     categories: @categories,
     products: @products,
-    page_title: "New Order",
-    url: dashboard_sell_order_orders_path(@sell_order),
-    method: :post,
-    existing_order: nil
+    page_title: "Edit Order",
+    url: dashboard_order_path(@order),
+    method: :put,
+    existing_order: set_existing_order_json(@order)
   %>
 
 </div>
