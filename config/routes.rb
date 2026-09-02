@@ -21,7 +21,7 @@ Rails.application.routes.draw do
       resources :sell_orders, only: :create
     end
 
-    resources :orders, only: %i[ index show new ]
+    resources :orders, only: %i[ index show edit update destroy ]
 
     resources :sell_orders, only: %i[ index show ] do
       member do

@@ -237,7 +237,7 @@
    ADD BUTTON
 ========================================================= */
 
-.orders-add-product {
+.orders-product-card-add {
   min-height: 29px;
   padding: 0 10px;
   border: 1px solid var(--dashboard-primary);
@@ -253,7 +253,7 @@
     color 0.18s ease;
 }
 
-.orders-add-product:hover {
+.orders-product-card-add:hover {
   background: var(--dashboard-primary);
   color: #fff;
 }
@@ -330,11 +330,25 @@
    CURRENT ORDER ITEM
 ========================================================= */
 
+.current-order-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  grid-column: 1 / -1;
+  gap: 10px;
+}
+
+.current-order-item-header
+.current-order-item-subtotal {
+  white-space: nowrap;
+}
+
 .current-order-item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 7px;
-  padding: 13px 16px;
+  /* grid-template-columns: minmax(0, 1fr) auto; */
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--dashboard-border);
 }
 
@@ -358,13 +372,13 @@
   font-size: 0.47rem;
 }
 
-.current-order-item-controls {
+.current-order-quantity {
   display: flex;
   align-items: center;
   gap: 7px;
 }
 
-.current-order-item-controls button {
+.current-order-quantity button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -379,12 +393,12 @@
   cursor: pointer;
 }
 
-.current-order-item-controls button:hover {
+.current-order-quantity button:hover {
   border-color: var(--dashboard-primary);
   color: var(--dashboard-primary);
 }
 
-.current-order-item-controls span {
+.current-order-quantity span {
   min-width: 15px;
   color: var(--dashboard-text);
   font-size: 0.54rem;
@@ -392,11 +406,75 @@
   text-align: center;
 }
 
+.current-order-note {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  grid-column: 1 / -1;
+  margin-top: 3px;
+}
+
+.current-order-note span {
+  color: var(--dashboard-muted);
+  font-size: 0.47rem;
+  font-weight: 650;
+}
+
+.current-order-note textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 7px 8px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 6px;
+  background: var(--dashboard-background);
+  color: var(--dashboard-text);
+  font-family: inherit;
+  font-size: 0.5rem;
+  line-height: 1.4;
+  resize: vertical;
+  outline: none;
+  transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+}
+
+.current-order-note textarea:focus {
+  border-color: var(--dashboard-primary);
+  box-shadow:
+      0 0 0 2px
+      color-mix(
+          in srgb,
+          var(--dashboard-primary) 12%,
+          transparent
+      );
+}
+
+.current-order-note textarea::placeholder {
+  color: var(--dashboard-muted);
+}
+
 .current-order-item-subtotal {
   grid-column: 1 / -1;
   color: var(--dashboard-heading);
   font-size: 0.55rem;
   text-align: right;
+}
+
+.current-order-remove {
+  grid-column: 1 / -1;
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--dashboard-danger);
+  font-family: inherit;
+  font-size: 0.48rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.current-order-remove:hover {
+  text-decoration: underline;
 }
 
 /* =========================================================
