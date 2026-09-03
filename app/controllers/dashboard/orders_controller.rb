@@ -1,24 +1,23 @@
 module Dashboard
   class OrdersController < DashboardController
     before_action :set_sell_order
-    before_action :set_order, only: %i[ show edit update destroy ]
+    before_action :set_order, only: %i[ show edit update destroy confirm complete]
     before_action :ensure_order_editable, only: %i[ edit update ]
+    before_action :load_products, only: %i[ new edit ]
 
     def index
+      @orders ||= @sell_order.orders.includes(order_products: :product)
+                                    .order(created_at: :asc)
     end
 
     def show
-      # @order = @sell_order.orders.includes(order_products: :product).find(params[:id])
     end
 
     def new
       @order = @sell_order.orders.build
-
-      load_products
     end
 
     def edit
-      load_products
     end
 
     def update
@@ -50,7 +49,12 @@ module Dashboard
     end
 
     def destroy
+    end
 
+    def confirm
+    end
+
+    def complete
     end
 
     private
@@ -58,7 +62,7 @@ module Dashboard
     def set_sell_order
       if params[:sell_order_id]
         @sell_order = SellOrder.includes(:allocation).find(params[:sell_order_id])
-        @allocation = @sell_order.allocation
+        set_allocation
       else
         @orders = Order.recent
       end
@@ -67,6 +71,10 @@ module Dashboard
     def set_order
       @order = Order.includes(sell_order: :allocation, order_products: :product).find(params[:id])
       @sell_order = @order.sell_order
+      set_allocation
+    end
+
+    def set_allocation
       @allocation = @sell_order.allocation
     end
 

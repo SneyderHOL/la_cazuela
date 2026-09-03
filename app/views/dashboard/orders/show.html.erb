@@ -1,1 +1,180 @@
-<h1>Order page</h1>
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/orders", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+
+<div class="dashboard-content orders-page">
+
+  <header class="orders-page-header">
+
+    <div>
+      <h1>
+        Order #<%= @order.id %>
+      </h1>
+
+      <p>
+        Sell Order #<%= @sell_order.id %>
+          · <%= @allocation.name %>
+      </p>
+    </div>
+
+    <div class="orders-page-header-actions">
+
+      <span class="order-status order-status--<%= @order.status %>">
+        <%= @order.status.humanize %>
+      </span>
+
+    </div>
+
+  </header>
+
+
+  <section class="order-show-layout">
+
+    <div class="order-show-card">
+
+      <div class="order-show-card-header">
+
+        <div>
+          <span class="order-card-label">
+            Order details
+          </span>
+
+          <h2>
+            Order #<%= @order.id %>
+          </h2>
+        </div>
+
+        <div class="order-show-created">
+          Created
+          <strong>
+            <%= @order.created_at.strftime("%b %d, %Y · %I:%M %p") %>
+          </strong>
+        </div>
+
+      </div>
+
+
+      <% if @order.order_products.any? %>
+
+        <div class="order-show-products">
+
+          <% @order.order_products.each do |order_product| %>
+
+            <article class="order-show-product">
+
+              <div class="order-show-product-main">
+
+                <div class="order-show-product-quantity">
+                  <%= order_product.quantity %>×
+                </div>
+
+                <div>
+
+                  <h3>
+                    <%= order_product.product.name %>
+                  </h3>
+
+                  <% if order_product.product.detail.present? %>
+
+                    <p class="order-show-product-detail">
+                      <%= order_product.product.detail %>
+                    </p>
+
+                  <% end %>
+
+                  <% if order_product.note.present? %>
+
+                    <div class="order-show-product-note">
+                      <strong>Note:</strong>
+                      <%= order_product.note %>
+                    </div>
+
+                  <% end %>
+
+                </div>
+
+              </div>
+
+              <div class="order-show-product-status">
+
+                <span class="
+                  order-product-status
+                  order-product-status--<%= order_product.status %>
+                ">
+                  <%= order_product.status.humanize %>
+                </span>
+
+              </div>
+
+            </article>
+
+          <% end %>
+
+        </div>
+
+
+        <footer class="order-show-footer">
+
+          <div class="order-show-summary">
+
+            <span>
+              <%= @order.order_products.size %> lines
+            </span>
+
+            <strong>
+              <%= @order.order_products.sum(&:quantity) %> items
+            </strong>
+
+          </div>
+
+
+          <div class="order-show-actions">
+
+            <% if @order.status=="opened" %>
+
+              <%= link_to "Edit Order", edit_dashboard_order_path(@order), class: "dashboard-secondary-button" %>
+
+              <%= button_to "Send to Kitchen", confirm_dashboard_order_path(@order), method: :post, class: "dashboard-primary-button" , data: {
+                turbo_confirm: "Send this order to the kitchen?" } %>
+
+            <% else %>
+
+              <span class="order-show-locked">
+                This order can no longer be edited.
+              </span>
+
+            <% end %>
+
+          </div>
+
+        </footer>
+
+      <% else %>
+
+        <div class="dashboard-empty-state">
+
+          <div class="dashboard-empty-state-icon">
+            +
+          </div>
+
+          <h2>No products</h2>
+
+          <p>
+            This order does not contain any products.
+          </p>
+
+          <% if @order.status=="opened" %>
+
+            <%= link_to "Add Products" , edit_dashboard_order_path(@order), class: "dashboard-primary-button" %>
+
+          <% end %>
+
+        </div>
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+</div>

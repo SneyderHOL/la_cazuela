@@ -2,4 +2,154 @@
   <%= stylesheet_link_tag "dashboard/orders", "data-turbo-track": "reload", as: "style" %>
 <% end %>
 
-<h1>Orders</h1>
+<div class="dashboard-content orders-page">
+
+  <% if @orders.any? %>
+
+    <% @orders.each do |order| %>
+
+      <header class="orders-page-header">
+
+        <div>
+          <p>
+            Sell Order #<%= order.sell_order.id %>
+              · <%= order.sell_order.allocation.name %>
+          </p>
+        </div>
+
+        <div class="orders-page-header-actions">
+          <%= link_to "New Order" , new_dashboard_sell_order_order_path(order.sell_order),
+            class: "dashboard-primary-button" %>
+        </div>
+
+      </header>
+
+      <section class="orders-index-list">
+
+        <article class="order-card">
+
+          <div class="order-card-main">
+
+            <div class="order-card-header">
+
+              <div>
+                <span class="order-card-label">
+                  Order
+                </span>
+
+                <h2>
+                  #<%= order.id %>
+                </h2>
+              </div>
+
+              <span class="order-status order-status--<%= order.status %>">
+                <%= order.status.humanize %>
+              </span>
+
+            </div>
+
+            <div class="order-card-summary">
+
+              <div>
+                <span class="order-card-meta-label">
+                  Products
+                </span>
+
+                <strong>
+                  <%= order.order_products.sum(&:quantity) %>
+                </strong>
+              </div>
+
+              <div>
+                <span class="order-card-meta-label">
+                  Lines
+                </span>
+
+                <strong>
+                  <%= order.order_products.size %>
+                </strong>
+              </div>
+
+              <div>
+                <span class="order-card-meta-label">
+                  Created
+                </span>
+
+                <strong>
+                  <%= order.created_at.strftime("%I:%M %p") %>
+                </strong>
+              </div>
+
+            </div>
+
+
+            <div class="order-card-products">
+
+              <% order.order_products.each do |order_product| %>
+
+                <div class="order-card-product">
+
+                  <span class="order-card-product-quantity">
+                    <%= order_product.quantity %>×
+                  </span>
+
+                  <span class="order-card-product-name">
+                    <%= order_product.product.name %>
+                  </span>
+
+                  <% if order_product.note.present? %>
+                    <span class="order-card-product-note">
+                      <%= order_product.note %>
+                    </span>
+                  <% end %>
+
+                </div>
+
+              <% end %>
+
+            </div>
+
+          </div>
+
+          <div class="order-card-actions">
+
+            <%= link_to "View Order" , dashboard_order_path(order),
+              class: "dashboard-secondary-button" %>
+
+            <% if order.status=="opened" %>
+
+              <%= link_to "Edit" , edit_dashboard_order_path(order),
+                class: "dashboard-secondary-button" %>
+
+            <% end %>
+
+          </div>
+
+        </article>
+
+      </section>
+
+    <% end %>
+
+  <% else %>
+
+    <div class="dashboard-empty-state">
+
+      <div class="dashboard-empty-state-icon">
+        +
+      </div>
+
+      <h2>No orders yet</h2>
+
+      <p>
+        Create an order to start adding products for this sell order.
+      </p>
+
+      <%= link_to "Create Order" , new_dashboard_allocation_sell_order_order_path( order.sell_order.allocation, order.sell_order ),
+        class: "dashboard-primary-button" %>
+
+    </div>
+
+  <% end %>
+
+</div>

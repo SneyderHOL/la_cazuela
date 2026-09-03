@@ -36,7 +36,7 @@ class Order < ApplicationRecord
           status: %i[ opened processing ])
   }
   scope :recent, -> {
-    includes(:order_products, sell_order: :allocation)
+    includes(order_products: :product, sell_order: :allocation)
       .where(created_at: Time.zone.today.beginning_of_day..Time.current)
       .order(created_at: :desc)
   }
