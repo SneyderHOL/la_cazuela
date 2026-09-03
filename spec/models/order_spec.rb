@@ -20,7 +20,7 @@ require 'rails_helper'
 #  fk_rails_...  (sell_order_id => sell_orders.id)
 #
 RSpec.describe Order, type: :model do
-  subject(:order) { build(:order, :with_sell_order) }
+  subject(:order) { build(:order, :with_sell_order, :with_products) }
 
   describe "factory object" do
     it { is_expected.to be_valid }
@@ -37,13 +37,51 @@ RSpec.describe Order, type: :model do
   end
 
   describe "validations" do
+    let(:empty_order) { build(:order, :with_sell_order) }
+
     it { is_expected.to validate_presence_of(:status) }
+
+    context "when order have products" do
+      it "is valid" do
+        expect(order).to be_valid
+      end
+    end
+
+    context "when order does not have products" do
+      it "is not valid" do
+        expect(empty_order).not_to be_valid
+      end
+    end
+
+    context "when sell order is not opened" do
+      before { order.sell_order.status = "packed" }
+
+      it "is not valid" do
+        expect(order).not_to be_valid
+      end
+    end
+
+    context "when sell order is opened" do
+      before { order.sell_order.status = "opened" }
+
+      it "is valid" do
+        expect(order).to be_valid
+      end
+    end
+
+    context "when order is valid and saved" do
+      before { order.save }
+
+      it "is persisted" do
+        expect(order).to be_persisted
+      end
+    end
   end
 
   describe "status transitions" do
     context "when confirm is executed and the order is opened and is persisted" do
       before do
-        allow(ReadyToCookOrderProductsJob).to receive(:perform_later)
+        allow(ReadyToCookOrderProductsJob).to receive(:perform_now)
         order.save
       end
 
@@ -54,13 +92,13 @@ RSpec.describe Order, type: :model do
 
       it do
         order.confirm
-        expect(ReadyToCookOrderProductsJob).to have_received(:perform_later)
+        expect(ReadyToCookOrderProductsJob).to have_received(:perform_now)
       end
     end
 
     context "when confirm is executed and the order is opened and is not persisted" do
       before do
-        allow(ReadyToCookOrderProductsJob).to receive(:perform_later)
+        allow(ReadyToCookOrderProductsJob).to receive(:perform_now)
       end
 
       it "change status" do
@@ -70,7 +108,7 @@ RSpec.describe Order, type: :model do
 
       it do
         order.confirm
-        expect(ReadyToCookOrderProductsJob).not_to have_received(:perform_later)
+        expect(ReadyToCookOrderProductsJob).not_to have_received(:perform_now)
       end
     end
 
@@ -213,6 +251,34 @@ RSpec.describe Order, type: :model do
   end
 
   describe "scopes" do
+    context "with current" do
+      include_context "with orders for scopes"
+
+      it "retrieves the corresponding orders" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current.count).to eq(4)
+        end
+      end
+
+      it "includes the corresponding orders status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current.pluck(:status)).to include("opened", "processing", "packed", "completed")
+        end
+      end
+
+      it "retrieves the corresponding orders creation day" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current.pluck(:created_at).map(&:day).uniq).to eq([ saturday.day ])
+        end
+      end
+    end
+
     context "with current_open" do
       include_context "with orders for scopes"
 
@@ -279,13 +345,6 @@ RSpec.describe Order, type: :model do
   end
 
   describe "#before_destroy callback" do
-    context "when the order does not have order_products associations and is opened" do
-      before { order.save }
-
-      it { expect { order.destroy }.to change(described_class, :count).by(-1) }
-      it { expect { order.destroy }.not_to change(OrderProduct, :count) }
-    end
-
     context "when the order does have order_products associations and is opened" do
       let(:order_with_order_products) do
         create(:order, :with_sell_order, :with_products, trait_amount: 2)

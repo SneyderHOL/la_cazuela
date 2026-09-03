@@ -34,6 +34,9 @@ class SellOrder < ApplicationRecord
   validates :total, numericality: { greater_than: 0 }, allow_nil: true
   validates :cash_pay, comparison: { greater_than_or_equal_to: :total }, if: :paying_in_cash?
 
+  validate :allocation_must_be_active, on: :create
+  validate :desk_allocation_must_be_available, on: :create
+
   after_validation :calculate_cash_change
   before_destroy :check_orders
 
@@ -113,7 +116,7 @@ class SellOrder < ApplicationRecord
     return unless persisted?
 
     Rails.logger.info "Calling CreateBillJob for sell_order_id #{id}"
-    CreateBillJob.perform_later(id)
+    CreateBillJob.perform_now(id)
   end
 
   def check_orders
@@ -129,5 +132,17 @@ class SellOrder < ApplicationRecord
     return false unless statuses.one?
 
     statuses.first == "packed" || statuses.first == "completed"
+  end
+
+  def allocation_must_be_active
+    unless allocation&.active?
+      errors.add(:allocation, "must be active")
+    end
+  end
+
+  def desk_allocation_must_be_available
+    if allocation&.desk? && !allocation.available?
+      errors.add(:allocation, "must be available")
+    end
   end
 end

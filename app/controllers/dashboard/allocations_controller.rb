@@ -21,8 +21,7 @@ module Dashboard
 
     def free
       @allocation.free!
-      flash[:notice] = "Allocation was set to available."
-      redirect_to dashboard_allocation_path(@allocation)
+      redirect_to dashboard_allocation_path(@allocation), notice: "Allocation was set to available."
     rescue AASM::InvalidTransition => error
       flash[:alert] = "Unable to perform that action."
       render "dashboard/allocations/show", status: :unprocessable_content
@@ -30,8 +29,7 @@ module Dashboard
 
     def reserve
       @allocation.reserve!
-      flash[:notice] = "Allocation was set to on hold."
-      redirect_to dashboard_allocation_path(@allocation)
+      redirect_to dashboard_allocation_path(@allocation), notice: "Allocation was set to on hold."
     rescue AASM::InvalidTransition => error
       flash[:alert] = "Unable to perform that action."
       render "dashboard/allocations/show", status: :unprocessable_content
@@ -39,8 +37,7 @@ module Dashboard
 
     def clean
       @allocation.clean!
-      flash[:notice] = "Allocation was set to cleaning."
-      redirect_to dashboard_allocation_path(@allocation)
+      redirect_to dashboard_allocation_path(@allocation), notice: "Allocation was set to cleaning."
     rescue AASM::InvalidTransition => error
       flash[:alert] = "Unable to perform that action."
       render "dashboard/allocations/show", status: :unprocessable_content

@@ -33,10 +33,23 @@ FactoryBot.define do
 
     trait :with_products do
       transient do
-        trait_amount { 5 }
+        trait_amount { 1 }
+        trait_order_status { status }
+        trait_sell_status { sell_order&.status }
+      end
+      before :create do |order, evaluator|
+        evaluator.trait_order_status
+        evaluator.trait_sell_status
+        order.status = :opened
+        order.sell_order.status = :opened
+      end
+      after :build do |order, evaluator|
+        products = build_list :order_product, evaluator.trait_amount, :with_product_and_recipe, order: order
+        order.order_products = products
       end
       after :create do |order, evaluator|
-        create_list :order_product, evaluator.trait_amount, :with_product_and_recipe, order: order
+        order.update(status: evaluator.trait_order_status) if evaluator.trait_order_status
+        order.sell_order.update(status: evaluator.trait_sell_status) if evaluator.trait_sell_status
       end
     end
 

@@ -2,7 +2,7 @@
   <%= stylesheet_link_tag "dashboard/orders", "data-turbo-track": "reload", as: "style" %>
 <% end %>
 
-<div class="dashboard-content orders-page" data-controller="taking-order">
+<div class="dashboard-content" data-controller="taking-order">
 
   <%= render "order_form",
     order: @order,

@@ -108,7 +108,19 @@
               <%= preparation.status.humanize %>
             </span>
 
-            <%= render 'dashboard/order_products/preparation_button', status_reference: preparation.status, id: preparation.id %>
+            <% if preparation.prepare? %>
+
+              <%= button_to cook_dashboard_preparation_path(preparation.id), method: :patch, params: @status_filter_param, class: "preparation-action-button" do %>
+                Start Preparation
+              <% end %>
+
+            <% elsif preparation.preparing? %>
+
+              <%= button_to complete_dashboard_preparation_path(preparation.id), method: :patch, params: @status_filter_param, class: "preparation-action-button complete" do %>
+                Mark Completed
+              <% end %>
+
+            <% end %>
 
           </div>
 

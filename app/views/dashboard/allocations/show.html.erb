@@ -88,11 +88,11 @@
 
         <div class="allocation-actions">
 
-          <%= button_to reserve_dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-reserve" do %>
+          <%= button_to reserve_dashboard_allocation_path(@allocation.id), method: :patch, class: "dashboard-secondary-button", id: "put-reserve" do %>
             Put On Hold
           <% end %>
 
-          <%= button_to clean_dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-clean" do %>
+          <%= button_to clean_dashboard_allocation_path(@allocation.id), method: :patch, class: "dashboard-secondary-button", id: "put-clean" do %>
             Put To Clean
           <% end %>
 
@@ -179,7 +179,7 @@
 
         <div class="allocation-state-actions">
 
-          <%= button_to free_dashboard_allocation_path(@allocation.id), class: "dashboard-primary-button", id: "put-free" do %>
+          <%= button_to free_dashboard_allocation_path(@allocation.id), method: :patch, class: "dashboard-primary-button", id: "put-free" do %>
             Make Available
           <% end %>
 
@@ -217,11 +217,11 @@
 
         <div class="allocation-state-actions">
 
-          <%= button_to free_dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-free" do %>
+          <%= button_to free_dashboard_allocation_path(@allocation.id), method: :patch, class: "dashboard-secondary-button", id: "put-free" do %>
             Make Available
           <% end %>
 
-          <%= button_to reserve_dashboard_allocation_path(@allocation.id), class: "dashboard-secondary-button", id: "put-reserve" do %>
+          <%= button_to reserve_dashboard_allocation_path(@allocation.id), method: :patch, class: "dashboard-secondary-button", id: "put-reserve" do %>
             Put On Hold
           <% end %>
 

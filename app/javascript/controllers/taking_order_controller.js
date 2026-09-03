@@ -107,7 +107,7 @@ export default class extends Controller {
     const button = event.target.closest("[data-line-action]")
     if (!button) return
 
-    const orderLinesArray = this.orderLinesValue
+    let orderLinesArray = this.orderLinesValue
     const lineId = button.dataset.lineId
     const action = button.dataset.lineAction
     const line = this.findLine(lineId, orderLinesArray)
@@ -131,7 +131,7 @@ export default class extends Controller {
         }
         if (line.orderProductId) {
           deletedProductIds.add(line.orderProductId)
-          this.removedProductIdsValue = deletedProductIds
+          this.removedProductIdsValue = [...deletedProductIds]
         }
 
         orderLinesArray = orderLinesArray.filter((item) => item.lineId !== line.lineId)
@@ -142,7 +142,7 @@ export default class extends Controller {
       case "remove":
         if (line.orderProductId) {
           deletedProductIds.add(line.orderProductId)
-          this.removedProductIdsValue = deletedProductIds
+          this.removedProductIdsValue = [...deletedProductIds]
         }
 
         orderLinesArray = orderLinesArray.filter((item) => item.lineId !== line.lineId)

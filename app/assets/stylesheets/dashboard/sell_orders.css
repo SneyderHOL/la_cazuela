@@ -437,18 +437,6 @@
 }
 
 
-/* Eyebrow */
-
-.dashboard-eyebrow {
-  display: block;
-  color: var(--dashboard-muted);
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-
 /* =========================================================
    SELL ORDER STATUS
 ========================================================= */

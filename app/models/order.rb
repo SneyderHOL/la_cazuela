@@ -27,18 +27,20 @@ class Order < ApplicationRecord
   accepts_nested_attributes_for :order_products, allow_destroy: true
 
   validates :status, presence: true
-  # validate :must_have_products
+  validate :must_have_products, on: :create
+  validate :parent_sell_order_must_be_opened, on: :create
 
   before_destroy :check_status
 
-  scope :current_open, -> {
-    where(created_at: Time.zone.today.beginning_of_day..Time.current,
-          status: %i[ opened processing ])
+  scope :current, -> {
+    where(created_at: Time.zone.today.beginning_of_day..Time.current)
   }
-  scope :recent, -> {
-    includes(:order_products, sell_order: :allocation)
-      .where(created_at: Time.zone.today.beginning_of_day..Time.current)
-      .order(created_at: :desc)
+  scope :current_open, -> {
+    current.where(status: %i[ opened processing ])
+  }
+  scope :recent, ->(statuses = %i[ opened processing packed completed ]) {
+    includes(order_products: :product, sell_order: :allocation)
+      .where(created_at: Time.zone.today.beginning_of_day..Time.current, status: statuses)
   }
 
   private
@@ -47,7 +49,7 @@ class Order < ApplicationRecord
     return unless persisted?
 
     Rails.logger.info "Calling ReadyToCookOrderProductsJob for order_id #{id}"
-    ReadyToCookOrderProductsJob.perform_later(id)
+    ReadyToCookOrderProductsJob.perform_now(id)
   end
 
   def complete_order_products
@@ -64,6 +66,12 @@ class Order < ApplicationRecord
   def must_have_products
     if order_products.reject(&:marked_for_destruction?).empty?
       errors.add(:order_products, "must contain at least one product")
+    end
+  end
+
+  def parent_sell_order_must_be_opened
+    unless sell_order&.opened?
+      errors.add(:sell_order, "must be opened")
     end
   end
 end

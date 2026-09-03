@@ -60,6 +60,12 @@
 
       <% end %>
 
+      <div class="suborder-actions">
+
+        <%= link_to "View Order" , dashboard_order_path(order), class: "dashboard-secondary-button" %>
+
+      </div>
+
     </div>
 
   <% end %>
@@ -74,8 +80,8 @@
 
     <% end %>
 
-    <%= link_to dashboard_sell_order_path(sell_order.id), class: "allocation-card-link" do %>
-      View Sell Order
+    <%= link_to summary_dashboard_sell_order_orders_path(sell_order.id), class: "allocation-card-link" do %>
+      View Orders
 
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M5 12h14"></path>

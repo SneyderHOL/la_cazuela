@@ -20,8 +20,8 @@ module Dashboard
 
     def invoice
       @sell_order.invoice!
-      flash[:notice] = "Sell order was set to invoicing."
-      redirect_to dashboard_sell_order_path(@sell_order)
+
+      redirect_to dashboard_sell_order_path(@sell_order), notice: "Sell order was set to invoicing."
     rescue AASM::InvalidTransition => error
       flash[:alert] = "Unable to perform that action."
       render "dashboard/sell_orders/show", status: :unprocessable_content
@@ -29,8 +29,8 @@ module Dashboard
 
     def deliver
       @sell_order.deliver!
-      flash[:notice] = "Sell order was set to delivering."
-      redirect_to dashboard_sell_order_path(@sell_order)
+
+      redirect_to dashboard_sell_order_path(@sell_order), notice: "Sell order was set to delivering."
     rescue AASM::InvalidTransition => error
       flash[:alert] = "Unable to perform that action."
       render "dashboard/sell_orders/show", status: :unprocessable_content
@@ -38,8 +38,10 @@ module Dashboard
 
     def close
       @sell_order.close!
-      flash[:notice] = "Sell order was closed."
-      redirect_to dashboard_sell_order_path(@sell_order)
+      @allocation = @sell_order.allocation
+      @allocation.clean! if @allocation.desk?
+
+      redirect_to dashboard_sell_order_path(@sell_order), notice: "Sell order was closed."
     rescue AASM::InvalidTransition => error
       flash[:alert] = "Unable to perform that action."
       render "dashboard/sell_orders/show", status: :unprocessable_content
@@ -49,8 +51,7 @@ module Dashboard
       @sell_order.payment_type = params.expect(:payment_type)
       @sell_order.cash_pay = params.expect(:cash_pay) if @sell_order.cash?
       if @sell_order.save
-        flash[:notice] = "Payment saved."
-        redirect_to dashboard_sell_order_path(@sell_order)
+        redirect_to dashboard_sell_order_path(@sell_order), notice: "Payment saved."
       else
         flash[:alert] = @sell_order.errors.full_messages.join
         render "dashboard/sell_orders/show", status: :bad_request
@@ -61,10 +62,12 @@ module Dashboard
     end
 
     def create
-      @sell_order = SellOrder.create(allocation: @allocation)
+      @sell_order = @allocation.current_open_sell_order if @allocation.desk?
+      @sell_order ||= SellOrder.create(allocation: @allocation)
       if @sell_order.persisted?
-        @allocation.take!
-        redirect_to new_dashboard_sell_order_order_path(@sell_order)
+        @allocation.take! if @allocation.desk? && @allocation.available?
+
+        redirect_to new_dashboard_sell_order_order_path(@sell_order), notice: "Sell Order created successfully."
       else
         @sell_orders = @allocation.sell_orders.current_open_sales.order(created_at: :asc)
         @suborders_count = @sell_orders.sum { |so| so.orders.count }

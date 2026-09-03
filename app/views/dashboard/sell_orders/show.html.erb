@@ -2,7 +2,7 @@
   <%= stylesheet_link_tag "dashboard/sell_orders", "data-turbo-track": "reload", as: "style" %>
 <% end %>
 
-<div class="dashboard-main sell-order-detail-page">
+<div class="dashboard-content sell-order-detail-page">
 
   <!-- =====================================================
       HEADER
@@ -73,7 +73,7 @@
 
       </div>
 
-      <%= button_to invoice_dashboard_sell_order_path(@sell_order.id), class: "dashboard-primary-button", id: "start-invoicing" do %>
+      <%= button_to invoice_dashboard_sell_order_path(@sell_order.id), method: :patch, class: "dashboard-primary-button", id: "start-invoicing" do %>
         Start Invoicing
       <% end %>
 
@@ -121,7 +121,7 @@
             Payment Type
           </h3>
 
-          <%= form_with url: payment_dashboard_sell_order_path(@sell_order), method: :post, data: { controller: "payment-option" } do |form| %>
+          <%= form_with url: payment_dashboard_sell_order_path(@sell_order), method: :patch, data: { controller: "payment-option" } do |form| %>
 
             <div class="payment-options" role="radiogroup" aria-label="Payment type" data-action="change->payment-option#update">
 

@@ -18,7 +18,7 @@ require 'rails_helper'
 #  index_allocations_on_name  (name) UNIQUE
 #
 RSpec.describe Allocation, type: :model do
-  subject(:allocation) { build(:allocation) }
+  subject(:allocation) { build(:allocation, :with_active_on) }
 
   describe "factory object" do
     it { is_expected.to be_valid }
@@ -99,8 +99,8 @@ RSpec.describe Allocation, type: :model do
       let(:sell_order) { create(:sell_order, allocation:) }
 
       before do
-        allocation.status = 'busy'
         sell_order
+        allocation.status = 'busy'
       end
 
       it "raise AASM::InvalidTransition error" do
@@ -157,8 +157,8 @@ RSpec.describe Allocation, type: :model do
       let(:sell_order) { create(:sell_order, allocation:) }
 
       before do
-        allocation.status = 'busy'
         sell_order
+        allocation.status = 'busy'
       end
 
       it "raise AASM::InvalidTransition error" do

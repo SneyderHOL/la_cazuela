@@ -936,6 +936,10 @@ form.button_to button.allocation-filter {
   font-weight: 650;
 }
 
+.allocation-suborder .suborder-actions{
+  margin-top: 10px;
+}
+
 /* =========================================================
    ORDER STATUS
 ========================================================= */

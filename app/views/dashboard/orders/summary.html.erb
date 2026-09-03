@@ -10,7 +10,7 @@
     </span>
 
     <h1>
-      Orders
+      Orders Summary
     </h1>
 
     <p>
@@ -19,7 +19,7 @@
 
     <div class="dashboard-header-actions">
 
-      <%= button_to dashboard_orders_path, params: @status_filter_param, method: :get, class: "dashboard-secondary-button", id: "refresh-orders" do %>
+      <%= button_to summary_dashboard_sell_order_orders_path(@sell_order), params: @status_filter_param, method: :get, class: "dashboard-secondary-button", id: "refresh-orders" do %>
 
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M20 11a8 8 0 0 0-14.9-3"></path>
@@ -38,57 +38,57 @@
 
   <section class="order-filters" aria-label="Order status filters">
 
-    <%= button_to dashboard_orders_path, method: :get, class: class_names("order-filter", active: params[:status].blank?), data: { status: "all" } do %>
+    <%= button_to summary_dashboard_sell_order_orders_path(@sell_order), method: :get, class: class_names("order-filter", active: params[:status].blank?), data: { status: "all" } do %>
       <span>All</span>
       <strong><%= @current_orders_counting.values.sum %></strong>
     <% end %>
 
-    <%= button_to dashboard_orders_path, params: { status: "opened" }, method: :get, class: class_names("order-filter", active: params[:status] == "opened"), data: { status: "opened" } do %>
+    <%= button_to summary_dashboard_sell_order_orders_path(@sell_order), params: { status: "opened" }, method: :get, class: class_names("order-filter", active: params[:status] == "opened"), data: { status: "opened" } do %>
       <span>Opened</span>
       <strong><%= @current_orders_counting["opened"] || 0 %></strong>
     <% end %>
 
-    <%= button_to dashboard_orders_path, params: { status: "processing" }, method: :get, class: class_names("order-filter", active: params[:status] == "processing"), data: { status: "processing" } do %>
+    <%= button_to summary_dashboard_sell_order_orders_path(@sell_order), params: { status: "processing" }, method: :get, class: class_names("order-filter", active: params[:status] == "processing"), data: { status: "processing" } do %>
       <span>Processing</span>
       <strong><%= @current_orders_counting["processing"] || 0 %></strong>
     <% end %>
 
-    <%= button_to dashboard_orders_path, params: { status: "packed" }, method: :get, class: class_names("order-filter", active: params[:status] == "packed"), data: { status: "packed" } do %>
+    <%= button_to summary_dashboard_sell_order_orders_path(@sell_order), params: { status: "packed" }, method: :get, class: class_names("order-filter", active: params[:status] == "packed"), data: { status: "packed" } do %>
       <span>Packed</span>
       <strong><%= @current_orders_counting["packed"] || 0 %></strong>
     <% end %>
 
 
-    <%= button_to dashboard_orders_path, params: { status: "completed" }, method: :get, class: class_names("order-filter", active: params[:status] == "completed"), data: { status: "completed" } do %>
+    <%= button_to summary_dashboard_sell_order_orders_path(@sell_order), params: { status: "completed" }, method: :get, class: class_names("order-filter", active: params[:status] == "completed"), data: { status: "completed" } do %>
       <span>Completed</span>
       <strong><%= @current_orders_counting["completed"] || 0 %></strong>
     <% end %>
 
   </section>
 
+  <header class="orders-page-header">
+
+    <div>
+      <p>
+        Sell Order #<%= @sell_order.id %>
+          · <%= @sell_order.allocation.name.humanize %>
+      </p>
+    </div>
+
+    <% if @sell_order.opened? %>
+
+      <div class="orders-page-header-actions">
+        <%= link_to "New Order" , new_dashboard_sell_order_order_path(@sell_order),
+          class: "dashboard-primary-button" %>
+      </div>
+
+    <% end %>
+
+  </header>
+
   <% if @orders.any? %>
 
     <% @orders.each do |order| %>
-
-      <header class="orders-page-header">
-
-        <div>
-          <p>
-            Sell Order #<%= order.sell_order.id %>
-              · <%= order.sell_order.allocation.name.humanize %>
-          </p>
-        </div>
-
-        <% if order.sell_order.opened? %>
-
-          <div class="orders-page-header-actions">
-            <%= link_to "New Order" , new_dashboard_sell_order_order_path(order.sell_order),
-              class: "dashboard-primary-button" %>
-          </div>
-
-        <% end %>
-
-      </header>
 
       <section class="orders-index-list">
 
