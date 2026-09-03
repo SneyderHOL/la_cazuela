@@ -1,24 +1,31 @@
 module Dashboard
   class OrdersController < DashboardController
-    before_action :set_sell_order
-    before_action :set_order, only: %i[ show edit update destroy ]
+    before_action :set_sell_order, only: %i[ create new ]
+    before_action :set_order, only: %i[ show edit update destroy confirm ]
     before_action :ensure_order_editable, only: %i[ edit update ]
+    before_action :load_products, only: %i[ new edit ]
 
     def index
+      if params[:sell_order_id]
+        set_sell_order
+        @orders = @sell_order.orders.includes(order_products: :product)
+                                    .order(created_at: :asc)
+        @current_orders_counting = @sell_order.orders.current.group(:status).count
+        set_allocation
+      else
+        @orders = Order.recent(get_statuses).order(created_at: :desc)
+        @current_orders_counting = Order.current.group(:status).count
+      end
     end
 
     def show
-      # @order = @sell_order.orders.includes(order_products: :product).find(params[:id])
     end
 
     def new
       @order = @sell_order.orders.build
-
-      load_products
     end
 
     def edit
-      load_products
     end
 
     def update
@@ -27,7 +34,7 @@ module Dashboard
       end
 
       # flash[:notice] = "Order updated successfully."
-      redirect_to dashboard_allocation_path(@allocation),
+      redirect_to dashboard_order_path(@order),
         notice: "Order updated successfully."
 
     rescue ActiveRecord::RecordInvalid
@@ -41,8 +48,8 @@ module Dashboard
       end
 
       # flash[:notice] = "Order created successfully."
-      redirect_to dashboard_allocation_path(@allocation),
-        notice: "Order sent successfully."
+      redirect_to dashboard_order_path(@order),
+        notice: "Order created successfully."
 
     rescue ActiveRecord::RecordInvalid
       load_products
@@ -50,23 +57,50 @@ module Dashboard
     end
 
     def destroy
-
     end
+
+    def confirm
+      @order.confirm!
+      flash[:notice] = "Sell order was sent to kitchen."
+      redirect_to dashboard_order_path(@order)
+    rescue AASM::InvalidTransition => error
+      flash[:alert] = "Unable to perform that action."
+      render "dashboard/orders/show", status: :unprocessable_content
+    end
+
+    # def pack
+    #   @order.pack!
+    #   flash[:notice] = "Sell order was packed."
+    #   redirect_to dashboard_order_path(@order)
+    # rescue AASM::InvalidTransition => error
+    #   flash[:alert] = "Unable to perform that action."
+    #   render "dashboard/orders/show", status: :unprocessable_content
+    # end
+
+    # def complete
+    #   @order.complete!
+    #   flash[:notice] = "Sell order was completed."
+    #   redirect_to dashboard_order_path(@order)
+    # rescue AASM::InvalidTransition => error
+    #   flash[:alert] = "Unable to perform that action."
+    #   render "dashboard/orders/show", status: :unprocessable_content
+    # end
 
     private
 
     def set_sell_order
-      if params[:sell_order_id]
-        @sell_order = SellOrder.includes(:allocation).find(params[:sell_order_id])
-        @allocation = @sell_order.allocation
-      else
-        @orders = Order.recent
-      end
+      @sell_order = SellOrder.includes(
+        :allocation, orders: { order_products: :product }
+      ).find(params[:sell_order_id])
     end
 
     def set_order
       @order = Order.includes(sell_order: :allocation, order_products: :product).find(params[:id])
       @sell_order = @order.sell_order
+      set_allocation
+    end
+
+    def set_allocation
       @allocation = @sell_order.allocation
     end
 
@@ -85,6 +119,17 @@ module Dashboard
       unless @order.status == "opened"
         redirect_to dashboard_order_path(@order),
           alert: "This order can no longer be edited."
+      end
+    end
+
+    def default_statuses = %i[ opened processing packed completed ]
+
+    def check_valid_status
+      case params[:status]
+      when "opened" then :opened
+      when "processing" then :processing
+      when "packed" then :packed
+      when "completed" then :completed
       end
     end
   end

@@ -4,9 +4,9 @@ RSpec.shared_context "with sell_order composite" do
   let(:product_two) { create(:product, :with_recipe, :with_category, price: 10_000) }
   let(:product_three) { create(:product, :with_recipe, :with_category, price: 5_000) }
   let(:product_four) { create(:product, :with_recipe, :with_category, price: 4_000) }
-  let(:order_one) { create(:order, :as_completed, sell_order: sell_order) }
-  let(:order_two) { create(:order, :as_completed, sell_order: sell_order) }
-  let(:order_three) { create(:order, :as_completed, sell_order: sell_order) }
+  let(:order_one) { build(:order, :as_completed, sell_order: sell_order) }
+  let(:order_two) { build(:order, :as_completed, sell_order: sell_order) }
+  let(:order_three) { build(:order, :as_completed, sell_order: sell_order) }
   let(:expected_detail) do
     {
       product_one.name => { "quantity" => 6, "subtotal" => 90_000 },
@@ -17,6 +17,9 @@ RSpec.shared_context "with sell_order composite" do
   end
 
   before do
+    order_one.save(validate:false)
+    order_two.save(validate:false)
+    order_three.save(validate:false)
     create(:order_product, order: order_one, product: product_one, quantity: 5)
     create(:order_product, order: order_one, product: product_two, quantity: 4)
     create(:order_product, order: order_two, product: product_three, quantity: 3)
@@ -30,7 +33,7 @@ end
 
 RSpec.shared_context "with sell_order soft composite" do
   let(:product_one) { create(:product, :with_recipe, :with_category, price: 15_000) }
-  let(:order_one) { create(:order, :as_completed, sell_order: sell_order) }
+  let(:order_one) { build(:order, :as_completed, sell_order: sell_order) }
   let(:expected_detail) do
     {
       product_one.name => { "quantity" => 5, "subtotal" => 75_000 }
@@ -38,6 +41,7 @@ RSpec.shared_context "with sell_order soft composite" do
   end
 
   before do
+    order_one.save(validate:false)
     create(:order_product, order: order_one, product: product_one, quantity: 5)
   end
 end
@@ -177,7 +181,7 @@ RSpec.shared_context "with orders for scopes" do
 
     statuses.each_with_index do |status|
       dates.each do |date|
-        create(:order, :with_sell_order, created_at: date, status:)
+        create(:order, :with_sell_order, :with_products, created_at: date, status:)
       end
     end
   end
@@ -266,7 +270,8 @@ RSpec.shared_context "with orders and order_products for scopes" do
              (status == "processing" && [ "prepare", "preparing", "completed" ].include?(op_status)) ||
              (status == "packed" && op_status == "completed") ||
              (status == "completed" && op_status == "completed")
-            order = create(:order, :with_sell_order, created_at: date, status:)
+            order = build(:order, :with_sell_order, created_at: date, status:)
+            order.save(validate: false)
             create(:order_product, order:, product: beverage, quantity: 1, created_at: date, status: op_status)
             create(:order_product, order:, product: dish, quantity: 1, created_at: date, status: op_status)
           end

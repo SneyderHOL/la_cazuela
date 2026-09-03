@@ -113,7 +113,7 @@ class SellOrder < ApplicationRecord
     return unless persisted?
 
     Rails.logger.info "Calling CreateBillJob for sell_order_id #{id}"
-    CreateBillJob.perform_later(id)
+    CreateBillJob.perform_now(id)
   end
 
   def check_orders

@@ -60,7 +60,7 @@ RSpec.describe OrderProduct, type: :model do
     let(:recipe) { create(:recipe, :as_approved, product: create(:product, :with_category)) }
     let(:ingredient_recipe) do
       create(:ingredient_recipe, required_quantity: 11,
-        ingredient: ingredient, recipe: recipe)
+             ingredient: ingredient, recipe: recipe)
     end
 
     it { is_expected.to validate_presence_of(:status) }

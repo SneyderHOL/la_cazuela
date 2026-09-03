@@ -41,7 +41,7 @@ RSpec.describe "OrderProduct", type: :request do
     end
   end
 
-  describe "POST /dashboard/preparations/:id/cook" do
+  describe "PATCH /dashboard/preparations/:id/cook" do
     context "when user has already signin and performs action" do
       before do
         order_product.ready_to_cook!
@@ -49,18 +49,18 @@ RSpec.describe "OrderProduct", type: :request do
       end
 
       it "returns http redirect" do
-        post "/dashboard/preparations/#{order_product.id}/cook"
+        patch "/dashboard/preparations/#{order_product.id}/cook"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/preparations/#{order_product.id}/cook"
+        patch "/dashboard/preparations/#{order_product.id}/cook"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid content" do
-        post "/dashboard/preparations/#{order_product.id}/cook"
+        patch "/dashboard/preparations/#{order_product.id}/cook"
         follow_redirect!
         expect(response.body).to include("Manage products that are currently waiting to be prepared.")
       end
@@ -73,12 +73,12 @@ RSpec.describe "OrderProduct", type: :request do
       end
 
       it "returns http unprocessable content" do
-        post "/dashboard/preparations/#{order_product.id}/cook"
+        patch "/dashboard/preparations/#{order_product.id}/cook"
         expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/preparations/#{order_product.id}/cook"
+        patch "/dashboard/preparations/#{order_product.id}/cook"
         expect(response.body).to include("Unable to perform that action.")
       end
     end
@@ -87,25 +87,25 @@ RSpec.describe "OrderProduct", type: :request do
       before { order_product }
 
       it "returns http redirect" do
-        post "/dashboard/preparations/#{order_product.id}/cook"
+        patch "/dashboard/preparations/#{order_product.id}/cook"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/preparations/#{order_product.id}/cook"
+        patch "/dashboard/preparations/#{order_product.id}/cook"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/preparations/#{order_product.id}/cook"
+        patch "/dashboard/preparations/#{order_product.id}/cook"
         follow_redirect!
         expect(response.body).to include("You need to sign in or sign up before continuing.")
       end
     end
   end
 
-  describe "POST /dashboard/preparations/:id/complete" do
+  describe "PATCH /dashboard/preparations/:id/complete" do
     context "when user has already signin and performs action" do
       before do
         order_product.ready_to_cook! && order_product.cook!
@@ -113,18 +113,18 @@ RSpec.describe "OrderProduct", type: :request do
       end
 
       it "returns http redirect" do
-        post "/dashboard/preparations/#{order_product.id}/complete"
+        patch "/dashboard/preparations/#{order_product.id}/complete"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/preparations/#{order_product.id}/complete"
+        patch "/dashboard/preparations/#{order_product.id}/complete"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid content" do
-        post "/dashboard/preparations/#{order_product.id}/complete"
+        patch "/dashboard/preparations/#{order_product.id}/complete"
         follow_redirect!
         expect(response.body).to include("Manage products that are currently waiting to be prepared.")
       end
@@ -137,12 +137,12 @@ RSpec.describe "OrderProduct", type: :request do
       end
 
       it "returns http unprocessable content" do
-        post "/dashboard/preparations/#{order_product.id}/complete"
+        patch "/dashboard/preparations/#{order_product.id}/complete"
         expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/preparations/#{order_product.id}/complete"
+        patch "/dashboard/preparations/#{order_product.id}/complete"
         expect(response.body).to include("Unable to perform that action.")
       end
     end
@@ -151,18 +151,18 @@ RSpec.describe "OrderProduct", type: :request do
       before { order_product }
 
       it "returns http redirect" do
-        post "/dashboard/preparations/#{order_product.id}/complete"
+        patch "/dashboard/preparations/#{order_product.id}/complete"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/preparations/#{order_product.id}/complete"
+        patch "/dashboard/preparations/#{order_product.id}/complete"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/preparations/#{order_product.id}/complete"
+        patch "/dashboard/preparations/#{order_product.id}/complete"
         follow_redirect!
         expect(response.body).to include("You need to sign in or sign up before continuing.")
       end

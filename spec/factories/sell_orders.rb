@@ -60,36 +60,63 @@ FactoryBot.define do
     trait :with_orders do
       transient do
         trait_amount { 5 }
+        trait_sell_status { status }
+      end
+      before :create do |sell_order, evaluator|
+        evaluator.trait_sell_status
+        sell_order.status = :opened
       end
       after :create do |sell_order, evaluator|
-        create_list :order, evaluator.trait_amount, sell_order: sell_order
+        create_list :order, evaluator.trait_amount, :with_products, sell_order: sell_order
+        sell_order.update(status: evaluator.trait_sell_status) if evaluator.trait_sell_status
       end
     end
 
     trait :with_processing_orders do
       transient do
         trait_amount { 5 }
+        trait_sell_status { status }
+      end
+      before :create do |sell_order, evaluator|
+        evaluator.trait_sell_status
+        sell_order.status = :opened
       end
       after :create do |sell_order, evaluator|
-        create_list :order, evaluator.trait_amount, :as_processing, sell_order: sell_order
+        create_list :order, evaluator.trait_amount, :with_products, sell_order: sell_order
+        sell_order.orders.each { |order| order.update(status: :processing) }
+        sell_order.update(status: evaluator.trait_sell_status) if evaluator.trait_sell_status
       end
     end
 
     trait :with_packed_orders do
       transient do
         trait_amount { 5 }
+        trait_sell_status { status }
+      end
+      before :create do |sell_order, evaluator|
+        evaluator.trait_sell_status
+        sell_order.status = :opened
       end
       after :create do |sell_order, evaluator|
-        create_list :order, evaluator.trait_amount, :as_packed, sell_order: sell_order
+        create_list :order, evaluator.trait_amount, :with_products, sell_order: sell_order
+        sell_order.orders.each { |order| order.update(status: :packed) }
+        sell_order.update(status: evaluator.trait_sell_status) if evaluator.trait_sell_status
       end
     end
 
     trait :with_completed_orders do
       transient do
         trait_amount { 5 }
+        trait_sell_status { status }
+      end
+      before :create do |sell_order, evaluator|
+        evaluator.trait_sell_status
+        sell_order.status = :opened
       end
       after :create do |sell_order, evaluator|
-        create_list :order, evaluator.trait_amount, :as_completed, sell_order: sell_order
+        create_list :order, evaluator.trait_amount, :with_products, sell_order: sell_order
+        sell_order.orders.each { |order| order.update(status: :completed) }
+        sell_order.update(status: evaluator.trait_sell_status) if evaluator.trait_sell_status
       end
     end
 

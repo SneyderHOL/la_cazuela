@@ -37,7 +37,7 @@ class OrderProduct < ApplicationRecord
   validates :quantity, numericality: { greater_than: 0 }
   validate :ingredient_availability, on: :create
 
-  before_create :add_recipe
+  before_save :add_recipe, if: :product_id_changed?
 
   scope :current_preparations, -> {
     where(created_at: Time.zone.today.beginning_of_day..Time.current)

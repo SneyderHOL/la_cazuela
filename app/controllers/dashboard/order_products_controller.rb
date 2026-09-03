@@ -1,7 +1,6 @@
 module Dashboard
   class OrderProductsController < DashboardController
-    before_action :clear_flash
-    before_action :set_recent_preparations
+    before_action :set_recent_preparations, only: :index
     before_action :set_preparation, only: %i[ cook complete ]
 
     def index
@@ -9,16 +8,20 @@ module Dashboard
 
     def cook
       @preparation.cook!
+      flash[:notice] = "Preparation is preparing."
       redirect_to dashboard_preparations_path(status: params[:status])
     rescue AASM::InvalidTransition => error
+      set_recent_preparations
       flash[:alert] = "Unable to perform that action."
       render "dashboard/order_products/index", status: :unprocessable_content
     end
 
     def complete
       @preparation.complete!
+      flash[:notice] = "Preparation is done."
       redirect_to dashboard_preparations_path(status: params[:status])
     rescue AASM::InvalidTransition => error
+      set_recent_preparations
       flash[:alert] = "Unable to perform that action."
       render "dashboard/order_products/index", status: :unprocessable_content
     end
@@ -34,7 +37,7 @@ module Dashboard
 
     def default_statuses = %i[ requested prepare preparing completed ]
 
-    def set_preparation = @preparation = OrderProduct.find(params[:id])
+    def set_preparation = @preparation = OrderProduct.includes(:order).find(params[:id])
 
     def check_valid_status
       case params[:status]

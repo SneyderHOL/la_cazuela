@@ -228,7 +228,6 @@ RSpec.describe SellOrder, type: :model do
       context "with delivering status and every allocation kind" do
         let(:status) { :delivering }
 
-        # it { byebug }
         it_behaves_like "current_sales result for sell_orders"
       end
 
@@ -530,7 +529,7 @@ RSpec.describe SellOrder, type: :model do
       before do
         sell_order.status = "opened"
         sell_order.save
-        create(:order, :as_completed, sell_order:)
+        create(:order, :as_completed, :with_products, sell_order:)
       end
 
       it do
@@ -548,7 +547,7 @@ RSpec.describe SellOrder, type: :model do
       before do
         sell_order.status = "packed"
         sell_order.save
-        create(:order, :as_packed, sell_order:)
+        create(:order, :as_packed, :with_products, sell_order:)
       end
 
       it do
@@ -566,7 +565,7 @@ RSpec.describe SellOrder, type: :model do
       before do
         sell_order.status = "delivering"
         sell_order.save
-        create(:order, :as_packed, sell_order:)
+        create(:order, :as_packed, :with_products, sell_order:)
       end
 
       it do
@@ -905,13 +904,13 @@ RSpec.describe SellOrder, type: :model do
     let(:sell_order) { create(:sell_order, :with_allocation) }
 
     context "with opened sell order and completed suborders returns true" do
-      before { create(:order, :as_completed, sell_order:) }
+      before { create(:order, :as_completed, :with_products, sell_order:) }
 
       it { expect(sell_order).to be_is_available_to_invoice }
     end
 
     context "with opened sell order and opened suborders returns false" do
-      before { create(:order, sell_order:) }
+      before { create(:order, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_invoice }
     end
@@ -919,7 +918,7 @@ RSpec.describe SellOrder, type: :model do
     context "with packed sell order and packed suborders returns true" do
       let(:sell_order) { create(:sell_order, :with_allocation, :as_packed) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :with_products, :as_packed, sell_order:) }
 
       it { expect(sell_order).to be_is_available_to_invoice }
     end
@@ -927,7 +926,7 @@ RSpec.describe SellOrder, type: :model do
     context "with packed sell order and opened suborders returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation, :as_packed) }
 
-      before { create(:order, sell_order:) }
+      before { create(:order, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_invoice }
     end
@@ -935,7 +934,7 @@ RSpec.describe SellOrder, type: :model do
     context "with delivery sell order without payment and packed suborders returns true" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_delivering, allocation: create(:allocation, :as_delivery)) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :as_packed, :with_products, sell_order:) }
 
       it { expect(sell_order).to be_is_available_to_invoice }
     end
@@ -943,7 +942,7 @@ RSpec.describe SellOrder, type: :model do
     context "with delivery sell order with payment and packed suborders returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_delivering, :with_card_payment, total: 10_000) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :as_packed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_invoice }
     end
@@ -951,7 +950,7 @@ RSpec.describe SellOrder, type: :model do
     context "with closed sell order and completed suborders returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation, :as_closed) }
 
-      before { create(:order, :as_completed, sell_order:) }
+      before { create(:order, :as_completed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_invoice }
     end
@@ -959,7 +958,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order and completed suborders returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation, :as_invoicing) }
 
-      before { create(:order, :as_completed, sell_order:) }
+      before { create(:order, :as_completed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_invoice }
     end
@@ -1007,7 +1006,7 @@ RSpec.describe SellOrder, type: :model do
     context "with opened sell order and completed suborders returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation) }
 
-      before { create(:order, :as_completed, sell_order:) }
+      before { create(:order, :as_completed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1015,7 +1014,7 @@ RSpec.describe SellOrder, type: :model do
     context "with opened sell order and opened suborders returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation) }
 
-      before { create(:order, sell_order:) }
+      before { create(:order, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1023,7 +1022,7 @@ RSpec.describe SellOrder, type: :model do
     context "with opened sell order with opened suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation) }
 
-      before { create(:order, sell_order:) }
+      before { create(:order, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1031,7 +1030,7 @@ RSpec.describe SellOrder, type: :model do
     context "with opened sell order with processing suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation) }
 
-      before { create(:order, :as_processing, sell_order:) }
+      before { create(:order, :as_processing, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1039,7 +1038,7 @@ RSpec.describe SellOrder, type: :model do
     context "with opened sell order with completed suborders and delivery allocation returns true" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation) }
 
-      before { create(:order, :as_completed, sell_order:) }
+      before { create(:order, :as_completed, :with_products, sell_order:) }
 
       it { expect(sell_order).to be_is_available_to_deliver }
     end
@@ -1047,7 +1046,7 @@ RSpec.describe SellOrder, type: :model do
     context "with opened sell order with packed suborders and delivery allocation returns true" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :as_packed, :with_products, sell_order:) }
 
       it { expect(sell_order).to be_is_available_to_deliver }
     end
@@ -1067,7 +1066,7 @@ RSpec.describe SellOrder, type: :model do
     context "with packed sell order with opened suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_packed) }
 
-      before { create(:order, sell_order:) }
+      before { create(:order, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1075,7 +1074,7 @@ RSpec.describe SellOrder, type: :model do
     context "with packed sell order with packed suborders and delivery allocation returns true" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_packed) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :as_packed, :with_products, sell_order:) }
 
       it { expect(sell_order).to be_is_available_to_deliver }
     end
@@ -1095,7 +1094,7 @@ RSpec.describe SellOrder, type: :model do
     context "with delivering sell order with opened suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_delivering) }
 
-      before { create(:order, sell_order:) }
+      before { create(:order, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1103,7 +1102,7 @@ RSpec.describe SellOrder, type: :model do
     context "with delivering sell order with packed suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_delivering) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :as_packed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1117,7 +1116,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order with opened suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_invoicing) }
 
-      before { create(:order, sell_order:) }
+      before { create(:order, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1125,7 +1124,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order with processing suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_invoicing) }
 
-      before { create(:order, :as_processing, sell_order:) }
+      before { create(:order, :as_processing, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1133,7 +1132,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order with packed suborders and delivery allocation returns true" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_invoicing) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :as_packed, :with_products, sell_order:) }
 
       it { expect(sell_order).to be_is_available_to_deliver }
     end
@@ -1141,7 +1140,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order with completed suborders and delivery allocation returns true" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_invoicing) }
 
-      before { create(:order, :as_completed, sell_order:) }
+      before { create(:order, :as_completed, :with_products, sell_order:) }
 
       it { expect(sell_order).to be_is_available_to_deliver }
     end
@@ -1155,7 +1154,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order with opened suborders and payment returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation, :as_invoicing, :with_card_payment, total: 10_000) }
 
-      before { create(:order, sell_order:) }
+      before { create(:order, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1163,7 +1162,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order with processing suborders and payment returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation, :as_invoicing, :with_card_payment, total: 10_000) }
 
-      before { create(:order, :as_processing, sell_order:) }
+      before { create(:order, :as_processing, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1171,7 +1170,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order with completed suborders and payment returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation, :as_invoicing, :with_card_payment, total: 10_000) }
 
-      before { create(:order, :as_completed, sell_order:) }
+      before { create(:order, :as_completed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1179,7 +1178,7 @@ RSpec.describe SellOrder, type: :model do
     context "with invoicing sell order with packed suborders and payment returns false" do
       let(:sell_order) { create(:sell_order, :with_allocation, :as_invoicing, :with_card_payment, total: 10_000) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :as_packed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1187,7 +1186,7 @@ RSpec.describe SellOrder, type: :model do
     context "with closed sell order with packed suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_closed) }
 
-      before { create(:order, :as_packed, sell_order:) }
+      before { create(:order, :as_packed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end
@@ -1195,7 +1194,7 @@ RSpec.describe SellOrder, type: :model do
     context "with closed sell order with completed suborders and delivery allocation returns false" do
       let(:sell_order) { create(:sell_order, :with_delivery_allocation, :as_closed) }
 
-      before { create(:order, :as_completed, sell_order:) }
+      before { create(:order, :as_completed, :with_products, sell_order:) }
 
       it { expect(sell_order).not_to be_is_available_to_deliver }
     end

@@ -81,7 +81,7 @@ RSpec.describe "Allocations", type: :request do
     end
   end
 
-  describe "POST /dashboard/allocations/:id/free" do
+  describe "PATCH /dashboard/allocations/:id/free" do
     context "when user has already signin and performs action" do
       before do
         allocation
@@ -89,18 +89,18 @@ RSpec.describe "Allocations", type: :request do
       end
 
       it "returns http redirect" do
-        post "/dashboard/allocations/#{allocation.id}/free"
+        patch "/dashboard/allocations/#{allocation.id}/free"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/allocations/#{allocation.id}/free"
+        patch "/dashboard/allocations/#{allocation.id}/free"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid content" do
-        post "/dashboard/allocations/#{allocation.id}/free"
+        patch "/dashboard/allocations/#{allocation.id}/free"
         follow_redirect!
         expect(response.body).to include("Allocation was set to available.")
       end
@@ -116,12 +116,12 @@ RSpec.describe "Allocations", type: :request do
       end
 
       it "returns http unprocessable content" do
-        post "/dashboard/allocations/#{allocation.id}/free"
+        patch "/dashboard/allocations/#{allocation.id}/free"
         expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/allocations/#{allocation.id}/free"
+        patch "/dashboard/allocations/#{allocation.id}/free"
         expect(response.body).to include("Unable to perform that action.")
       end
     end
@@ -130,25 +130,25 @@ RSpec.describe "Allocations", type: :request do
       before { allocation }
 
       it "returns http redirect" do
-        post "/dashboard/allocations/#{allocation.id}/free"
+        patch "/dashboard/allocations/#{allocation.id}/free"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/allocations/#{allocation.id}/free"
+        patch "/dashboard/allocations/#{allocation.id}/free"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/allocations/#{allocation.id}/free"
+        patch "/dashboard/allocations/#{allocation.id}/free"
         follow_redirect!
         expect(response.body).to include("You need to sign in or sign up before continuing.")
       end
     end
   end
 
-  describe "POST /dashboard/allocations/:id/clean" do
+  describe "PATCH /dashboard/allocations/:id/clean" do
     context "when user has already signin and performs action" do
       before do
         allocation
@@ -156,18 +156,18 @@ RSpec.describe "Allocations", type: :request do
       end
 
       it "returns http redirect" do
-        post "/dashboard/allocations/#{allocation.id}/clean"
+        patch "/dashboard/allocations/#{allocation.id}/clean"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/allocations/#{allocation.id}/clean"
+        patch "/dashboard/allocations/#{allocation.id}/clean"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid content" do
-        post "/dashboard/allocations/#{allocation.id}/clean"
+        patch "/dashboard/allocations/#{allocation.id}/clean"
         follow_redirect!
         expect(response.body).to include("Allocation was set to cleaning.")
       end
@@ -183,12 +183,12 @@ RSpec.describe "Allocations", type: :request do
       end
 
       it "returns http unprocessable content" do
-        post "/dashboard/allocations/#{allocation.id}/clean"
+        patch "/dashboard/allocations/#{allocation.id}/clean"
         expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/allocations/#{allocation.id}/clean"
+        patch "/dashboard/allocations/#{allocation.id}/clean"
         expect(response.body).to include("Unable to perform that action.")
       end
     end
@@ -197,25 +197,25 @@ RSpec.describe "Allocations", type: :request do
       before { allocation }
 
       it "returns http redirect" do
-        post "/dashboard/allocations/#{allocation.id}/clean"
+        patch "/dashboard/allocations/#{allocation.id}/clean"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/allocations/#{allocation.id}/clean"
+        patch "/dashboard/allocations/#{allocation.id}/clean"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/allocations/#{allocation.id}/clean"
+        patch "/dashboard/allocations/#{allocation.id}/clean"
         follow_redirect!
         expect(response.body).to include("You need to sign in or sign up before continuing.")
       end
     end
   end
 
-  describe "POST /dashboard/allocations/:id/reserve" do
+  describe "PATCH /dashboard/allocations/:id/reserve" do
     context "when user has already signin and performs action" do
       before do
         allocation
@@ -223,18 +223,18 @@ RSpec.describe "Allocations", type: :request do
       end
 
       it "returns http redirect" do
-        post "/dashboard/allocations/#{allocation.id}/reserve"
+        patch "/dashboard/allocations/#{allocation.id}/reserve"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/allocations/#{allocation.id}/reserve"
+        patch "/dashboard/allocations/#{allocation.id}/reserve"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid content" do
-        post "/dashboard/allocations/#{allocation.id}/reserve"
+        patch "/dashboard/allocations/#{allocation.id}/reserve"
         follow_redirect!
         expect(response.body).to include("Allocation was set to on hold.")
       end
@@ -247,12 +247,12 @@ RSpec.describe "Allocations", type: :request do
       end
 
       it "returns http unprocessable content" do
-        post "/dashboard/allocations/#{allocation.id}/reserve"
+        patch "/dashboard/allocations/#{allocation.id}/reserve"
         expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/allocations/#{allocation.id}/reserve"
+        patch "/dashboard/allocations/#{allocation.id}/reserve"
         expect(response.body).to include("Unable to perform that action.")
       end
     end
@@ -261,18 +261,18 @@ RSpec.describe "Allocations", type: :request do
       before { allocation }
 
       it "returns http redirect" do
-        post "/dashboard/allocations/#{allocation.id}/reserve"
+        patch "/dashboard/allocations/#{allocation.id}/reserve"
         expect(response).to have_http_status(:found)
       end
 
       it "returns http ok after redirect" do
-        post "/dashboard/allocations/#{allocation.id}/reserve"
+        patch "/dashboard/allocations/#{allocation.id}/reserve"
         follow_redirect!
         expect(response).to have_http_status(:ok)
       end
 
       it "return valid flash alert message" do
-        post "/dashboard/allocations/#{allocation.id}/reserve"
+        patch "/dashboard/allocations/#{allocation.id}/reserve"
         follow_redirect!
         expect(response.body).to include("You need to sign in or sign up before continuing.")
       end

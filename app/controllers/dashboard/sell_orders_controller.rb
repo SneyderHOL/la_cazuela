@@ -38,6 +38,9 @@ module Dashboard
 
     def close
       @sell_order.close!
+      @allocation = @sell_order.allocation
+      @allocation.clean! if @allocation.desk?
+
       flash[:notice] = "Sell order was closed."
       redirect_to dashboard_sell_order_path(@sell_order)
     rescue AASM::InvalidTransition => error
@@ -61,9 +64,11 @@ module Dashboard
     end
 
     def create
-      @sell_order = SellOrder.create(allocation: @allocation)
+      @sell_order = @allocation.current_open_sell_order if @allocation.desk?
+      @sell_order ||= SellOrder.create(allocation: @allocation)
       if @sell_order.persisted?
-        @allocation.take!
+        @allocation.take! if @allocation.desk? && @allocation.available?
+
         redirect_to new_dashboard_sell_order_order_path(@sell_order)
       else
         @sell_orders = @allocation.sell_orders.current_open_sales.order(created_at: :asc)

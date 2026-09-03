@@ -10,7 +10,7 @@ class DashboardController < ApplicationController
       %i[ opened packed invoicing ], :delivery
     ).count
     @desk_allocations = Allocation.desk.active
-    @recent_orders = Order.recent.limit(10)
+    @recent_orders = Order.recent.order(created_at: :desc).limit(10)
     @recent_preparations = OrderProduct.current_preparations_with_sell_orders(
       %i[ requested prepare preparing ]
     ).order(updated_at: :desc).limit(10)
