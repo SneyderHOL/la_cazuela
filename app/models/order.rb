@@ -34,14 +34,14 @@ class Order < ApplicationRecord
     return unless persisted?
 
     Rails.logger.info "Calling ReadyToCookOrderProductsJob for order_id #{id}"
-    ReadyToCookOrderProductsJob.perform_later(self)
+    ReadyToCookOrderProductsJob.perform_later(id)
   end
 
   def complete_order_products
     return unless persisted?
 
     Rails.logger.info "Calling CompleteOrderProductsJob for order_id #{id}"
-    CompleteOrderProductsJob.perform_later(self)
+    CompleteOrderProductsJob.perform_later(id)
   end
 
   def check_status

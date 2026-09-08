@@ -12,7 +12,7 @@ RSpec.describe CreateBillJob, type: :job do
   end
 
   describe "#perform_now" do
-    subject(:create_bill_job) { described_class.perform_now(sell_order) }
+    subject(:create_bill_job) { described_class.perform_now(sell_order.id) }
 
     let(:instance_service) { instance_double(SellOrders::CreateBill) }
 

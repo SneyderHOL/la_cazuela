@@ -162,6 +162,39 @@ RSpec.describe OrderProduct, type: :model do
   end
 
   describe "status transitions" do
+    describe "when ready_to_cook is executed with requested" do
+      before { order_product_object.status = 'requested' }
+
+      it do
+        expect { order_product_object.ready_to_cook }.to change(
+          order_product_object, :status).from("requested").to("prepare")
+      end
+    end
+
+    describe "when ready_to_cook is executed with prepare" do
+      before { order_product_object.status = 'prepare' }
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order_product_object.ready_to_cook }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    describe "when ready_to_cook is executed with preparing" do
+      before { order_product_object.status = 'preparing' }
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order_product_object.ready_to_cook }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    describe "when ready_to_cook is executed with completed" do
+      before { order_product_object.status = 'completed' }
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order_product_object.ready_to_cook }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
     describe "when cook is executed with prepare" do
       before { order_product_object.status = 'prepare' }
 
@@ -171,12 +204,69 @@ RSpec.describe OrderProduct, type: :model do
       end
     end
 
-    describe "when complete is executed with preparing" do
+    describe "when cook is executed with requested" do
+      before { order_product_object.status = 'requested' }
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order_product_object.cook }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    describe "when cook is executed with preparing" do
       before { order_product_object.status = 'preparing' }
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order_product_object.cook }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    describe "when cook is executed with completed" do
+      before { order_product_object.status = 'completed' }
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order_product_object.cook }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    describe "when complete is executed with prepare" do
+      before do
+        allow(OrderCompletionJob).to receive(:perform_later)
+        order_product_object.status = 'prepare'
+      end
+
+      it do
+        expect { order_product_object.complete }.to change(
+          order_product_object, :status).from("prepare").to("completed")
+      end
+
+      it do
+        order_product_object.complete
+        expect(OrderCompletionJob).not_to have_received(:perform_later)
+      end
+    end
+
+    describe "when complete is executed with preparing" do
+      before do
+        allow(OrderCompletionJob).to receive(:perform_later)
+        order_product_object.status = 'preparing'
+      end
 
       it do
         expect { order_product_object.complete }.to change(
           order_product_object, :status).from("preparing").to("completed")
+      end
+
+      it do
+        order_product_object.complete
+        expect(OrderCompletionJob).not_to have_received(:perform_later)
+      end
+    end
+
+    describe "when complete is executed with requested" do
+      before { order_product_object.status = 'requested' }
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order_product_object.complete }.to raise_error(AASM::InvalidTransition)
       end
     end
   end

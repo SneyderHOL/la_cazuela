@@ -66,14 +66,14 @@ class SellOrder < ApplicationRecord
     return unless persisted?
 
     Rails.logger.info "Calling CompleteOrdersJob for sell_order_id #{id}"
-    CompleteOrdersJob.perform_later(self)
+    CompleteOrdersJob.perform_later(id)
   end
 
   def create_bill
     return unless persisted?
 
     Rails.logger.info "Calling CreateBillJob for sell_order_id #{id}"
-    CreateBillJob.perform_later(self)
+    CreateBillJob.perform_later(id)
   end
 
   def check_orders

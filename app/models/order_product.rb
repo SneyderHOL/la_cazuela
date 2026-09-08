@@ -65,4 +65,11 @@ class OrderProduct < ApplicationRecord
   def add_recipe
     self.recipe_id = product.recipe&.id
   end
+
+  def order_completion
+    return unless persisted?
+
+    Rails.logger.info "Calling OrderCompletionJob for order_product_id #{id}"
+    OrderCompletionJob.perform_later(order.id)
+  end
 end

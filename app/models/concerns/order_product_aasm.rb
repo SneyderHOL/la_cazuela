@@ -16,7 +16,10 @@ module OrderProductAasm
       end
 
       event :complete do
-        transitions to: :completed
+        after do
+          order_completion
+        end
+        transitions from: %i[ prepare preparing ], to: :completed
       end
     end
   end

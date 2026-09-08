@@ -41,36 +41,69 @@ RSpec.describe Order, type: :model do
   end
 
   describe "status transitions" do
-    context "when process is executed and the order is opened and is persisted" do
+    context "when confirm is executed and the order is opened and is persisted" do
       before do
         allow(ReadyToCookOrderProductsJob).to receive(:perform_later)
         order.save
       end
 
       it "change status" do
-        expect { order.process }.to change(
+        expect { order.confirm }.to change(
           order, :status).from("opened").to("processing")
       end
 
       it do
-        order.process
+        order.confirm
         expect(ReadyToCookOrderProductsJob).to have_received(:perform_later)
       end
     end
 
-    context "when process is executed and the order is opened and is not persisted" do
+    context "when confirm is executed and the order is opened and is not persisted" do
       before do
         allow(ReadyToCookOrderProductsJob).to receive(:perform_later)
       end
 
       it "change status" do
-        expect { order.process }.to change(
+        expect { order.confirm }.to change(
           order, :status).from("opened").to("processing")
       end
 
       it do
-        order.process
+        order.confirm
         expect(ReadyToCookOrderProductsJob).not_to have_received(:perform_later)
+      end
+    end
+
+    context "when confirm is executed and the order is processing" do
+      before do
+        order.status = 'processing'
+        order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order.confirm }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    context "when confirm is executed and the order is packed" do
+      before do
+        order.status = 'packed'
+        order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order.confirm }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    context "when confirm is executed and the order is completed" do
+      before do
+        order.status = 'completed'
+        order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order.confirm }.to raise_error(AASM::InvalidTransition)
       end
     end
 
@@ -96,6 +129,28 @@ RSpec.describe Order, type: :model do
       it "change status" do
         expect { order.pack }.to change(
           order, :status).from("processing").to("packed")
+      end
+    end
+
+    context "when pack is executed and the order is opened" do
+      before do
+        order.status = 'opened'
+        order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order.pack }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    context "when pack is executed and the order is completed" do
+      before do
+        order.status = 'completed'
+        order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order.pack }.to raise_error(AASM::InvalidTransition)
       end
     end
 
@@ -131,6 +186,28 @@ RSpec.describe Order, type: :model do
       it do
         order.complete
         expect(CompleteOrderProductsJob).to have_received(:perform_later)
+      end
+    end
+
+    context "when complete is executed and the order is opened" do
+      before do
+        order.status = 'opened'
+        order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order.complete }.to raise_error(AASM::InvalidTransition)
+      end
+    end
+
+    context "when complete is executed and the order is packed" do
+      before do
+        order.status = 'packed'
+        order.save
+      end
+
+      it "raise AASM::InvalidTransition error" do
+        expect { order.complete }.to raise_error(AASM::InvalidTransition)
       end
     end
   end
