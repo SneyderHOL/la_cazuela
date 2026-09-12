@@ -29,7 +29,7 @@ Rails.application.routes.draw do
       resources :sell_orders, only: :create
     end
 
-    resources :sell_orders, only: %i[ index show ] do
+    resources :sell_orders, only: %i[ index show destroy ] do
       member do
         patch "invoice"
         patch "deliver"
@@ -44,11 +44,12 @@ Rails.application.routes.draw do
     resources :orders, only: %i[ index show edit update destroy ] do
       member do
         patch "confirm"
-        # patch "complete"
+        patch "complete"
+        patch "pack"
       end
     end
 
-    resources :order_products, only: :index, as: :preparations, path: :preparations do
+    resources :order_products, only: %i[ index destroy ], as: :preparations, path: :preparations do
       member do
         patch "cook"
         patch "complete"

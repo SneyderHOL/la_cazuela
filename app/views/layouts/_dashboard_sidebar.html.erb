@@ -96,7 +96,8 @@
 
     </a> -->
 
-    <%= button_to destroy_user_session_path, method: :delete, class: "dashboard-nav-link logout-link" do %>
+    <%= button_to destroy_user_session_path, method: :delete, class: "dashboard-nav-link logout-link", data: {
+        turbo_confirm: "Want to sign out?" } do %>
 
       <svg class="sidebar-icon" viewBox="0 0 24 24" aria-hidden="true" >
         <path d="M10 17l5-5-5-5"></path>

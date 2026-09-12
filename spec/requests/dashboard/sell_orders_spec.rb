@@ -70,7 +70,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         follow_redirect!
         expect(response.body).to include("Sell Order created successfully.")
@@ -105,7 +105,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         follow_redirect!
         expect(response.body).to include("Sell Order created successfully.")
@@ -139,7 +139,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         follow_redirect!
         expect(response.body).to include("Sell Order created successfully.")
@@ -167,7 +167,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:bad_request)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         expect(response.body).to include("Allocation must be active")
       end
@@ -201,7 +201,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         follow_redirect!
         expect(response.body).to include("Sell Order created successfully.")
@@ -235,7 +235,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         follow_redirect!
         expect(response.body).to include("Sell Order created successfully.")
@@ -270,7 +270,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         follow_redirect!
         expect(response.body).to include("Sell Order created successfully.")
@@ -298,7 +298,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:bad_request)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         expect(response.body).to include("Allocation must be active")
       end
@@ -329,7 +329,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         follow_redirect!
         expect(response.body).to include("Sell Order created successfully.")
@@ -363,7 +363,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         follow_redirect!
         expect(response.body).to include("Sell Order created successfully.")
@@ -389,7 +389,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:bad_request)
       end
 
-      it "return valid content" do
+      it "return valid flash alert message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         expect(response.body).to include("Allocation must be available")
       end
@@ -414,7 +414,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:bad_request)
       end
 
-      it "return valid content" do
+      it "return valid flash alert message" do
         post "/dashboard/allocations/#{allocation.id}/sell_orders"
         expect(response.body).to include("Allocation must be active")
       end
@@ -449,7 +449,7 @@ RSpec.describe "SellOrder", type: :request do
 
       it "returns http success" do
         get "/dashboard/sell_orders/#{sell_order.id}"
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:success)
       end
 
       it "return valid content" do
@@ -498,7 +498,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/sell_orders/#{sell_order.id}/invoice"
         follow_redirect!
         expect(response.body).to include("Sell order was set to invoicing.")
@@ -564,7 +564,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/sell_orders/#{sell_order.id}/deliver"
         follow_redirect!
         expect(response.body).to include("Sell order was set to delivering.")
@@ -621,7 +621,7 @@ RSpec.describe "SellOrder", type: :request do
         sign_in user
       end
 
-      it "returns http success" do
+      it "returns http redirect" do
         patch "/dashboard/sell_orders/#{sell_order.id}/close"
         expect(response).to have_http_status(:found)
       end
@@ -632,7 +632,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/sell_orders/#{sell_order.id}/close"
         follow_redirect!
         expect(response.body).to include("Sell order was closed.")
@@ -700,7 +700,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/sell_orders/#{sell_order.id}/payment", params: { payment_type: "card" }
         follow_redirect!
         expect(response.body).to include("Payment saved.")
@@ -724,7 +724,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/sell_orders/#{sell_order.id}/payment", params: { payment_type: "transfer" }
         follow_redirect!
         expect(response.body).to include("Payment saved.")
@@ -748,7 +748,7 @@ RSpec.describe "SellOrder", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/sell_orders/#{sell_order.id}/payment", params: { payment_type: "cash", cash_pay: sell_order.total }
         follow_redirect!
         expect(response.body).to include("Payment saved.")
@@ -815,6 +815,135 @@ RSpec.describe "SellOrder", type: :request do
 
       it "return valid flash alert message" do
         patch "/dashboard/sell_orders/#{sell_order.id}/payment"
+        follow_redirect!
+        expect(response.body).to include("You need to sign in or sign up before continuing.")
+      end
+    end
+  end
+
+  describe "DELETE /dashboard/sell_orders/:id" do
+    context "when user has already signin and performs action on sell order with desk allocation" do
+      before do
+        sell_order
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        follow_redirect!
+        expect(response.body).to include("Sell Order was destroyed successfully.")
+      end
+
+      it "updates the allocation status to cleaning" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(sell_order.allocation.reload).to be_cleaning
+      end
+    end
+
+    context "when user has already signin and performs action on sell order with delivery allocation" do
+      before do
+        sell_order.allocation.update(kind: :delivery)
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        follow_redirect!
+        expect(response.body).to include("Sell Order was destroyed successfully.")
+      end
+
+      it "does not updates the allocation status to cleaning" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(sell_order.allocation.reload).to be_available
+      end
+    end
+
+    context "when user has already signin and performs action on sell order with takeout allocation" do
+      before do
+        sell_order.allocation.update(kind: :takeout)
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        follow_redirect!
+        expect(response.body).to include("Sell Order was destroyed successfully.")
+      end
+
+      it "does not updates the allocation status to cleaning" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(sell_order.allocation.reload).to be_available
+      end
+    end
+
+    context "when user has already signin and is unable to perform action" do
+      let(:order) { create(:order, :with_products, sell_order:) }
+
+      before do
+        order.update(status: :completed)
+        sign_in user
+      end
+
+      it "returns http unprocessable content" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "return valid flash alert message" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(response.body).to include("This record cannot be deleted because there are orders in process or completed")
+      end
+    end
+
+    context "when user has not signin" do
+      before { sell_order }
+
+      it "returns http redirect" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash alert message" do
+        delete "/dashboard/sell_orders/#{sell_order.id}"
         follow_redirect!
         expect(response.body).to include("You need to sign in or sign up before continuing.")
       end

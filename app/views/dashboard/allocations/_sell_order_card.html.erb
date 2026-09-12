@@ -70,6 +70,15 @@
 
   <% end %>
 
+  <% if sell_order.orders.empty? %>
+
+    <%= button_to dashboard_sell_order_path(sell_order), method: :delete, class: "dashboard-primary-button", data: {
+        turbo_confirm: "Cancel this sell order?" } do %>
+      Cancel Sell Order
+    <% end %>
+
+  <% end %>
+
   <footer class="allocation-order-footer<%= sell_order.opened? ? " opened" : ""%>">
 
     <% if sell_order.opened? %>

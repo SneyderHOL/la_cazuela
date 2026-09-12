@@ -121,7 +121,7 @@ RSpec.describe OrderProduct, type: :model do
         expect(order_product).to be_persisted
       end
 
-      it "is invalid" do
+      it "is valid" do
         expect(order_product).to be_valid
       end
 
@@ -134,10 +134,10 @@ RSpec.describe OrderProduct, type: :model do
   describe "callbacks" do
     let(:order_product) { build(:order_product, :with_order, product: product) }
 
-    before { order_product.save }
-
     context "when parent product have a recipe_id add_recipe before_create" do
       let(:product) { create(:product, :with_recipe, :with_category, trait_ingredient_recipe_amount: 2) }
+
+      before { order_product.save }
 
       it "adds the recipe_id of the parent product" do
         expect(order_product.recipe_id).not_to be_nil
@@ -151,12 +151,94 @@ RSpec.describe OrderProduct, type: :model do
     context "when parent product does not add_recipe before_create" do
       let(:product) { create(:product, :with_category) }
 
+      before { order_product.save }
+
       it "recipe_id is nil" do
         expect(order_product.recipe_id).to be_nil
       end
 
       it "saves the order_product record" do
         expect(order_product).to be_persisted
+      end
+    end
+
+    describe "validate_status_unless_parent_destroying when order_product is preparing" do
+      before do
+        order_product_object.status = :preparing
+        order_product_object.save
+        order_product_object.destroy
+      end
+
+      it "does not destroy the order product object" do
+        expect(order_product_object).to be_persisted
+      end
+
+      it "has errors" do
+        expect(order_product_object.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        expect(order_product_object.errors.full_messages).to include(
+          "This record cannot be deleted because has already started or completed"
+        )
+      end
+    end
+
+    describe "validate_status_unless_parent_destroying when order_product is completed" do
+      before do
+        order_product_object.status = :completed
+        order_product_object.save
+        order_product_object.destroy
+      end
+
+      it "does not destroy the order product object" do
+        expect(order_product_object).to be_persisted
+      end
+
+      it "has errors" do
+        expect(order_product_object.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        expect(order_product_object.errors.full_messages).to include(
+          "This record cannot be deleted because has already started or completed"
+        )
+      end
+    end
+
+    describe "validate_status_unless_parent_destroying when order_product is requested" do
+      before do
+        order_product_object.status = :requested
+        order_product_object.save
+        order_product_object.destroy
+      end
+
+      it "does destroy the order product object" do
+        expect(order_product_object).to be_destroyed
+      end
+    end
+
+    describe "validate_status_unless_parent_destroying when order_product is prepare" do
+      before do
+        order_product_object.status = :prepare
+        order_product_object.save
+        order_product_object.destroy
+      end
+
+      it "does destroy the order product object" do
+        expect(order_product_object).to be_destroyed
+      end
+    end
+
+    describe "validate_status_unless_parent_destroying when order_product is completed but marked for destruction" do
+      before do
+        order_product_object.status = :completed
+        order_product_object.save
+        order_product_object.order.update(order_products_attributes: [ id: order_product_object.id, _destroy: true ])
+      end
+
+      it "does destroy the order product object" do
+        expect(described_class.where(id: order_product_object.id)).not_to exist
       end
     end
   end

@@ -27,10 +27,10 @@ class Order < ApplicationRecord
   accepts_nested_attributes_for :order_products, allow_destroy: true
 
   validates :status, presence: true
-  validate :must_have_products, on: :create
   validate :parent_sell_order_must_be_opened, on: :create
 
-  before_destroy :check_status
+  before_destroy :check_status, prepend: true
+  before_destroy :validate_order_product_in_process_unless_parent_destroying, prepend: true
 
   scope :current, -> {
     where(created_at: Time.zone.today.beginning_of_day..Time.current)
@@ -60,12 +60,18 @@ class Order < ApplicationRecord
   end
 
   def check_status
-    throw :abort unless opened?
+    return if opened? || processing?
+
+    errors.add(:base, "This record cannot be deleted because is not opened or processing")
+    throw(:abort)
   end
 
-  def must_have_products
-    if order_products.reject(&:marked_for_destruction?).empty?
-      errors.add(:order_products, "must contain at least one product")
+  def validate_order_product_in_process_unless_parent_destroying
+    preparation_statuses = order_products.map(&:status)
+    if preparation_statuses.include?("preparing") || preparation_statuses.include?("completed")
+      errors.add(:base, "This record cannot be deleted because there are preparations in process or completed")
+
+      throw(:abort)
     end
   end
 

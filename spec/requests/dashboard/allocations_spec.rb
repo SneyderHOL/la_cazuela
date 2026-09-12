@@ -99,7 +99,7 @@ RSpec.describe "Allocations", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/allocations/#{allocation.id}/free"
         follow_redirect!
         expect(response.body).to include("Allocation was set to available.")
@@ -166,7 +166,7 @@ RSpec.describe "Allocations", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/allocations/#{allocation.id}/clean"
         follow_redirect!
         expect(response.body).to include("Allocation was set to cleaning.")
@@ -233,7 +233,7 @@ RSpec.describe "Allocations", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/allocations/#{allocation.id}/reserve"
         follow_redirect!
         expect(response.body).to include("Allocation was set to on hold.")

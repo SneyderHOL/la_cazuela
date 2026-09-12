@@ -2,7 +2,7 @@ module Dashboard
   class SellOrdersController < DashboardController
     before_action :clear_flash, only: :index
     before_action :set_allocation, only: :create
-    before_action :set_sell_order, only: %i[ show invoice deliver close payment ]
+    before_action :set_sell_order, only: %i[ show destroy invoice deliver close payment ]
 
     def index
       @current_sales_counting = SellOrder.current_sales(
@@ -69,12 +69,24 @@ module Dashboard
 
         redirect_to new_dashboard_sell_order_order_path(@sell_order), notice: "Sell Order created successfully."
       else
-        @sell_orders = @allocation.sell_orders.current_open_sales.order(created_at: :asc)
-        @suborders_count = @sell_orders.sum { |so| so.orders.count }
-
+        set_allocation_resources
         flash[:alert] = @sell_order.errors.full_messages.join
         render "dashboard/allocations/show", status: :bad_request
       end
+    end
+
+    def destroy
+      @allocation = @sell_order.allocation
+      ActiveRecord::Base.transaction do
+        @sell_order.destroy!
+        @allocation.clean! if @allocation.desk?
+      end
+
+      redirect_to dashboard_allocation_path(@allocation), notice: "Sell Order was destroyed successfully."
+    rescue ActiveRecord::RecordNotDestroyed => _e
+      set_allocation_resources
+      flash[:alert] = @sell_order.errors.full_messages.join
+      render "dashboard/allocations/show", status: :unprocessable_content
     end
 
     private
@@ -99,6 +111,11 @@ module Dashboard
 
     def set_allocation
       @allocation = Allocation.find(params[:allocation_id])
+    end
+
+    def set_allocation_resources
+      @sell_orders = @allocation.sell_orders.current_open_sales.order(created_at: :asc)
+      @suborders_count = @sell_orders.sum { |so| so.orders.count }
     end
   end
 end

@@ -1,7 +1,7 @@
 module Dashboard
   class OrdersController < DashboardController
     before_action :set_sell_order, only: %i[ create new summary ]
-    before_action :set_order, only: %i[ show edit update destroy confirm ]
+    before_action :set_order, only: %i[ show edit update destroy confirm complete pack]
     before_action :ensure_order_editable, only: %i[ edit update ]
     before_action :load_products, only: %i[ new edit ]
 
@@ -45,12 +45,7 @@ module Dashboard
       end
 
       redirect_to dashboard_order_path(@order), notice: "Order created successfully."
-    rescue ActiveRecord::RecordInvalid => e
-      load_products
-      @order = @sell_order.orders.build
-      flash[:alert] = e.message
-      render :new, status: :unprocessable_entity
-    rescue => e
+    rescue ActiveRecord::RecordInvalid, ActionController::ParameterMissing => e
       load_products
       @order = @sell_order.orders.build
       flash[:alert] = e.message
@@ -58,12 +53,42 @@ module Dashboard
     end
 
     def destroy
+      ActiveRecord::Base.transaction do
+        @order.destroy!
+        if @sell_order.orders.reload.empty?
+          @sell_order.destroy!
+          @allocation.clean! if @allocation.desk?
+        end
+      end
+
+      redirect_to dashboard_allocation_path(@allocation), notice: "Order was destroyed successfully."
+    rescue ActiveRecord::RecordNotDestroyed => _e
+      flash[:alert] = @order.errors.full_messages.join
+      render "dashboard/orders/show", status: :unprocessable_content
     end
 
     def confirm
       @order.confirm!
 
       redirect_to dashboard_order_path(@order), notice: "Order was sent to kitchen."
+    rescue AASM::InvalidTransition => error
+      flash[:alert] = "Unable to perform that action."
+      render "dashboard/orders/show", status: :unprocessable_content
+    end
+
+    def complete
+      @order.complete!
+
+      redirect_to dashboard_order_path(@order), notice: "Order was set to completed."
+    rescue AASM::InvalidTransition => error
+      flash[:alert] = "Unable to perform that action."
+      render "dashboard/orders/show", status: :unprocessable_content
+    end
+
+    def pack
+      @order.pack!
+
+      redirect_to dashboard_order_path(@order), notice: "Order was set to packed."
     rescue AASM::InvalidTransition => error
       flash[:alert] = "Unable to perform that action."
       render "dashboard/orders/show", status: :unprocessable_content

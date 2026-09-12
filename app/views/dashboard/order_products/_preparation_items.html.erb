@@ -110,13 +110,15 @@
 
             <% if preparation.prepare? %>
 
-              <%= button_to cook_dashboard_preparation_path(preparation.id), method: :patch, params: @status_filter_param, class: "preparation-action-button" do %>
+              <%= button_to cook_dashboard_preparation_path(preparation.id), method: :patch, params: @status_filter_param, class: "preparation-action-button", data: {
+                turbo_confirm: "Start the preparation?" } do %>
                 Start Preparation
               <% end %>
 
             <% elsif preparation.preparing? %>
 
-              <%= button_to complete_dashboard_preparation_path(preparation.id), method: :patch, params: @status_filter_param, class: "preparation-action-button complete" do %>
+              <%= button_to complete_dashboard_preparation_path(preparation.id), method: :patch, params: @status_filter_param, class: "preparation-action-button complete", data: {
+                turbo_confirm: "Mark as completed?" } do %>
                 Mark Completed
               <% end %>
 

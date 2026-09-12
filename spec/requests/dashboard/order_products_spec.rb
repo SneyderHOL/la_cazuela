@@ -59,7 +59,7 @@ RSpec.describe "OrderProduct", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/preparations/#{order_product.id}/cook"
         follow_redirect!
         expect(response.body).to include("Preparation is being cook.")
@@ -123,7 +123,7 @@ RSpec.describe "OrderProduct", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/preparations/#{order_product.id}/complete"
         follow_redirect!
         expect(response.body).to include("Preparation is done.")
@@ -163,6 +163,72 @@ RSpec.describe "OrderProduct", type: :request do
 
       it "return valid flash alert message" do
         patch "/dashboard/preparations/#{order_product.id}/complete"
+        follow_redirect!
+        expect(response.body).to include("You need to sign in or sign up before continuing.")
+      end
+    end
+  end
+
+  describe "DELETE /dashboard/preparations/:id" do
+    context "when user has already signin and performs action" do
+      let(:order_product2) { create(:order_product, :with_product, order: order_product.order) }
+
+      before do
+        order_product2
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        delete "/dashboard/preparations/#{order_product.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/preparations/#{order_product.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        delete "/dashboard/preparations/#{order_product.id}"
+        follow_redirect!
+        expect(response.body).to include("Preparation was destroyed successfully.")
+      end
+    end
+
+    context "when user has already signin and is unable to perform action" do
+      before do
+        order_product.update(status: :preparing)
+        sign_in user
+      end
+
+      it "returns http unprocessable content" do
+        delete "/dashboard/preparations/#{order_product.id}"
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "return valid flash alert message" do
+        delete "/dashboard/preparations/#{order_product.id}"
+        expect(response.body).to include("This record cannot be deleted because has already started or completed")
+      end
+    end
+
+    context "when user has not signin" do
+      before { order_product }
+
+      it "returns http redirect" do
+        delete "/dashboard/preparations/#{order_product.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/preparations/#{order_product.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash alert message" do
+        delete "/dashboard/preparations/#{order_product.id}"
         follow_redirect!
         expect(response.body).to include("You need to sign in or sign up before continuing.")
       end

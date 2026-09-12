@@ -25,7 +25,7 @@ class SellOrder < ApplicationRecord
   include SellOrderAasm
 
   belongs_to :allocation
-  has_many :orders
+  has_many :orders, dependent: :destroy
   has_one :bill
 
   enum :payment_type, { cash: "cash", transfer: "transfer", card: "card" }
@@ -38,7 +38,7 @@ class SellOrder < ApplicationRecord
   validate :desk_allocation_must_be_available, on: :create
 
   after_validation :calculate_cash_change
-  before_destroy :check_orders
+  before_destroy :validate_order_completion, prepend: true
 
   scope :sales_by_date, ->(date) { where(created_at: date.beginning_of_day..date.end_of_day) }
   scope :unclosed, -> {
@@ -119,8 +119,15 @@ class SellOrder < ApplicationRecord
     CreateBillJob.perform_now(id)
   end
 
-  def check_orders
-    throw :abort unless orders.empty?
+  def validate_order_completion
+    return if orders.empty?
+
+    order_statuses = orders.map(&:status)
+    if order_statuses.exclude?("opened")
+      errors.add(:base, "This record cannot be deleted because there are orders in process or completed")
+
+      throw(:abort)
+    end
   end
 
   def paying_in_cash?

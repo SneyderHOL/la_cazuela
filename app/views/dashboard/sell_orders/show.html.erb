@@ -73,7 +73,8 @@
 
       </div>
 
-      <%= button_to invoice_dashboard_sell_order_path(@sell_order.id), method: :patch, class: "dashboard-primary-button", id: "start-invoicing" do %>
+      <%= button_to invoice_dashboard_sell_order_path(@sell_order.id), method: :patch, class: "dashboard-primary-button", id: "start-invoicing", data: {
+          turbo_confirm: "Start invoicing this sell order?" } do %>
         Start Invoicing
       <% end %>
 
@@ -81,7 +82,7 @@
 
   <% end %>
 
-  <% if @sell_order.status == "invoicing" %>
+  <% if @sell_order.invoicing? %>
 
     <section class="sell-order-checkout-card">
 
@@ -298,7 +299,7 @@
 
         </div>
 
-        <%= button_to("Close Sell Order", close_dashboard_sell_order_path(@sell_order), method: :patch, class: "dashboard-primary-button") %>
+        <%= button_to "Close Sell Order", close_dashboard_sell_order_path(@sell_order), method: :patch, class: "dashboard-primary-button", data: { turbo_confirm: "Close this sell order?" } %>
 
       </section>
 

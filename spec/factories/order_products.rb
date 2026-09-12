@@ -50,7 +50,7 @@ FactoryBot.define do
       product { create(:product, :with_recipe, :with_category) }
     end
 
-    trait :with_order do # TO DELETE, ORDER ALREADY ATTACHED
+    trait :with_order do
       order { build(:order, :with_sell_order) }
     end
 
@@ -60,14 +60,6 @@ FactoryBot.define do
 
     trait :with_product_and_recipe do
       product { create(:product, :with_recipe, :with_category) }
-    end
-
-    after :build do |order_product, evaluator|
-      unless order_product.order.persisted?
-        order_product.order = build(:order, :with_sell_order)
-        order_product.order.save(validate: false)
-        order_product.order_id = order_product.order.id
-      end
     end
   end
 end

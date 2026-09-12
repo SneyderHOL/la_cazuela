@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe "Orders", type: :request do
   include_context "with order for requests"
 
-
   describe "GET /dashboard/orders" do
     context "when user has already signin" do
       before { sign_in user }
@@ -88,7 +87,7 @@ RSpec.describe "Orders", type: :request do
 
       it "returns http success" do
         get "/dashboard/orders/#{order.id}"
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:success)
       end
 
       it "return valid content" do
@@ -130,7 +129,7 @@ RSpec.describe "Orders", type: :request do
 
       it "returns http success" do
         get "/dashboard/sell_orders/#{order.sell_order.id}/orders/new"
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:success)
       end
 
       it "return valid content" do
@@ -170,7 +169,7 @@ RSpec.describe "Orders", type: :request do
 
       it "returns http success" do
         get "/dashboard/orders/#{order.id}/edit"
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:success)
       end
 
       it "return valid content" do
@@ -268,16 +267,60 @@ RSpec.describe "Orders", type: :request do
         expect(response).to have_http_status(:found)
       end
 
-      it "returns http success" do
+      it "returns http success after redirect" do
         post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params
         follow_redirect!
         expect(response).to have_http_status(:success)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params
         follow_redirect!
         expect(response.body).to include("Order created successfully.")
+      end
+    end
+
+    context "when user has already signin but missing product_id param" do
+      let(:order_products) do
+        {
+          order_products_attributes: {
+            "0" => {
+              quantity: 1,
+              note: "no sugar"
+            },
+            "1" => {
+              quantity: 1,
+              note: ""
+            },
+            "2" => {
+              quantity: 1,
+              note: ""
+            }
+          }
+        }
+      end
+
+      before do
+        sell_order
+        sign_in user
+      end
+
+      it "does not creates the order" do
+        expect { post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params }.not_to change(Order, :count)
+      end
+
+      it "does not creates the order_products" do
+        expect { post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params }.not_to change(OrderProduct, :count)
+      end
+
+      it "returns http bad_request" do
+        post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it "return valid flash alert message" do
+        post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params
+        expect(response.body).to include("Validation failed: Order products product must exist")
       end
     end
 
@@ -313,16 +356,16 @@ RSpec.describe "Orders", type: :request do
         expect { post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params }.not_to change(Order, :count)
       end
 
-      it "creates the order_products" do
+      it "does not creates the order_products" do
         expect { post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params }.not_to change(OrderProduct, :count)
       end
 
-      it "returns http unprocessable_content" do
+      it "returns http bad_request" do
         post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params
-        expect(response).to have_http_status(:unprocessable_content)
+        expect(response).to have_http_status(:bad_request)
       end
 
-      it "return valid content" do
+      it "return valid flash alert message" do
         post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params
         expect(response.body).to include("Validation failed: Order products product must exist")
       end
@@ -340,7 +383,7 @@ RSpec.describe "Orders", type: :request do
         expect { post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params }.not_to change(Order, :count)
       end
 
-      it "creates the order_products" do
+      it "does not creates the order_products" do
         expect { post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params }.not_to change(OrderProduct, :count)
       end
 
@@ -349,7 +392,7 @@ RSpec.describe "Orders", type: :request do
         expect(response).to have_http_status(:bad_request)
       end
 
-      it "return valid content" do
+      it "return valid flash alert message" do
         post "/dashboard/sell_orders/#{sell_order.id}/orders", params: body_params
         expect(response.body).to include("param is missing or the value is empty or invalid: order")
       end
@@ -378,7 +421,7 @@ RSpec.describe "Orders", type: :request do
   end
 
   describe "PUT /dashboard/orders/:id" do
-    let(:order) { build(:order, :with_sell_order) }
+    let(:order) { create(:order, :with_sell_order) }
     let(:lemonade_with_note) { create(:order_product, product: beverage, quantity: 1, note: "no sugar", order:) }
     let(:lemonade_without_note) { create(:order_product, product: beverage, quantity: 1, order:) }
     let(:main_dish) { create(:order_product, product: dish, quantity: 1, order:) }
@@ -407,7 +450,6 @@ RSpec.describe "Orders", type: :request do
 
     context "when user has already signin and updates the order" do
       before do
-        order.save(validate: false)
         lemonade_with_note
         lemonade_without_note
         main_dish
@@ -440,13 +482,13 @@ RSpec.describe "Orders", type: :request do
         expect(response).to have_http_status(:found)
       end
 
-      it "returns http success" do
+      it "returns http success after redirect" do
         put "/dashboard/orders/#{order.id}", params: body_params
         follow_redirect!
         expect(response).to have_http_status(:success)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         put "/dashboard/orders/#{order.id}", params: body_params
         follow_redirect!
         expect(response.body).to include("Order updated successfully.")
@@ -454,7 +496,7 @@ RSpec.describe "Orders", type: :request do
     end
 
     context "when user has not signin" do
-      before { order.save(validate: false) }
+      before { order }
 
       it "returns http redirect" do
         put "/dashboard/orders/#{order.id}"
@@ -482,7 +524,7 @@ RSpec.describe "Orders", type: :request do
         sign_in user
       end
 
-      it "returns http success" do
+      it "returns http redirect" do
         patch "/dashboard/orders/#{order.id}/confirm"
         expect(response).to have_http_status(:found)
       end
@@ -493,7 +535,7 @@ RSpec.describe "Orders", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return valid content" do
+      it "return valid flash notice message" do
         patch "/dashboard/orders/#{order.id}/confirm"
         follow_redirect!
         expect(response.body).to include("Order was sent to kitchen.")
@@ -539,43 +581,314 @@ RSpec.describe "Orders", type: :request do
     end
   end
 
-  # describe "DELETE /dashboard/orders/:id" do
-  #   context "when user has already signin" do
-  #     before do
-  #       order
-  #       sign_in user
-  #     end
+  describe "PATCH /dashboard/orders/:id/complete" do
+    context "when user has already signin and performs action" do
+      before do
+        order.update(status: :processing)
+        sign_in user
+      end
 
-  #     it "returns http success" do
-  #       delete "/dashboard/orders/#{order.id}"
-  #       expect(response).to have_http_status(:ok)
-  #     end
+      it "returns http redirect" do
+        patch "/dashboard/orders/#{order.id}/complete"
+        expect(response).to have_http_status(:found)
+      end
 
-  #     it "return valid content" do
-  #       delete "/dashboard/orders/#{order.id}"
-  #       expect(response.body).to include("Order details")
-  #     end
-  #   end
+      it "returns http ok after redirect" do
+        patch "/dashboard/orders/#{order.id}/complete"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
 
-  #   context "when user has not signin" do
-  #     before { order }
+      it "return valid flash notice message" do
+        patch "/dashboard/orders/#{order.id}/complete"
+        follow_redirect!
+        expect(response.body).to include("Order was set to completed.")
+      end
+    end
 
-  #     it "returns http redirect" do
-  #       delete "/dashboard/orders/#{order.id}"
-  #       expect(response).to have_http_status(:found)
-  #     end
+    context "when user has already signin and is unable to perform action" do
+      before do
+        order.update(status: :opened)
+        sign_in user
+      end
 
-  #     it "returns http ok after redirect" do
-  #       delete "/dashboard/orders/#{order.id}"
-  #       follow_redirect!
-  #       expect(response).to have_http_status(:ok)
-  #     end
+      it "returns http unprocessable content" do
+        patch "/dashboard/orders/#{order.id}/complete"
+        expect(response).to have_http_status(:unprocessable_content)
+      end
 
-  #     it "return valid flash alert message" do
-  #       delete "/dashboard/orders/#{order.id}"
-  #       follow_redirect!
-  #       expect(response.body).to include("You need to sign in or sign up before continuing.")
-  #     end
-  #   end
-  # end
+      it "return valid flash alert message" do
+        patch "/dashboard/orders/#{order.id}/complete"
+        expect(response.body).to include("Unable to perform that action.")
+      end
+    end
+
+    context "when user has not signin" do
+      before { order }
+
+      it "returns http redirect" do
+        patch "/dashboard/orders/#{order.id}/complete"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        patch "/dashboard/orders/#{order.id}/complete"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash alert message" do
+        patch "/dashboard/orders/#{order.id}/complete"
+        follow_redirect!
+        expect(response.body).to include("You need to sign in or sign up before continuing.")
+      end
+    end
+  end
+
+  describe "PATCH /dashboard/orders/:id/pack" do
+    context "when user has already signin and performs action" do
+      before do
+        order.sell_order.allocation.update(kind: :delivery)
+        order.update(status: :processing)
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        patch "/dashboard/orders/#{order.id}/pack"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        patch "/dashboard/orders/#{order.id}/pack"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        patch "/dashboard/orders/#{order.id}/pack"
+        follow_redirect!
+        expect(response.body).to include("Order was set to packed.")
+      end
+    end
+
+    context "when user has already signin and is unable to perform action" do
+      before do
+        order.update(status: :opened)
+        sign_in user
+      end
+
+      it "returns http unprocessable content" do
+        patch "/dashboard/orders/#{order.id}/pack"
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "return valid flash alert message" do
+        patch "/dashboard/orders/#{order.id}/pack"
+        expect(response.body).to include("Unable to perform that action.")
+      end
+    end
+
+    context "when user has not signin" do
+      before { order }
+
+      it "returns http redirect" do
+        patch "/dashboard/orders/#{order.id}/pack"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        patch "/dashboard/orders/#{order.id}/pack"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash alert message" do
+        patch "/dashboard/orders/#{order.id}/pack"
+        follow_redirect!
+        expect(response.body).to include("You need to sign in or sign up before continuing.")
+      end
+    end
+  end
+
+  describe "DELETE /dashboard/orders/:id" do
+    context "when user has already signin and performs action and sell order parent does not have more orders and allocation is desk" do
+      before do
+        order
+        order.sell_order.allocation.update(status: :busy)
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response.body).to include("Order was destroyed successfully.")
+      end
+
+      it "does destroy the sell order parent" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(SellOrder.where(id: order.sell_order.id)).not_to exist
+      end
+
+      it "updates the allocation status to cleaning" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(order.sell_order.allocation.reload).to be_cleaning
+      end
+    end
+
+    context "when user has already signin and performs action and sell order parent does not have more orders and allocation is delivery" do
+      before do
+        order
+        order.sell_order.allocation.update(kind: :delivery)
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response.body).to include("Order was destroyed successfully.")
+      end
+
+      it "does destroy the sell order parent" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(SellOrder.where(id: order.sell_order.id)).not_to exist
+      end
+
+      it "does not updates the allocation status to cleaning" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(order.sell_order.allocation.reload).to be_available
+      end
+    end
+
+    context "when user has already signin and performs action and sell order parent does not have more orders and allocation is takeout" do
+      before do
+        order
+        order.sell_order.allocation.update(kind: :takeout)
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response.body).to include("Order was destroyed successfully.")
+      end
+
+      it "does destroy the sell order parent" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(SellOrder.where(id: order.sell_order.id)).not_to exist
+      end
+
+      it "does not updates the allocation status to cleaning" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(order.sell_order.allocation.reload).to be_available
+      end
+    end
+
+    context "when user has already signin and performs action and sell order parent does have more orders and allocation is desk" do
+      before do
+        order
+        order.sell_order.allocation.update(status: :busy)
+        create(:order, :with_products, sell_order: order.sell_order)
+        sign_in user
+      end
+
+      it "returns http redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash notice message" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response.body).to include("Order was destroyed successfully.")
+      end
+
+      it "does not destroy the sell order parent" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(SellOrder.where(id: order.sell_order.id)).to exist
+      end
+
+      it "does not updates the allocation status to cleaning" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(order.sell_order.allocation.reload).to be_busy
+      end
+    end
+
+    context "when user has already signin and is unable to perform action" do
+      before do
+        order.order_products.first.update(status: :preparing)
+        order.sell_order.allocation.update(status: :busy)
+        sign_in user
+      end
+
+      it "returns http unprocessable content" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "return valid flash alert message" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(response.body).to include("This record cannot be deleted because there are preparations in process or completed")
+      end
+    end
+
+    context "when user has not signin" do
+      before { order }
+
+      it "returns http redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "returns http ok after redirect" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return valid flash alert message" do
+        delete "/dashboard/orders/#{order.id}"
+        follow_redirect!
+        expect(response.body).to include("You need to sign in or sign up before continuing.")
+      end
+    end
+  end
 end

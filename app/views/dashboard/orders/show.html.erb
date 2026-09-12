@@ -76,14 +76,6 @@
                     <%= order_product.product.name %>
                   </h3>
 
-                  <% if order_product.product.detail.present? %>
-
-                    <p class="order-show-product-detail">
-                      <%= order_product.product.detail %>
-                    </p>
-
-                  <% end %>
-
                   <% if order_product.note.present? %>
 
                     <div class="order-show-product-note">
@@ -105,6 +97,15 @@
                 ">
                   <%= order_product.status.humanize %>
                 </span>
+
+                <% if order_product.prepare? %>
+
+                  <div class="delete-order-product">
+                    <%= button_to "Cancel Preparation", dashboard_preparation_path(order_product), method: :delete, class: "dashboard-primary-button", data: {
+                        turbo_confirm: "Want to cancel this preparation?" } %>
+                  </div>
+
+                <% end %>
 
               </div>
 
@@ -132,12 +133,20 @@
 
           <div class="order-show-actions">
 
-            <% if @order.status=="opened" %>
+            <% if @order.opened? %>
 
               <%= link_to "Edit Order", edit_dashboard_order_path(@order), class: "dashboard-secondary-button" %>
 
-              <%= button_to "Send to Kitchen", confirm_dashboard_order_path(@order), method: :patch, class: "dashboard-primary-button" , data: {
+              <%= button_to "Send to Kitchen", confirm_dashboard_order_path(@order), method: :patch, class: "dashboard-primary-button", data: {
                 turbo_confirm: "Send this order to the kitchen?" } %>
+
+              <%= button_to "Cancel Order", dashboard_order_path(@order), method: :delete, class: "dashboard-primary-button", data: {
+                turbo_confirm: "Want to cancel this order?" } %>
+
+            <% elsif @order.processing? %>
+
+              <%= button_to "Cancel Order", dashboard_order_path(@order), method: :delete, class: "dashboard-primary-button", data: {
+                turbo_confirm: "Want to cancel this order?" } %>
 
             <% else %>
 

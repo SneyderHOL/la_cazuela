@@ -38,6 +38,7 @@ class OrderProduct < ApplicationRecord
   validate :ingredient_availability, on: :create
 
   before_save :add_recipe, if: :product_id_changed?
+  before_destroy :validate_status_unless_parent_destroying
 
   scope :current_preparations, -> {
     where(created_at: Time.zone.today.beginning_of_day..Time.current)
@@ -81,5 +82,12 @@ class OrderProduct < ApplicationRecord
 
     Rails.logger.info "Calling OrderCompletionJob for order_product_id #{id}"
     OrderCompletionJob.perform_later(order.id)
+  end
+
+  def validate_status_unless_parent_destroying
+    return if marked_for_destruction? || requested? || prepare?
+
+    errors.add(:base, "This record cannot be deleted because has already started or completed")
+    throw(:abort)
   end
 end

@@ -845,6 +845,35 @@ RSpec.describe SellOrder, type: :model do
   end
 
   describe "#before_destroy callback" do
+    context "when the sell order does have processing orders associations" do
+      let(:sell_order_with_orders) do
+        create(:sell_order, :with_allocation, :with_processing_orders, trait_amount: 2)
+      end
+
+      before { sell_order_with_orders }
+
+      it { expect { sell_order_with_orders.destroy }.not_to change(described_class, :count) }
+      it { expect { sell_order_with_orders.destroy }.not_to change(Order, :count) }
+      it { expect { sell_order_with_orders.destroy }.not_to change(OrderProduct, :count) }
+
+      it "does not destroy the sell order object" do
+        sell_order_with_orders.destroy
+        expect(sell_order_with_orders).to be_persisted
+      end
+
+      it "has errors" do
+        sell_order_with_orders.destroy
+        expect(sell_order_with_orders.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        sell_order_with_orders.destroy
+        expect(sell_order_with_orders.errors.full_messages).to include(
+          "This record cannot be deleted because there are orders in process or completed"
+        )
+      end
+    end
+
     context "when the sell_order does not have orders associations" do
       before { sell_order.save }
 
@@ -852,15 +881,16 @@ RSpec.describe SellOrder, type: :model do
       it { expect { sell_order.destroy }.not_to change(Order, :count) }
     end
 
-    context "when the sell_order does have orders associations" do
+    context "when the sell_order does have opened orders associations" do
       let(:sell_order_with_orders) do
-        create(:sell_order, :with_associations)
+        create(:sell_order, :with_allocation, :with_orders, trait_amount: 2)
       end
 
       before { sell_order_with_orders }
 
-      it { expect { sell_order_with_orders.destroy }.not_to change(described_class, :count) }
-      it { expect { sell_order_with_orders.destroy }.not_to change(Order, :count) }
+      it { expect { sell_order_with_orders.destroy }.to change(described_class, :count).by(-1) }
+      it { expect { sell_order_with_orders.destroy }.to change(Order, :count).by(-2) }
+      it { expect { sell_order_with_orders.destroy }.to change(OrderProduct, :count).by(-2) }
     end
   end
 
