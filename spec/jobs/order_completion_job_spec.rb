@@ -12,13 +12,14 @@ RSpec.describe OrderCompletionJob, type: :job do
   end
 
   describe "#perform_now" do
-    subject(:order_completion_job) { described_class.perform_now(order) }
+    subject(:order_completion_job) { described_class.perform_now(order.id) }
 
     context "when updates order status to complete from processing" do
       before do
         order.update(status: "processing")
         order.order_products.each { |order_product| order_product.update(status: "completed") }
         order_completion_job
+        order.reload
       end
 
       it "completes the order" do
@@ -32,6 +33,7 @@ RSpec.describe OrderCompletionJob, type: :job do
         order.sell_order.allocation.update(kind: "delivery")
         order.order_products.each { |order_product| order_product.update(status: "completed") }
         order_completion_job
+        order.reload
       end
 
       it "packs the order" do
@@ -43,6 +45,7 @@ RSpec.describe OrderCompletionJob, type: :job do
       before do
         order.order_products.each { |order_product| order_product.update(status: "completed") }
         order_completion_job
+        order.reload
       end
 
       it "keeps the opened status" do
@@ -55,6 +58,7 @@ RSpec.describe OrderCompletionJob, type: :job do
         order.update(status: "processing")
         order.order_products.first.update(status: "completed")
         order_completion_job
+        order.reload
       end
 
       it "keeps the processing status" do
@@ -67,6 +71,7 @@ RSpec.describe OrderCompletionJob, type: :job do
         order.update(status: "packed")
         order.order_products.each { |order_product| order_product.update(status: "completed") }
         order_completion_job
+        order.reload
       end
 
       it "keeps the packed status" do

@@ -70,6 +70,6 @@ class OrderProduct < ApplicationRecord
     return unless persisted?
 
     Rails.logger.info "Calling OrderCompletionJob for order_product_id #{id}"
-    OrderCompletionJob.perform_later(order)
+    OrderCompletionJob.perform_later(order.id)
   end
 end

@@ -12,13 +12,13 @@ RSpec.describe ReadyToCookOrderProductsJob, type: :job do
   end
 
   describe "#perform_now" do
-    subject(:ready_to_cook_order_products_job) { described_class.perform_now(order) }
-
+    subject(:ready_to_cook_order_products_job) { described_class.perform_now(order.id) }
 
     context "when does not update order_products status with a opened order" do
       before do
         order.order_products.each { |order_product| order_product.update(status: "requested") }
         ready_to_cook_order_products_job
+        order.reload
       end
 
       it "keeps the initial status for order_products" do
@@ -31,6 +31,7 @@ RSpec.describe ReadyToCookOrderProductsJob, type: :job do
         order.update(status: "processing")
         order.order_products.each { |order_product| order_product.update(status: "requested") }
         ready_to_cook_order_products_job
+        order.reload
       end
 
       it "prepares the order_products" do
@@ -43,6 +44,7 @@ RSpec.describe ReadyToCookOrderProductsJob, type: :job do
         order.update(status: "completed")
         order.order_products.each { |order_product| order_product.update(status: "requested") }
         ready_to_cook_order_products_job
+        order.reload
       end
 
       it "keeps the initial status for order_products" do
@@ -55,6 +57,7 @@ RSpec.describe ReadyToCookOrderProductsJob, type: :job do
         order.update(status: "closed")
         order.order_products.each { |order_product| order_product.update(status: "requested") }
         ready_to_cook_order_products_job
+        order.reload
       end
 
       it "keeps the initial status for order_products" do

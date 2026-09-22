@@ -7,7 +7,7 @@ module OrderAasm
       state :opened, initial: true
       state :processing, :packed, :completed
 
-      event :process do
+      event :confirm do
         after do
           ready_to_cook_order_products
         end
@@ -25,7 +25,7 @@ module OrderAasm
         after do
           complete_order_products
         end
-        transitions from: %i[ processing packed ], to: :completed
+        transitions from: :processing, to: :completed
       end
     end
   end
