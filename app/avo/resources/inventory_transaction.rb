@@ -20,5 +20,7 @@ class Avo::Resources::InventoryTransaction < Avo::BaseResource
     field :quantity, as: :number
     field :status, as: :text
     field :ingredient, as: :belongs_to
+    field :order_product, as: :belongs_to
+    field :transaction_type, as: :select, enum: ::InventoryTransaction.transaction_type
   end
 end

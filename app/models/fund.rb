@@ -32,7 +32,7 @@ class Fund < ApplicationRecord
   private
 
   def check_if_deposit_of_day_exists
-    unless self.class.where(is_deposit: true, transaction_date: Time.zone.now.to_date).exists?
+    unless self.class.where(is_deposit: true, transaction_date: Time.current.to_date).exists?
       errors.add(:base, "there is no deposit of the day")
     end
   end
@@ -40,6 +40,6 @@ class Fund < ApplicationRecord
   def set_transaction_date
     return if transaction_date
 
-    self.transaction_date = Time.zone.now.to_date
+    self.transaction_date = Time.current.to_date
   end
 end

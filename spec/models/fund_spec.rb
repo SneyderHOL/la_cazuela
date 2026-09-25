@@ -35,10 +35,18 @@ RSpec.describe Fund, type: :model do
       expect(deposit_fund.is_deposit).not_to be_nil
     end
 
-    context "when fund is not a deposit" do
+    context "when there is not a previous deposit fund the non deposit is not valid" do
       let(:non_deposit_fund) { build(:fund) }
 
       it { expect(non_deposit_fund).not_to be_valid }
+    end
+
+    context "when there is a previous deposit fund the non deposit is valid" do
+      let(:non_deposit_fund) { build(:fund) }
+
+      before { create(:fund, :as_deposit) }
+
+      it { expect(non_deposit_fund).to be_valid }
     end
   end
 
@@ -76,7 +84,7 @@ RSpec.describe Fund, type: :model do
       end
     end
 
-    context "when fund is not a deposit and there is a record on the same day" do
+    context "when fund is not a deposit and there is a deposit record on the same day" do
       let(:non_deposit_fund) { build(:fund) }
 
       before { create(:fund, :as_deposit) }
