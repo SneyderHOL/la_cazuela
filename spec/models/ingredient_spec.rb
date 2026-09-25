@@ -184,4 +184,30 @@ RSpec.describe Ingredient, type: :model do
       it { expect(ingredient.stock_level).to eql("high") }
     end
   end
+
+  describe "#unit_cost" do
+    context "when cost is 0" do
+      before { ingredient.cost = 0 }
+
+      it { expect(ingredient.unit_cost).to eq(0.to_d) }
+    end
+
+    context "when cost is 1_600" do
+      before do
+        ingredient.cost = 1_600
+        ingredient.stored_quantity = 2_000
+      end
+
+      it { expect(ingredient.unit_cost).to eq((0.8).to_d) }
+    end
+
+    context "when cost is 2_000" do
+      before do
+        ingredient.cost = 2_000
+        ingredient.stored_quantity = 10_000
+      end
+
+      it { expect(ingredient.unit_cost).to eq((0.2).to_d) }
+    end
+  end
 end

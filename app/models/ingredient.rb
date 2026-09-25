@@ -20,7 +20,25 @@
 #  index_ingredients_on_name  (name) UNIQUE
 #
 class Ingredient < ApplicationRecord
-  include IngredientAasm
+  include AASM
+
+  aasm column: "status" do
+    state :available, initial: true
+    state :unavailable, :scarce
+
+    event :able do
+      transitions from: %i[ unavailable scarce ], to: :available
+    end
+
+    event :disable do
+      transitions from: %i[ available scarce ], to: :unavailable
+    end
+
+    # TODO: threshold logic to update status to scarce
+    event :running_out do
+      transitions from: :available, to: :scarce
+    end
+  end
 
   VALID_INGREDIENT_TYPES = %w[regular base material].freeze
 
@@ -34,6 +52,8 @@ class Ingredient < ApplicationRecord
 
   validates :name, :unit, :status, :ingredient_type, presence: true
   validates :name, uniqueness: true
+  # total current inventory value - this only works correctly if cost and stored_quantity
+  # are maintained consistently -> check InventoryTransaction
   validates :stored_quantity, :low_threshold, :high_threshold, :cost,
             numericality: { greater_than_or_equal_to: 0 }
 
@@ -49,5 +69,13 @@ class Ingredient < ApplicationRecord
     else
       "low"
     end
+  end
+
+  # cost attribute aimed to represent the monetary value of the current inventory
+  # cost of one unit of an ingredient as a weighted average cost
+  def unit_cost
+    return 0.to_d if stored_quantity.zero?
+
+    cost.to_d / stored_quantity
   end
 end
