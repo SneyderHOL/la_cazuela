@@ -12,7 +12,7 @@ class Avo::Resources::OrderProduct < Avo::BaseResource
   def fields
     field :id, as: :id
     # field :avatar, as: :avatar
-    field :inventoried, as: :boolean
+    field :inventory_consumed_at, as: :datetime
     field :note, as: :text
     field :order_id, as: :number
     field :product_id, as: :number

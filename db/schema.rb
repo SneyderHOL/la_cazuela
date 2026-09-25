@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_29_041307) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_19_044921) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -82,18 +82,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_041307) do
     t.boolean "by_admin", default: false, null: false
     t.integer "cost", default: 0, null: false
     t.datetime "created_at", null: false
+    t.string "direction", null: false
     t.string "error_message"
     t.bigint "ingredient_id", null: false
-    t.integer "kind", null: false
+    t.bigint "order_product_id"
     t.integer "quantity", null: false
     t.string "status", null: false
+    t.string "transaction_type", null: false
     t.datetime "updated_at", null: false
     t.index ["ingredient_id"], name: "index_inventory_transactions_on_ingredient_id"
+    t.index ["order_product_id"], name: "index_inventory_transactions_on_order_product_id"
   end
 
   create_table "order_products", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.boolean "inventoried"
+    t.datetime "inventory_consumed_at"
     t.string "note"
     t.bigint "order_id", null: false
     t.bigint "product_id", null: false
@@ -130,6 +133,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_041307) do
     t.datetime "created_at", null: false
     t.bigint "ingredient_id"
     t.string "name", null: false
+    t.integer "output_quantity", default: 1, null: false
     t.bigint "product_id"
     t.string "status", null: false
     t.datetime "updated_at", null: false
@@ -171,6 +175,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_041307) do
   add_foreign_key "ingredient_recipes", "ingredients"
   add_foreign_key "ingredient_recipes", "recipes"
   add_foreign_key "inventory_transactions", "ingredients"
+  add_foreign_key "inventory_transactions", "order_products"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "orders", "sell_orders"

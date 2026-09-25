@@ -3,16 +3,16 @@
 # Table name: order_products
 # Database name: primary
 #
-#  id          :bigint           not null, primary key
-#  inventoried :boolean
-#  note        :string
-#  quantity    :integer          not null
-#  status      :string           not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  order_id    :bigint           not null
-#  product_id  :bigint           not null
-#  recipe_id   :bigint
+#  id                    :bigint           not null, primary key
+#  inventory_consumed_at :datetime
+#  note                  :string
+#  quantity              :integer          not null
+#  status                :string           not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  order_id              :bigint           not null
+#  product_id            :bigint           not null
+#  recipe_id             :bigint
 #
 # Indexes
 #
@@ -31,7 +31,7 @@ FactoryBot.define do
     product { nil }
     quantity { Faker::Number.between(from: 1, to: 5) }
     note { nil }
-    inventoried { nil }
+    inventory_consumed_at { nil }
 
     trait :as_prepare do
       status { "prepare" }
@@ -47,7 +47,7 @@ FactoryBot.define do
 
     trait :with_associations do
       order { build(:order, :with_sell_order) }
-      product { build(:product, :with_recipe, :with_category) }
+      product { create(:product, :with_recipe, :with_category) }
     end
 
     trait :with_order do
@@ -55,11 +55,11 @@ FactoryBot.define do
     end
 
     trait :with_product do
-      product { build(:product, :with_recipe, :with_category) }
+      product { create(:product, :with_recipe, :with_category) }
     end
 
     trait :with_product_and_recipe do
-      product { build(:product, :with_recipe, :with_category) }
+      product { create(:product, :with_recipe, :with_category) }
     end
   end
 end

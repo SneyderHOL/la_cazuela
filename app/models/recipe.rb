@@ -3,13 +3,14 @@
 # Table name: recipes
 # Database name: primary
 #
-#  id            :bigint           not null, primary key
-#  name          :string           not null
-#  status        :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  ingredient_id :bigint
-#  product_id    :bigint
+#  id              :bigint           not null, primary key
+#  name            :string           not null
+#  output_quantity :integer          default(1), not null
+#  status          :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  ingredient_id   :bigint
+#  product_id      :bigint
 #
 # Indexes
 #
@@ -23,10 +24,28 @@
 #  fk_rails_...  (product_id => products.id)
 #
 class Recipe < ApplicationRecord
-  include RecipeAasm
+  include AASM
+
+  aasm column: "status" do
+    state :drafting, initial: true
+    state :declined, :approved
+
+    event :approve do
+      transitions from: %i[ drafting declined ], to: :approved
+    end
+
+    event :decline do
+      transitions from: %i[ drafting approved ], to: :declined
+    end
+
+    event :draft do
+      transitions from: :declined, to: :drafting
+    end
+  end
 
   belongs_to :product, optional: true
   belongs_to :ingredient, optional: true
+
   has_many :ingredient_recipes
   has_many :ingredients, through: :ingredient_recipes
 
@@ -34,6 +53,9 @@ class Recipe < ApplicationRecord
   has_many :order_products
 
   validates :name, :status, presence: true
+  # output_quantity is the amount of the recipe's associated to produced a product or
+  # base ingredient by one execution of the recipe.
+  validates :output_quantity, numericality: { greater_than: 0 }
   validates :name, uniqueness: true
   validate :approved_recipe_for_associations
   validate :it_belongs_only_to_one_association
@@ -41,6 +63,19 @@ class Recipe < ApplicationRecord
   validate :ingredient_association_included_in_recipe?
   validates :product_id, uniqueness: true, allow_nil: true
   validates :ingredient_id, uniqueness: true, allow_nil: true
+
+  # estimated ingredients cost of producing one product or the output_quantity for a
+  # base ingredient
+  def cost
+    ingredient_recipes.sum(&:cost)
+  end
+
+  # cost per unit of the base ingredient produced
+  def unit_cost
+    return 0.to_d if output_quantity.zero?
+
+    cost.to_d / output_quantity
+  end
 
   private
 

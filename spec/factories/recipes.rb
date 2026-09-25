@@ -3,13 +3,14 @@
 # Table name: recipes
 # Database name: primary
 #
-#  id            :bigint           not null, primary key
-#  name          :string           not null
-#  status        :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  ingredient_id :bigint
-#  product_id    :bigint
+#  id              :bigint           not null, primary key
+#  name            :string           not null
+#  output_quantity :integer          default(1), not null
+#  status          :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  ingredient_id   :bigint
+#  product_id      :bigint
 #
 # Indexes
 #
@@ -27,6 +28,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Recipe ##{n} #{Faker::Food.dish}" }
     product { nil }
     ingredient { nil }
+    output_quantity { 1 }
 
     trait :as_approved do
       status { 'approved' }

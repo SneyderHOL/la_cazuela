@@ -3,16 +3,16 @@
 # Table name: order_products
 # Database name: primary
 #
-#  id          :bigint           not null, primary key
-#  inventoried :boolean
-#  note        :string
-#  quantity    :integer          not null
-#  status      :string           not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  order_id    :bigint           not null
-#  product_id  :bigint           not null
-#  recipe_id   :bigint
+#  id                    :bigint           not null, primary key
+#  inventory_consumed_at :datetime
+#  note                  :string
+#  quantity              :integer          not null
+#  status                :string           not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  order_id              :bigint           not null
+#  product_id            :bigint           not null
+#  recipe_id             :bigint
 #
 # Indexes
 #
@@ -26,18 +26,55 @@
 #  fk_rails_...  (product_id => products.id)
 #
 class OrderProduct < ApplicationRecord
-  include OrderProductAasm
+  include AASM
+
+  aasm column: "status" do
+    state :requested, initial: true
+    state :prepare, :preparing, :completed
+
+    event :ready_to_cook do
+      transitions from: :requested, to: :prepare
+    end
+
+    event :cook do
+      before do
+        Inventory::ConsumeOrderProduct.new(self).call
+      end
+      transitions from: :prepare, to: :preparing
+    end
+
+    event :complete do
+      after do
+        order_completion
+      end
+      transitions from: %i[ prepare preparing ], to: :completed
+    end
+  end
 
   belongs_to :order
   belongs_to :product
   # does not guarantees referencial integrity - not a foreign_key
   belongs_to :recipe, optional: true
 
+  has_many :inventory_transactions, dependent: :restrict_with_error
+
   validates :status, presence: true
   validates :quantity, numericality: { greater_than: 0 }
+  # user-experience check for ui
   validate :ingredient_availability, on: :create
 
-  before_create :add_recipe
+  before_save :add_recipe, if: :product_id_changed?
+  before_destroy :validate_status_unless_parent_destroying
+
+  scope :current_preparations, -> {
+    where(created_at: Time.zone.today.beginning_of_day..Time.current)
+  }
+  scope :current_preparations_with_sell_orders, ->(statuses) {
+    includes(:product, order: { sell_order: :allocation })
+      .where(created_at: Time.zone.today.beginning_of_day..Time.current,
+             status: statuses)
+  }
+  scope :current_preparations_counting, -> { current_preparations.group(:status).count }
 
   private
 
@@ -71,5 +108,12 @@ class OrderProduct < ApplicationRecord
 
     Rails.logger.info "Calling OrderCompletionJob for order_product_id #{id}"
     OrderCompletionJob.perform_later(order.id)
+  end
+
+  def validate_status_unless_parent_destroying
+    return if marked_for_destruction? || requested? || prepare?
+
+    errors.add(:base, "This record cannot be deleted because has already started or completed")
+    throw(:abort)
   end
 end

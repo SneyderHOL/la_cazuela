@@ -27,4 +27,8 @@ class IngredientRecipe < ApplicationRecord
 
   validates :required_quantity, numericality: { greater_than: 0 }
   validates :ingredient_id, uniqueness: { scope: :recipe_id }
+
+  def cost
+    (ingredient.unit_cost * required_quantity).round
+  end
 end

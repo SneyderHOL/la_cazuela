@@ -51,4 +51,35 @@ RSpec.describe IngredientRecipe, type: :model do
     it { is_expected.to validate_numericality_of(:required_quantity).is_greater_than(0) }
     it { is_expected.to validate_uniqueness_of(:ingredient_id).scoped_to(:recipe_id) }
   end
+
+  describe "#cost" do
+    before do
+      ingredient_recipe.required_quantity = 300
+      ingredient_recipe.save
+    end
+
+    context "when required_quantity is 300 and ingredient cost is 0" do
+      before { ingredient_recipe.ingredient.cost = 0 }
+
+      it { expect(ingredient_recipe.cost).to eq(0) }
+    end
+
+    context "when required_quantity is 300 and ingredient cost is 1_600 and store_quantity is 2_000" do
+      before do
+        ingredient_recipe.ingredient.cost = 1_600
+        ingredient_recipe.ingredient.stored_quantity = 2_000
+      end
+
+      it { expect(ingredient_recipe.cost).to eq(240) }
+    end
+
+    context "when required_quantity is 300 and ingredient cost is 2_000 and store_quantity is 10_000" do
+      before do
+        ingredient_recipe.ingredient.cost = 2_000
+        ingredient_recipe.ingredient.stored_quantity = 10_000
+      end
+
+      it { expect(ingredient_recipe.cost).to eq(60) }
+    end
+  end
 end

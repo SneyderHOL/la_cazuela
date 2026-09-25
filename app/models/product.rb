@@ -25,6 +25,7 @@ class Product < ApplicationRecord
   include ActiveScopeable
 
   belongs_to :category
+  # product.recipe.cost as current estimated ingredient cost for producing one unit of this product
   has_one :recipe, dependent: :restrict_with_error
   has_many :order_products, dependent: :restrict_with_error
   has_many :orders, through: :order_products

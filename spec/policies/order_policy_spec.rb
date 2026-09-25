@@ -5,21 +5,21 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with admin and opened order' do
     let(:user) { User.new(role: :admin) }
-    let(:order) { create(:order, :with_sell_order, status: "opened") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "opened") }
 
     it { is_expected.to permit_all_actions }
   end
 
   context 'with waiter and opened order' do
     let(:user) { User.new(role: :waiter) }
-    let(:order) { create(:order, :with_sell_order, status: "opened") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "opened") }
 
     it { is_expected.to permit_all_actions }
   end
 
   context 'with kitchen_auxiliar and opened order' do
     let(:user) { User.new(role: :kitchen_auxiliar) }
-    let(:order) { create(:order, :with_sell_order, status: "opened") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "opened") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -44,7 +44,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with cashier and opened order' do
     let(:user) { User.new(role: :cashier) }
-    let(:order) { create(:order, :with_sell_order, status: "opened") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "opened") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -69,7 +69,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with admin and processing order' do
     let(:user) { User.new(role: :admin) }
-    let(:order) { create(:order, :with_sell_order, status: "processing") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "processing") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -94,7 +94,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with waiter and processing order' do
     let(:user) { User.new(role: :waiter) }
-    let(:order) { create(:order, :with_sell_order, status: "processing") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "processing") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -119,7 +119,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with kitchen_auxiliar and processing order' do
     let(:user) { User.new(role: :kitchen_auxiliar) }
-    let(:order) { create(:order, :with_sell_order, status: "processing") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "processing") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -144,7 +144,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with cashier and processing order' do
     let(:user) { User.new(role: :cashier) }
-    let(:order) { create(:order, :with_sell_order, status: "processing") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "processing") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -169,7 +169,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with admin and packed order' do
     let(:user) { User.new(role: :admin) }
-    let(:order) { create(:order, :with_sell_order, status: "packed") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "packed") }
 
     # it { is_expected.to permit_all_actions }
     it "grants access for index" do
@@ -195,7 +195,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with waiter and packed order' do
     let(:user) { User.new(role: :waiter) }
-    let(:order) { create(:order, :with_sell_order, status: "packed") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "packed") }
 
     # it { is_expected.to permit_all_actions }
     it "grants access for index" do
@@ -221,7 +221,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with kitchen_auxiliar and packed order' do
     let(:user) { User.new(role: :kitchen_auxiliar) }
-    let(:order) { create(:order, :with_sell_order, status: "packed") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "packed") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -246,7 +246,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with cashier and packed order' do
     let(:user) { User.new(role: :cashier) }
-    let(:order) { create(:order, :with_sell_order, status: "packed") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "packed") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -271,7 +271,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with admin and completed order' do
     let(:user) { User.new(role: :admin) }
-    let(:order) { create(:order, :with_sell_order, status: "completed") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "completed") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -296,7 +296,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with waiter and completed order' do
     let(:user) { User.new(role: :waiter) }
-    let(:order) { create(:order, :with_sell_order, status: "completed") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "completed") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -321,7 +321,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with kitchen_auxiliar and completed order' do
     let(:user) { User.new(role: :kitchen_auxiliar) }
-    let(:order) { create(:order, :with_sell_order, status: "completed") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "completed") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -346,7 +346,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context 'with cashier and completed order' do
     let(:user) { User.new(role: :cashier) }
-    let(:order) { create(:order, :with_sell_order, status: "completed") }
+    let(:order) { create(:order, :with_sell_order, :with_products, status: "completed") }
 
     it "grants access for index" do
       expect(order_policy).to permit_action(:index)
@@ -371,7 +371,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
   context "when user is nil" do
       let(:user) { nil }
-      let(:order) { create(:order, :with_sell_order, status: "opened") }
+      let(:order) { create(:order, :with_sell_order, :with_products, status: "opened") }
 
       it { expect { order_policy }.to raise_error(Pundit::NotAuthorizedError, "must be logged in") }
   end

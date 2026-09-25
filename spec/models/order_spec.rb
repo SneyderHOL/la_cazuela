@@ -20,7 +20,7 @@ require 'rails_helper'
 #  fk_rails_...  (sell_order_id => sell_orders.id)
 #
 RSpec.describe Order, type: :model do
-  subject(:order) { build(:order, :with_sell_order) }
+  subject(:order) { build(:order, :with_sell_order, :with_products) }
 
   describe "factory object" do
     it { is_expected.to be_valid }
@@ -37,13 +37,45 @@ RSpec.describe Order, type: :model do
   end
 
   describe "validations" do
+    let(:empty_order) { build(:order, :with_sell_order) }
+
     it { is_expected.to validate_presence_of(:status) }
+
+    context "when order have products" do
+      it "is valid" do
+        expect(order).to be_valid
+      end
+    end
+
+    context "when sell order is not opened" do
+      before { order.sell_order.status = "packed" }
+
+      it "is not valid" do
+        expect(order).not_to be_valid
+      end
+    end
+
+    context "when sell order is opened" do
+      before { order.sell_order.status = "opened" }
+
+      it "is valid" do
+        expect(order).to be_valid
+      end
+    end
+
+    context "when order is valid and saved" do
+      before { order.save }
+
+      it "is persisted" do
+        expect(order).to be_persisted
+      end
+    end
   end
 
   describe "status transitions" do
     context "when confirm is executed and the order is opened and is persisted" do
       before do
-        allow(ReadyToCookOrderProductsJob).to receive(:perform_later)
+        allow(ReadyToCookOrderProductsJob).to receive(:perform_now)
         order.save
       end
 
@@ -54,13 +86,13 @@ RSpec.describe Order, type: :model do
 
       it do
         order.confirm
-        expect(ReadyToCookOrderProductsJob).to have_received(:perform_later)
+        expect(ReadyToCookOrderProductsJob).to have_received(:perform_now)
       end
     end
 
     context "when confirm is executed and the order is opened and is not persisted" do
       before do
-        allow(ReadyToCookOrderProductsJob).to receive(:perform_later)
+        allow(ReadyToCookOrderProductsJob).to receive(:perform_now)
       end
 
       it "change status" do
@@ -70,7 +102,7 @@ RSpec.describe Order, type: :model do
 
       it do
         order.confirm
-        expect(ReadyToCookOrderProductsJob).not_to have_received(:perform_later)
+        expect(ReadyToCookOrderProductsJob).not_to have_received(:perform_now)
       end
     end
 
@@ -212,15 +244,102 @@ RSpec.describe Order, type: :model do
     end
   end
 
-  describe "#before_destroy callback" do
-    context "when the order does not have order_products associations and is opened" do
-      before { order.save }
+  describe "scopes" do
+    context "with current" do
+      include_context "with orders for scopes"
 
-      it { expect { order.destroy }.to change(described_class, :count).by(-1) }
-      it { expect { order.destroy }.not_to change(OrderProduct, :count) }
+      it "retrieves the corresponding orders" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current.count).to eq(4)
+        end
+      end
+
+      it "includes the corresponding orders status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current.pluck(:status)).to include("opened", "processing", "packed", "completed")
+        end
+      end
+
+      it "retrieves the corresponding orders creation day" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current.pluck(:created_at).map(&:day).uniq).to eq([ saturday.day ])
+        end
+      end
     end
 
-    context "when the order does have order_products associations and is opened" do
+    context "with current_open" do
+      include_context "with orders for scopes"
+
+      it "retrieves the corresponding orders" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_open.count).to eq(2)
+        end
+      end
+
+      it "includes the corresponding orders status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_open.pluck(:status)).to include("opened", "processing")
+        end
+      end
+
+      it "does not includes the corresponding orders status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_open.pluck(:status)).not_to include("packed", "completed")
+        end
+      end
+
+      it "retrieves the corresponding orders creation day" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.current_open.pluck(:created_at).map(&:day).uniq).to eq([ saturday.day ])
+        end
+      end
+    end
+
+    context "with recent" do
+      include_context "with orders for scopes"
+
+      it "retrieves the corresponding orders" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.recent.count).to eq(4)
+        end
+      end
+
+      it "includes the corresponding orders status" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.recent.pluck(:status)).to include("opened", "processing", "packed", "completed")
+        end
+      end
+
+      it "retrieves the corresponding orders creation day" do
+        specific_date = saturday + 3.hours
+
+        travel_to specific_date do
+          expect(described_class.recent.pluck(:created_at).map(&:day).uniq).to eq([ saturday.day ])
+        end
+      end
+    end
+  end
+
+  describe "#before_destroy callback" do
+    context "when the order is opened and does have requested order_products associations" do
       let(:order_with_order_products) do
         create(:order, :with_sell_order, :with_products, trait_amount: 2)
       end
@@ -231,13 +350,166 @@ RSpec.describe Order, type: :model do
       it { expect { order_with_order_products.destroy }.to change(OrderProduct, :count).by(-2) }
     end
 
+    context "when the order is opened and does have prepare order_products associations" do
+      let(:order_with_order_products) do
+        create(:order, :with_sell_order, :with_products, trait_amount: 2)
+      end
+
+      before { order_with_order_products.order_products.each { |preparation| preparation.update(status: :prepare) } }
+
+      it { expect { order_with_order_products.destroy }.to change(described_class, :count).by(-1) }
+      it { expect { order_with_order_products.destroy }.to change(OrderProduct, :count).by(-2) }
+    end
+
+    context "when the order is opened and does have preparing order_products associations" do
+      let(:order_with_order_products) do
+        create(:order, :with_sell_order, :with_products, trait_amount: 2)
+      end
+
+      before { order_with_order_products.order_products.each { |preparation| preparation.update(status: :preparing) } }
+
+      it { expect { order_with_order_products.destroy }.not_to change(described_class, :count) }
+      it { expect { order_with_order_products.destroy }.not_to change(OrderProduct, :count) }
+
+      it "does not destroy the order object" do
+        order_with_order_products.destroy
+        expect(order_with_order_products).to be_persisted
+      end
+
+      it "has errors" do
+        order_with_order_products.destroy
+        expect(order_with_order_products.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        order_with_order_products.destroy
+        expect(order_with_order_products.errors.full_messages).to include(
+          "This record cannot be deleted because there are preparations in process or completed"
+        )
+      end
+    end
+
+    context "when the order is opened and does have completed order_products associations" do
+      let(:order_with_order_products) do
+        create(:order, :with_sell_order, :with_products, trait_amount: 2)
+      end
+
+      before { order_with_order_products.order_products.each { |preparation| preparation.update(status: :completed) } }
+
+      it { expect { order_with_order_products.destroy }.not_to change(described_class, :count) }
+      it { expect { order_with_order_products.destroy }.not_to change(OrderProduct, :count) }
+
+      it "does not destroy the order object" do
+        order_with_order_products.destroy
+        expect(order_with_order_products).to be_persisted
+      end
+
+      it "has errors" do
+        order_with_order_products.destroy
+        expect(order_with_order_products.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        order_with_order_products.destroy
+        expect(order_with_order_products.errors.full_messages).to include(
+          "This record cannot be deleted because there are preparations in process or completed"
+        )
+      end
+    end
+
+    context "when the order is processing and does have prepare order_products associations" do
+      let(:order_with_order_products) do
+        create(:order, :with_sell_order, :as_processing, :with_products, trait_amount: 2)
+      end
+
+      before { order_with_order_products.order_products.each { |preparation| preparation.update(status: :prepare) } }
+
+      it { expect { order_with_order_products.destroy }.to change(described_class, :count).by(-1) }
+      it { expect { order_with_order_products.destroy }.to change(OrderProduct, :count).by(-2) }
+    end
+
+    context "when the order is processing and does have preparing order_products associations" do
+      let(:order_with_order_products) do
+        create(:order, :with_sell_order, :as_processing, :with_products, trait_amount: 2)
+      end
+
+      before { order_with_order_products.order_products.each { |preparation| preparation.update(status: :preparing) } }
+
+      it { expect { order_with_order_products.destroy }.not_to change(described_class, :count) }
+      it { expect { order_with_order_products.destroy }.not_to change(OrderProduct, :count) }
+
+      it "does not destroy the order object" do
+        order_with_order_products.destroy
+        expect(order_with_order_products).to be_persisted
+      end
+
+      it "has errors" do
+        order_with_order_products.destroy
+        expect(order_with_order_products.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        order_with_order_products.destroy
+        expect(order_with_order_products.errors.full_messages).to include(
+          "This record cannot be deleted because there are preparations in process or completed"
+        )
+      end
+    end
+
+    context "when the order is processing and does have completed order_products associations" do
+      let(:order_with_order_products) do
+        create(:order, :with_sell_order, :as_processing, :with_products, trait_amount: 2)
+      end
+
+      before { order_with_order_products.order_products.each { |preparation| preparation.update(status: :completed) } }
+
+      it { expect { order_with_order_products.destroy }.not_to change(described_class, :count) }
+      it { expect { order_with_order_products.destroy }.not_to change(OrderProduct, :count) }
+
+      it "does not destroy the order object" do
+        order_with_order_products.destroy
+        expect(order_with_order_products).to be_persisted
+      end
+
+      it "has errors" do
+        order_with_order_products.destroy
+        expect(order_with_order_products.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        order_with_order_products.destroy
+        expect(order_with_order_products.errors.full_messages).to include(
+          "This record cannot be deleted because there are preparations in process or completed"
+        )
+      end
+    end
+
+    context "when the order is opened" do
+      before do
+        order.status = "opened"
+        order.save
+      end
+
+      it { expect { order.destroy }.to change(described_class, :count).by(-1) }
+
+      it "does destroy the order object" do
+        order.destroy
+        expect(order).not_to be_persisted
+      end
+    end
+
     context "when the order is processing" do
       before do
         order.status = "processing"
         order.save
       end
 
-      it { expect { order.destroy }.not_to change(described_class, :count) }
+      it { expect { order.destroy }.to change(described_class, :count).by(-1) }
+
+      it "does destroy the order object" do
+        order.destroy
+        expect(order).not_to be_persisted
+      end
     end
 
     context "when the order is packed" do
@@ -247,6 +519,23 @@ RSpec.describe Order, type: :model do
       end
 
       it { expect { order.destroy }.not_to change(described_class, :count) }
+
+      it "does not destroy the order object" do
+        order.destroy
+        expect(order).to be_persisted
+      end
+
+      it "has errors" do
+        order.destroy
+        expect(order.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        order.destroy
+        expect(order.errors.full_messages).to include(
+          "This record cannot be deleted because is not opened or processing"
+        )
+      end
     end
 
     context "when the order is completed" do
@@ -256,6 +545,23 @@ RSpec.describe Order, type: :model do
       end
 
       it { expect { order.destroy }.not_to change(described_class, :count) }
+
+      it "does not destroy the order object" do
+        order.destroy
+        expect(order).to be_persisted
+      end
+
+      it "has errors" do
+        order.destroy
+        expect(order.errors).not_to be_empty
+      end
+
+      it "has error message" do
+        order.destroy
+        expect(order.errors.full_messages).to include(
+          "This record cannot be deleted because is not opened or processing"
+        )
+      end
     end
   end
 end
