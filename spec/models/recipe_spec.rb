@@ -5,13 +5,14 @@ require 'rails_helper'
 # Table name: recipes
 # Database name: primary
 #
-#  id            :bigint           not null, primary key
-#  name          :string           not null
-#  status        :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  ingredient_id :bigint
-#  product_id    :bigint
+#  id              :bigint           not null, primary key
+#  name            :string           not null
+#  output_quantity :integer          default(1), not null
+#  status          :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  ingredient_id   :bigint
+#  product_id      :bigint
 #
 # Indexes
 #
@@ -36,6 +37,10 @@ RSpec.describe Recipe, type: :model do
       expect(recipe.name).not_to be_nil
     end
 
+    it 'output_quantity is not nil' do
+      expect(recipe.output_quantity).not_to be_nil
+    end
+
     it 'status is not nil' do
       expect(recipe.status).not_to be_nil
     end
@@ -55,6 +60,7 @@ RSpec.describe Recipe, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name) }
     it { is_expected.to validate_presence_of(:status) }
+    it { is_expected.to validate_numericality_of(:output_quantity).is_greater_than(0) }
 
     context "with product foreign key as unique" do
       before do
@@ -145,7 +151,7 @@ RSpec.describe Recipe, type: :model do
   end
 
   describe "status transitions" do
-    describe 'when approve is executed with drafting' do
+    context 'when approve is executed with drafting' do
       before { recipe.status = 'drafting' }
 
       it do
@@ -154,7 +160,7 @@ RSpec.describe Recipe, type: :model do
       end
     end
 
-    describe 'when decline is executed with drafting' do
+    context 'when decline is executed with drafting' do
       before { recipe.status = 'drafting' }
 
       it do
@@ -163,7 +169,7 @@ RSpec.describe Recipe, type: :model do
       end
     end
 
-    describe 'when draft is executed with declined' do
+    context 'when draft is executed with declined' do
       before { recipe.status = 'declined' }
 
       it do
@@ -172,7 +178,7 @@ RSpec.describe Recipe, type: :model do
       end
     end
 
-    describe 'when approve is executed with declined' do
+    context 'when approve is executed with declined' do
       before { recipe.status = 'declined' }
 
       it do
@@ -181,13 +187,64 @@ RSpec.describe Recipe, type: :model do
       end
     end
 
-    describe 'when declined is executed with approved' do
+    context 'when declined is executed with approved' do
       before { recipe.status = 'approved' }
 
       it do
         expect { recipe.decline }.to change(
           recipe, :status).from("approved").to("declined")
       end
+    end
+  end
+
+  describe "#cost" do
+    let(:recipe) { create(:recipe, :with_product, trait_ingredient_recipe_amount: 2) }
+
+    context "when cost is 0" do
+      before do
+        recipe.ingredient_recipes.each do |ingredient_recipe|
+          ingredient_recipe.ingredient.update(cost: 0)
+        end
+      end
+
+      it { expect(recipe.cost).to eq(0) }
+    end
+
+    context "when cost matched the expected value" do
+      before do
+        recipe.ingredient_recipes.first.ingredient.update(cost: 500, stored_quantity: 2_000)
+        recipe.ingredient_recipes.first.update(required_quantity: 5_000)
+        recipe.ingredient_recipes.last.ingredient.update(cost: 1_000, stored_quantity: 1_000)
+        recipe.ingredient_recipes.last.update(required_quantity: 5_000)
+      end
+
+      it { expect(recipe.cost).to eq(6_250) }
+    end
+  end
+
+  describe "#unit_cost" do
+    let(:recipe) { create(:recipe, :with_product, trait_ingredient_recipe_amount: 2) }
+
+    context "when unit_cost is 0" do
+      before do
+        recipe.ingredient_recipes.each do |ingredient_recipe|
+          ingredient_recipe.ingredient.update(cost: 0)
+        end
+      end
+
+      it { expect(recipe.unit_cost).to eq(0.to_d) }
+    end
+
+    context "when unit_cost matched the expected value" do
+      before do
+        recipe.ingredient_recipes.first.ingredient.update(cost: 500, stored_quantity: 2_000)
+        recipe.ingredient_recipes.first.update(required_quantity: 5_000)
+        recipe.ingredient_recipes.last.ingredient.update(cost: 1_000, stored_quantity: 1_000)
+        recipe.ingredient_recipes.last.update(required_quantity: 5_000)
+        recipe.update(output_quantity: 10_000)
+      end
+
+      it { expect(recipe.unit_cost).to eq((0.625).to_d) }
     end
   end
 end
