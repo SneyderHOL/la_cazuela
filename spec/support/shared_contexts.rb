@@ -275,3 +275,17 @@ RSpec.shared_context "with orders and order_products for scopes" do
     end
   end
 end
+
+RSpec.shared_context "with order for requests" do
+  let(:user) do
+    create(:user, email: "admin@example", password: "adminPass", password_confirmation: "adminPass")
+  end
+  let(:order) { create(:order, :with_products, :with_sell_order) }
+  let(:beverage) do
+    create(:product, :with_recipe, name: "Lemonade", category: create(:category, :with_active_on, name: "Soda"))
+  end
+  let(:dish) do
+    create(:product, :with_recipe, name: "Chicken with rice", category: create(:category, :with_active_on, name: "Spicy"))
+  end
+  let(:body_params) { { order: order_products } }
+end

@@ -11,6 +11,13 @@ class ApplicationController < ActionController::Base
   # TODO: use a forbidden route
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
-    redirect_back_or_to(root_path)
+    redirect_back_or_to(dashboard_path)
+  end
+
+  protected
+
+  # Override the Devise method to customize redirection
+  def after_sign_in_path_for(resource)
+    dashboard_path
   end
 end
