@@ -1,0 +1,121 @@
+module Dashboard
+  class SellOrdersController < DashboardController
+    before_action :clear_flash, only: :index
+    before_action :set_allocation, only: :create
+    before_action :set_sell_order, only: %i[ show destroy invoice deliver close payment ]
+
+    def index
+      @current_sales_counting = SellOrder.current_sales(
+        default_statuses, default_kinds
+      ).group(:status).count
+      @current_sales_counting_by_kind = SellOrder.current_sales(
+        default_statuses, default_kinds
+      ).group("allocations.kind").count
+      @current_sales = SellOrder.current_sales_with_products(get_statuses, get_kinds)
+                                .order(updated_at: :desc)
+    end
+
+    def show
+    end
+
+    def invoice
+      @sell_order.invoice!
+
+      redirect_to dashboard_sell_order_path(@sell_order), notice: "Sell order was set to invoicing."
+    rescue AASM::InvalidTransition => error
+      flash[:alert] = "Unable to perform that action."
+      render "dashboard/sell_orders/show", status: :unprocessable_content
+    end
+
+    def deliver
+      @sell_order.deliver!
+
+      redirect_to dashboard_sell_order_path(@sell_order), notice: "Sell order was set to delivering."
+    rescue AASM::InvalidTransition => error
+      flash[:alert] = "Unable to perform that action."
+      render "dashboard/sell_orders/show", status: :unprocessable_content
+    end
+
+    def close
+      @sell_order.close!
+      @allocation = @sell_order.allocation
+      @allocation.clean! if @allocation.desk?
+
+      redirect_to dashboard_sell_order_path(@sell_order), notice: "Sell order was closed."
+    rescue AASM::InvalidTransition => error
+      flash[:alert] = "Unable to perform that action."
+      render "dashboard/sell_orders/show", status: :unprocessable_content
+    end
+
+    def payment
+      @sell_order.payment_type = params.expect(:payment_type)
+      @sell_order.cash_pay = params.expect(:cash_pay) if @sell_order.cash?
+      if @sell_order.save
+        redirect_to dashboard_sell_order_path(@sell_order), notice: "Payment saved."
+      else
+        flash[:alert] = @sell_order.errors.full_messages.join
+        render "dashboard/sell_orders/show", status: :bad_request
+      end
+    rescue ActionController::ParameterMissing, ArgumentError => e
+      flash[:alert] = e.message
+      render "dashboard/sell_orders/show", status: :bad_request
+    end
+
+    def create
+      @sell_order = @allocation.current_open_sell_order if @allocation.desk?
+      @sell_order ||= SellOrder.create(allocation: @allocation)
+      if @sell_order.persisted?
+        @allocation.take! if @allocation.desk? && @allocation.available?
+
+        redirect_to new_dashboard_sell_order_order_path(@sell_order), notice: "Sell Order created successfully."
+      else
+        set_allocation_resources
+        flash[:alert] = @sell_order.errors.full_messages.join
+        render "dashboard/allocations/show", status: :bad_request
+      end
+    end
+
+    def destroy
+      @allocation = @sell_order.allocation
+      ActiveRecord::Base.transaction do
+        @sell_order.destroy!
+        @allocation.clean! if @allocation.desk?
+      end
+
+      redirect_to dashboard_allocation_path(@allocation), notice: "Sell Order was destroyed successfully."
+    rescue ActiveRecord::RecordNotDestroyed => _e
+      set_allocation_resources
+      flash[:alert] = @sell_order.errors.full_messages.join
+      render "dashboard/allocations/show", status: :unprocessable_content
+    end
+
+    private
+
+    def default_statuses = %i[ opened packed invoicing delivering closed ]
+
+    def check_valid_status
+      case params[:status]
+      when "opened" then :opened
+      when "packed" then :packed
+      when "invoicing" then :invoicing
+      when "delivering" then :delivering
+      when "closed" then :closed
+      end
+    end
+
+    def set_sell_order
+      @sell_order = SellOrder.includes(
+        :allocation, :bill, orders: { order_products: :product }
+      ).find(params[:id])
+    end
+
+    def set_allocation
+      @allocation = Allocation.find(params[:allocation_id])
+    end
+
+    def set_allocation_resources
+      @sell_orders = @allocation.sell_orders.current_open_sales.order(created_at: :asc)
+      @suborders_count = @sell_orders.sum { |so| so.orders.count }
+    end
+  end
+end

@@ -1,0 +1,19 @@
+<% content_for :dashboard_stylesheets do %>
+  <%= stylesheet_link_tag "dashboard/orders", "data-turbo-track": "reload", as: "style" %>
+<% end %>
+
+<div class="dashboard-content" data-controller="taking-order">
+
+  <%= render "order_form",
+    order: @order,
+    allocation: @allocation,
+    sell_order: @sell_order,
+    categories: @categories,
+    products: @products,
+    page_title: "Edit Order",
+    url: dashboard_order_path(@order),
+    method: :put,
+    existing_order: set_existing_order_json(@order)
+  %>
+
+</div>

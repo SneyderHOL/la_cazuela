@@ -1,0 +1,48 @@
+<% if allocations.empty? %>
+
+  <div class="table-preview empty-state-container">
+
+    <div class="dashboard-empty-state">
+
+      <div class="empty-state-icon" aria-hidden="true">
+
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" >
+          <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+          <path d="M3 9h18"></path>
+          <path d="M9 21V9"></path>
+        </svg>
+
+      </div>
+
+      <div class="empty-state-content">
+        <h3> No allocations available </h3>
+        <p> There are currently no tables or delivery allocations to display. </p>
+      </div>
+
+    </div>
+
+  </div>
+
+<% else %>
+
+  <div class="table-preview">
+
+    <% allocations.each do |allocation| %>
+
+      <div class="table-item <%= allocation.status.dasherize %>">
+
+        <span class="table-number">
+          <%= allocation.name %>
+        </span>
+
+        <span class="table-status">
+          <%= allocation.status.humanize %>
+        </span>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+<% end %>

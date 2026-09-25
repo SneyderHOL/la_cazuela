@@ -1,0 +1,98 @@
+<div class="sell-order-order-list">
+
+  <% if orders.empty? %>
+
+    <!-- =====================================================
+        SELL ORDER ORDERS EMPTY STATE
+    ====================================================== -->
+
+    <section class="sell-order-empty-state">
+
+      <div class="sell-order-empty-state-icon">
+
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <!-- Receipt / order icon -->
+
+          <path d="M6 3h12v18l-2.5-1.5L13 21l-2.5-1.5L8 21l-2-1.5V3Z"></path>
+
+          <path d="M9 8h6"></path>
+
+          <path d="M9 12h6"></path>
+
+          <path d="M9 16h3"></path>
+
+        </svg>
+
+      </div>
+
+
+      <div class="sell-order-empty-state-content">
+
+        <h2>
+          Orders are empty
+        </h2>
+
+        <p>
+          The sell order you're looking for has not orders yet.
+        </p>
+
+      </div>
+
+
+      <div class="sell-order-empty-state-actions">
+
+        <%= link_to dashboard_sell_orders_path, class: "dashboard-secondary-button" do %>
+
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 12H5"></path>
+            <path d="M12 19l-7-7 7-7"></path>
+          </svg>
+
+          Back to Sell Orders
+
+        <% end %>
+
+      </div>
+
+    </section>
+
+  <% else %>
+
+    <% orders.each do |order| %>
+
+      <!-- =============================================
+          SUBORDER
+      ============================================== -->
+
+      <article class="sell-order-suborder">
+
+        <header class="sell-order-suborder-header">
+
+          <div>
+
+            <span class="sell-order-suborder-number">
+              Order #<%= order.id %>
+            </span>
+
+            <span class="sell-order-suborder-date">
+              <%= order.created_at.strftime("%A, %I:%M %p") %>
+            </span>
+
+          </div>
+
+
+          <span class="order-status <%= order.status.dasherize %>">
+            <%= order.status.humanize %>
+          </span>
+
+        </header>
+
+
+        <%= render "dashboard/sell_orders/order_products", order_products: order.order_products %>
+
+      </article>
+
+    <% end %>
+  <% end %>
+
+</div>
