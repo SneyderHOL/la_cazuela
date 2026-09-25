@@ -32,5 +32,17 @@ FactoryBot.define do
     trait :as_takeout do
       kind { :takeout }
     end
+
+    trait :as_busy do
+      status { :busy }
+    end
+
+    trait :as_on_hold do
+      status { :on_hold }
+    end
+
+    trait :as_cleaning do
+      status { :cleaning }
+    end
   end
 end
