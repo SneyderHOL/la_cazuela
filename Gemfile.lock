@@ -89,7 +89,7 @@ GEM
       activerecord (>= 6.0.0)
       activesupport (>= 6.0.0)
     ast (2.4.3)
-    avo (4.2.5)
+    avo (4.2.10)
       actionview (>= 6.1)
       active_link_to
       activerecord (>= 6.1)
@@ -105,7 +105,7 @@ GEM
       turbo_power (>= 0.6.0)
       view_component (>= 3.7.0)
       zeitwerk (>= 2.6.12)
-    avo-icons (0.2.1)
+    avo-icons (0.2.2)
       inline_svg
     base64 (0.3.0)
     bcrypt (3.1.22)
@@ -236,7 +236,7 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
-    pagy (43.6.2)
+    pagy (43.6.3)
       json
       uri
       yaml
@@ -315,7 +315,7 @@ GEM
       logger
       prism (>= 1.6.0)
       tsort
-    rdoc (8.0.0)
+    rdoc (8.1.0)
       erb
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
